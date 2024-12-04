@@ -20,6 +20,7 @@ and this project adheres to
 - 💄(frontend) update DocHeader ui #446
 - 💄(frontend) update doc versioning ui #463
 - ✨(backend) add server-to-server API endpoint to create documents #467
+- 💄(frontend) add filtering from left panel #475
 
 ## Changed
 
@@ -41,6 +42,9 @@ and this project adheres to
 ## Fixed
 
 - ⚡️(e2e) reduce flakiness on e2e tests #511
+
+
+
 
 
 

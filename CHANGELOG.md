@@ -22,6 +22,9 @@ and this project adheres to
 - 💄(frontend) update doc summary ui #473
 - 🐛(frontend) fix doc grid button #478
 - ✨(backend) add server-to-server API endpoint to create documents #467
+- ✨(frontend) new share modal ui #489
+
+## Changed
 - 💄(frontend) add filtering from left panel #475
 
 ## Changed
@@ -44,9 +47,6 @@ and this project adheres to
 ## Fixed
 
 - ⚡️(e2e) reduce flakiness on e2e tests #511
-
-
-
 
 
 ## Fixed

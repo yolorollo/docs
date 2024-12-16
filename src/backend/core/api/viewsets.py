@@ -140,6 +140,7 @@ class UserViewSet(
     permission_classes = [permissions.IsSelf]
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
+    ordering = ["-created_at"]
 
     def get_queryset(self):
         """

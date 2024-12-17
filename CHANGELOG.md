@@ -23,12 +23,10 @@ and this project adheres to
 - 🐛(frontend) fix doc grid button #478
 - ✨(backend) add server-to-server API endpoint to create documents #467
 - ✨(frontend) new share modal ui #489
+- ✨(frontend) add favorite feature #515
 
 ## Changed
 - 💄(frontend) add filtering from left panel #475
-
-## Changed
-
 - 🏗️(yjs-server) organize yjs server #528
 - ♻️(frontend) better separation collaboration process #528
 

@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  docs:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-01-08T10:18:28.34901844Z"
+    digest: e5112ad11d9b9908d4797c879d03ca1219fa61b0ddaba8a91ea7a0e2c90dcf24
+    name: docs
+    type: application
+    urls:
+    - https://suitenumerique.github.io/docs/docs-0.0.1.tgz
+    version: 0.0.1
+generated: "2025-01-08T10:18:28.347840478Z"

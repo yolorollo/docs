@@ -14,7 +14,7 @@ import { useAuthStore } from './useAuthStore';
  * When we will have a homepage design for non-authenticated users, we will remove this restriction to have
  * the full website accessible without authentication.
  */
-const regexpUrlsAuth = [/\/docs\/$/g, /^\/$/g];
+const regexpUrlsAuth = [/\/docs\/$/g];
 
 export const Auth = ({ children }: PropsWithChildren) => {
   const { initAuth, initiated, authenticated, login, getAuthUrl } =

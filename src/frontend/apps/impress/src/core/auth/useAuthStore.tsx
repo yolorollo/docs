@@ -38,9 +38,13 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       });
   },
   login: () => {
-    get().setAuthUrl(window.location.pathname);
+    console.log(window.location.pathname);
+    if (window.location.pathname !== '/') {
+      get().setAuthUrl(window.location.pathname);
+      window.location.replace(`/`);
+    }
 
-    window.location.replace(`${baseApiUrl()}authenticate/`);
+    // window.location.replace(`${baseApiUrl()}authenticate/`);
   },
   logout: () => {
     terminateCrispSession();

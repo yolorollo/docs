@@ -9,6 +9,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-01-13
+
 ## Added
 
 - 🔧(backend) add option to configure list of essential OIDC claims #525 & #531
@@ -25,7 +27,7 @@ and this project adheres to
 - 💄(frontend) updating the header and leftpanel for responsive #421
 - 💄(frontend) update DocsGrid component #431
 - 💄(frontend) update DocsGridOptions component #432
-- 💄(frontend) update DocHeader ui #446
+- 💄(frontend) update DocHeader ui #448
 - 💄(frontend) update doc versioning ui #463
 - 💄(frontend) update doc summary ui #473
 
@@ -351,7 +353,8 @@ and this project adheres to
 - 🚀 Impress, project to manage your documents easily and collaboratively.
 
 
-[unreleased]: https://github.com/numerique-gouv/impress/compare/v1.10.0...main
+[unreleased]: https://github.com/numerique-gouv/impress/compare/v2.0.0...main
+[v2.0.0]: https://github.com/numerique-gouv/impress/releases/v2.0.0
 [v1.10.0]: https://github.com/numerique-gouv/impress/releases/v1.10.0
 [v1.9.0]: https://github.com/numerique-gouv/impress/releases/v1.9.0
 [v1.8.2]: https://github.com/numerique-gouv/impress/releases/v1.8.2

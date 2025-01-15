@@ -1,6 +1,6 @@
 {
   "name": "server-y-provider",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "description": "Y.js provider for docs",
   "repository": "https://github.com/numerique-gouv/impress",
   "license": "MIT",
@@ -35,8 +35,8 @@
     "@types/node": "*",
     "@types/supertest": "6.0.2",
     "@types/ws": "8.5.13",
-    "eslint-config-impress": "*",
     "cross-env": "7.0.3",
+    "eslint-config-impress": "*",
     "jest": "29.7.0",
     "nodemon": "3.1.9",
     "supertest": "7.0.0",

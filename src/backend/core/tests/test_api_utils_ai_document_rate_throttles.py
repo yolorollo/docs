@@ -55,7 +55,7 @@ def test_api_utils_ai_document_rate_throttle_minute_limit(mock_time):
     # After the 60s backoff wait time has passed, we can make a request again
     mock_time.return_value += 1
 
-    request = api_rf.get("/documents/1/")
+    request = api_rf.get("//1/")
     response = DocumentAPIView.as_view()(request, pk=1)
     assert response.status_code == 200
 

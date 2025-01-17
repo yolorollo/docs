@@ -1,4 +1,10 @@
-import { Dictionary, locales } from '@blocknote/core';
+import {
+  BlockNoteEditor as BlockNoteEditorCore,
+  BlockNoteSchema,
+  Dictionary,
+  defaultBlockSpecs,
+  locales,
+} from '@blocknote/core';
 import '@blocknote/core/fonts/inter.css';
 import { BlockNoteView } from '@blocknote/mantine';
 import '@blocknote/mantine/style.css';
@@ -19,7 +25,9 @@ import useSaveDoc from '../hook/useSaveDoc';
 import { useEditorStore } from '../stores';
 import { randomColor } from '../utils';
 
+import { BlockNoteSuggestionMenu } from './BlockNoteSuggestionMenu';
 import { BlockNoteToolbar } from './BlockNoteToolbar';
+import { AlertBlock, DividerBlock, QuoteBlock } from './custom-blocks';
 
 const cssEditor = (readonly: boolean) => css`
   &,
@@ -27,6 +35,15 @@ const cssEditor = (readonly: boolean) => css`
   & .ProseMirror {
     height: 100%;
 
+    .bn-side-menu[data-block-type='alert'] {
+      height: 55px;
+    }
+    .bn-side-menu[data-block-type='divider'] {
+      height: 40px;
+    }
+    .bn-side-menu[data-block-type='quote'] {
+      height: 46px;
+    }
     .bn-side-menu[data-block-type='heading'][data-level='1'] {
       height: 50px;
     }
@@ -107,6 +124,21 @@ const cssEditor = (readonly: boolean) => css`
   }
 `;
 
+export const schema = BlockNoteSchema.create({
+  blockSpecs: {
+    ...defaultBlockSpecs,
+    alert: AlertBlock,
+    quote: QuoteBlock,
+    divider: DividerBlock,
+  },
+});
+
+export type DocsBlockNoteEditor = BlockNoteEditorCore<
+  typeof schema.blockSchema,
+  typeof schema.inlineContentSchema,
+  typeof schema.styleSchema
+>;
+
 interface BlockNoteEditorProps {
   doc: Doc;
   provider: HocuspocusProvider;
@@ -164,6 +196,7 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
         },
       },
       dictionary: locales[lang as keyof typeof locales] as Dictionary,
+      schema,
       uploadFile,
     },
     [collabName, lang, provider, uploadFile],
@@ -198,8 +231,10 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
         editor={editor}
         formattingToolbar={false}
         editable={!readOnly}
+        slashMenu={false}
         theme="light"
       >
+        <BlockNoteSuggestionMenu />
         <BlockNoteToolbar />
       </BlockNoteView>
     </Box>
@@ -225,6 +260,7 @@ export const BlockNoteEditorVersion = ({
         },
         provider: undefined,
       },
+      schema,
     },
     [initialContent],
   );

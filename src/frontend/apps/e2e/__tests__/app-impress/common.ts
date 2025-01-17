@@ -61,6 +61,8 @@ export const addNewMember = async (
   role: 'Administrator' | 'Owner' | 'Member' | 'Editor' | 'Reader',
   fillText: string = 'user',
 ) => {
+  await expect(page.getByTestId('grid-loader')).toBeHidden();
+
   const responsePromiseSearchUser = page.waitForResponse(
     (response) =>
       response.url().includes(`/users/?q=${fillText}`) &&
@@ -104,7 +106,7 @@ export const goToGridDoc = async (
 
   const docsGrid = page.getByTestId('docs-grid');
   await expect(docsGrid).toBeVisible();
-  await expect(docsGrid.getByTestId('grid-loader')).toBeHidden();
+  await expect(page.getByTestId('grid-loader')).toBeHidden({ timeout: 10000 });
 
   const rows = docsGrid.getByRole('row');
 

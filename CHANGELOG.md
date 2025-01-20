@@ -9,6 +9,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.0.1] - 2025-01-17
+
+## Fixed
+
+-🐛(frontend) share modal is shown when you don't have the abilities #557
+-🐛(frontend) title copy break app #564
+
+
 ## [2.0.0] - 2025-01-13
 
 ## Added
@@ -353,7 +361,8 @@ and this project adheres to
 - 🚀 Impress, project to manage your documents easily and collaboratively.
 
 
-[unreleased]: https://github.com/numerique-gouv/impress/compare/v2.0.0...main
+[unreleased]: https://github.com/numerique-gouv/impress/compare/v2.0.1...main
+[v2.0.1]: https://github.com/numerique-gouv/impress/releases/v2.0.1
 [v2.0.0]: https://github.com/numerique-gouv/impress/releases/v2.0.0
 [v1.10.0]: https://github.com/numerique-gouv/impress/releases/v1.10.0
 [v1.9.0]: https://github.com/numerique-gouv/impress/releases/v1.9.0

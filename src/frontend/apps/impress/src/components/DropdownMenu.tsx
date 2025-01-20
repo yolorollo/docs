@@ -54,7 +54,7 @@ export const DropdownMenu = ({
               $css={
                 arrowCss ??
                 css`
-                  color: var(--c--theme--colors--primary-600);
+                  color: var(--c--theme--colors--primary-700);
                 `
               }
               iconName={isOpen ? 'arrow_drop_up' : 'arrow_drop_down'}

@@ -51,6 +51,7 @@ and this project adheres to
 - ✨(frontend) add favorite feature #515
 - 📝(documentation) Documentation about self-hosted installation #530
 - ✨(helm) helm versioning #530
+- ✨(frontend) add home page #553
 
 ## Changed
 

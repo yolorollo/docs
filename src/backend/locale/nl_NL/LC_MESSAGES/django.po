@@ -5,21 +5,21 @@ msgstr ""
 "POT-Creation-Date: 2025-01-15 21:00+0000\n"
 "PO-Revision-Date: 2025-01-16 19:53\n"
 "Last-Translator: \n"
-"Language-Team: French\n"
-"Language: fr_FR\n"
+"Language-Team: Dutch\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: lasuite-docs\n"
 "X-Crowdin-Project-ID: 754523\n"
-"X-Crowdin-Language: fr\n"
+"X-Crowdin-Language: nl\n"
 "X-Crowdin-File: backend-impress.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #: build/lib/core/admin.py:33 core/admin.py:33
 msgid "Personal info"
-msgstr "Infos Personnelles"
+msgstr ""
 
 #: build/lib/core/admin.py:46 core/admin.py:46
 msgid "Permissions"
@@ -27,7 +27,7 @@ msgstr ""
 
 #: build/lib/core/admin.py:58 core/admin.py:58
 msgid "Important dates"
-msgstr "Dates importantes"
+msgstr ""
 
 #: build/lib/core/api/filters.py:16 core/api/filters.py:16
 msgid "Creator is me"
@@ -43,11 +43,11 @@ msgstr ""
 
 #: build/lib/core/api/serializers.py:317 core/api/serializers.py:317
 msgid "A new document was created on your behalf!"
-msgstr "Un nouveau document a été créé pour vous !"
+msgstr ""
 
 #: build/lib/core/api/serializers.py:321 core/api/serializers.py:321
 msgid "You have been granted ownership of a new document:"
-msgstr "Vous avez été déclaré propriétaire d'un nouveau document :"
+msgstr ""
 
 #: build/lib/core/api/serializers.py:422 core/api/serializers.py:422
 msgid "Body"
@@ -74,28 +74,28 @@ msgstr ""
 #: build/lib/core/models.py:63 build/lib/core/models.py:70 core/models.py:63
 #: core/models.py:70
 msgid "Reader"
-msgstr "Lecteur"
+msgstr ""
 
 #: build/lib/core/models.py:64 build/lib/core/models.py:71 core/models.py:64
 #: core/models.py:71
 msgid "Editor"
-msgstr "Éditeur"
+msgstr ""
 
 #: build/lib/core/models.py:72 core/models.py:72
 msgid "Administrator"
-msgstr "Administrateur"
+msgstr ""
 
 #: build/lib/core/models.py:73 core/models.py:73
 msgid "Owner"
-msgstr "Propriétaire"
+msgstr ""
 
 #: build/lib/core/models.py:84 core/models.py:84
 msgid "Restricted"
-msgstr "Restreint"
+msgstr ""
 
 #: build/lib/core/models.py:88 core/models.py:88
 msgid "Authenticated"
-msgstr "Authentifié"
+msgstr ""
 
 #: build/lib/core/models.py:90 core/models.py:90
 msgid "Public"
@@ -221,17 +221,17 @@ msgstr ""
 #: build/lib/core/models.py:633 core/models.py:633
 #, python-brace-format
 msgid "{name} shared a document with you!"
-msgstr "{name} a partagé un document avec vous!"
+msgstr ""
 
 #: build/lib/core/models.py:637 core/models.py:637
 #, python-brace-format
 msgid "{name} invited you with the role \"{role}\" on the following document:"
-msgstr "{name} vous a invité avec le rôle \"{role}\" sur le document suivant:"
+msgstr ""
 
 #: build/lib/core/models.py:640 core/models.py:640
 #, python-brace-format
 msgid "{name} shared a document with you: {title}"
-msgstr "{name} a partagé un document avec vous: {title}"
+msgstr ""
 
 #: build/lib/core/models.py:663 core/models.py:663
 msgid "Document/user link trace"

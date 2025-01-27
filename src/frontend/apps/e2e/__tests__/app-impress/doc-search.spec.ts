@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { createDoc, verifyDocName } from './common';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/docs/');
 });
 
 test.describe('Document search', () => {
@@ -15,7 +15,7 @@ test.describe('Document search', () => {
       1,
     );
     await verifyDocName(page, doc1Title);
-    await page.goto('/');
+    await page.goto('/docs/');
 
     const [doc2Title] = await createDoc(
       page,
@@ -24,7 +24,7 @@ test.describe('Document search', () => {
       1,
     );
     await verifyDocName(page, doc2Title);
-    await page.goto('/');
+    await page.goto('/docs/');
     await page.getByRole('button', { name: 'search' }).click();
 
     await expect(

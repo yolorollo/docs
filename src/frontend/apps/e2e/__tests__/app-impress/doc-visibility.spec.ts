@@ -6,7 +6,7 @@ const browsersName = ['chromium', 'webkit', 'firefox'];
 
 test.describe('Doc Visibility', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/docs/');
   });
 
   test('It checks the copy link button', async ({ page, browserName }) => {
@@ -71,7 +71,8 @@ test.describe('Doc Visibility: Restricted', () => {
     page,
     browserName,
   }) => {
-    await page.goto('/');
+    await page.goto('/docs/');
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, browserName);
 
     const [docTitle] = await createDoc(
@@ -91,9 +92,9 @@ test.describe('Doc Visibility: Restricted', () => {
       })
       .click();
 
-    await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
-
+    await expect(page.getByTestId('proconnect-button').first()).toBeVisible();
     await page.goto(urlDoc);
+    await page.getByTestId('proconnect-button').first().click();
 
     await expect(page.getByRole('textbox', { name: 'password' })).toBeVisible();
   });
@@ -102,7 +103,8 @@ test.describe('Doc Visibility: Restricted', () => {
     page,
     browserName,
   }) => {
-    await page.goto('/');
+    await page.goto('/docs/');
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, browserName);
 
     const [docTitle] = await createDoc(page, 'Restricted auth', browserName, 1);
@@ -119,6 +121,7 @@ test.describe('Doc Visibility: Restricted', () => {
 
     const otherBrowser = browsersName.find((b) => b !== browserName);
 
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, otherBrowser!);
 
     await page.goto(urlDoc);
@@ -130,7 +133,8 @@ test.describe('Doc Visibility: Restricted', () => {
 
   test('A doc is accessible when member.', async ({ page, browserName }) => {
     test.slow();
-    await page.goto('/');
+    await page.goto('/docs/');
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, browserName);
 
     const [docTitle] = await createDoc(page, 'Restricted auth', browserName, 1);
@@ -167,6 +171,7 @@ test.describe('Doc Visibility: Restricted', () => {
       })
       .click();
 
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, otherBrowser!);
 
     await page.goto(urlDoc);
@@ -186,7 +191,8 @@ test.describe('Doc Visibility: Public', () => {
     page,
     browserName,
   }) => {
-    await page.goto('/');
+    await page.goto('/docs/');
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, browserName);
 
     const [docTitle] = await createDoc(
@@ -247,7 +253,7 @@ test.describe('Doc Visibility: Public', () => {
       })
       .click();
 
-    await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+    await expect(page.getByTestId('proconnect-button').first()).toBeVisible();
 
     await page.goto(urlDoc);
 
@@ -265,7 +271,8 @@ test.describe('Doc Visibility: Public', () => {
     page,
     browserName,
   }) => {
-    await page.goto('/');
+    await page.goto('/docs/');
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, browserName);
 
     const [docTitle] = await createDoc(page, 'Public editable', browserName, 1);
@@ -313,7 +320,7 @@ test.describe('Doc Visibility: Public', () => {
       })
       .click();
 
-    await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+    await expect(page.getByTestId('proconnect-button').first()).toBeVisible();
 
     await page.goto(urlDoc);
 
@@ -329,7 +336,8 @@ test.describe('Doc Visibility: Authenticated', () => {
     page,
     browserName,
   }) => {
-    await page.goto('/');
+    await page.goto('/docs/');
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, browserName);
 
     const [docTitle] = await createDoc(
@@ -364,11 +372,12 @@ test.describe('Doc Visibility: Authenticated', () => {
       })
       .click();
 
-    await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+    await expect(page.getByTestId('proconnect-button').first()).toBeVisible();
 
     await page.goto(urlDoc);
 
     await expect(page.locator('h2').getByText(docTitle)).toBeHidden();
+    await page.getByTestId('proconnect-button').first().click();
     await expect(page.getByRole('textbox', { name: 'password' })).toBeVisible();
   });
 
@@ -376,7 +385,8 @@ test.describe('Doc Visibility: Authenticated', () => {
     page,
     browserName,
   }) => {
-    await page.goto('/');
+    await page.goto('/docs/');
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, browserName);
 
     const [docTitle] = await createDoc(
@@ -412,6 +422,7 @@ test.describe('Doc Visibility: Authenticated', () => {
       .click();
 
     const otherBrowser = browsersName.find((b) => b !== browserName);
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, otherBrowser!);
 
     await page.goto(urlDoc);
@@ -426,7 +437,8 @@ test.describe('Doc Visibility: Authenticated', () => {
     page,
     browserName,
   }) => {
-    await page.goto('/');
+    await page.goto('/docs/');
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, browserName);
 
     const [docTitle] = await createDoc(
@@ -468,6 +480,7 @@ test.describe('Doc Visibility: Authenticated', () => {
       .click();
 
     const otherBrowser = browsersName.find((b) => b !== browserName);
+    await page.getByTestId('proconnect-button').first().click();
     await keyCloakSignIn(page, otherBrowser!);
 
     await page.goto(urlDoc);

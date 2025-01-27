@@ -10,7 +10,7 @@ import {
 } from './common';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/docs/');
 });
 
 test.describe('Doc Editor', () => {
@@ -257,7 +257,7 @@ test.describe('Doc Editor', () => {
     await editor.fill('Hello World Doc persisted 2');
     await expect(editor.getByText('Hello World Doc persisted 2')).toBeVisible();
 
-    await page.goto('/');
+    await page.goto('/docs/');
 
     await goToGridDoc(page, {
       title: doc,

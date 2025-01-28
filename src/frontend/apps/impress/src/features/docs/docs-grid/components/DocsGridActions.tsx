@@ -69,6 +69,7 @@ export const DocsGridActions = ({
           iconName="more_horiz"
           $theme="primary"
           $variation="600"
+          aria-hidden="true"
         />
       </DropdownMenu>
 

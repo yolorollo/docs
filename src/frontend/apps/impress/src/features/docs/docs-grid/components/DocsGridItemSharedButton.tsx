@@ -1,16 +1,21 @@
+<<<<<<< HEAD
 import { Button } from '@openfun/cunningham-react';
 import { useMemo } from 'react';
+=======
+import { Button, Tooltip } from '@openfun/cunningham-react';
+>>>>>>> 70048328d1b3226c4b0c8f9d93ec6c65b839c30d
 import { useTranslation } from 'react-i18next';
 
-import { Box, Icon } from '@/components';
+import { Box, Icon, Text } from '@/components';
 
-import { Doc, LinkReach } from '../../doc-management';
+import { Doc } from '../../doc-management';
 
 type Props = {
   doc: Doc;
   handleClick: () => void;
 };
 export const DocsGridItemSharedButton = ({ doc, handleClick }: Props) => {
+<<<<<<< HEAD
   const isPublic = doc.link_reach === LinkReach.PUBLIC;
   const isAuthenticated = doc.link_reach === LinkReach.AUTHENTICATED;
   const isRestricted = doc.link_reach === LinkReach.RESTRICTED;
@@ -70,9 +75,38 @@ export const DocsGridItemSharedButton = ({ doc, handleClick }: Props) => {
             iconName={icon}
           />
         </span>
+=======
+  const { t } = useTranslation();
+  const sharedCount = doc.nb_accesses;
+  const isShared = sharedCount - 1 > 0;
+
+  if (!isShared) {
+    return <Box $minWidth="50px">&nbsp;</Box>;
+  }
+
+  return (
+    <Tooltip
+      content={
+        <Text $textAlign="center" $variation="000">
+          {t('Shared with {{count}} users', { count: sharedCount })}
+        </Text>
+>>>>>>> 70048328d1b3226c4b0c8f9d93ec6c65b839c30d
       }
+      placement="top"
     >
-      {isShared ? sharedCount : undefined}
-    </Button>
+      <Button
+        style={{ minWidth: '50px', justifyContent: 'center' }}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          handleClick();
+        }}
+        color="tertiary"
+        size="nano"
+        icon={<Icon $variation="800" $theme="primary" iconName="group" />}
+      >
+        {sharedCount}
+      </Button>
+    </Tooltip>
   );
 };

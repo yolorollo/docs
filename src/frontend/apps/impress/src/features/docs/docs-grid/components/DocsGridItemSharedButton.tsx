@@ -1,5 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Box, Icon } from '@/components';
 
@@ -15,19 +16,27 @@ export const DocsGridItemSharedButton = ({ doc, handleClick }: Props) => {
   const isRestricted = doc.link_reach === LinkReach.RESTRICTED;
   const sharedCount = doc.nb_accesses - 1;
   const isShared = sharedCount > 0;
+  const { t } = useTranslation();
 
-  const icon = useMemo(() => {
+  const { icon, label } = useMemo(() => {
     if (isPublic) {
-      return 'public';
+      return {
+        icon: 'public',
+        label: 'Anyone with the link can see the document',
+      };
     }
     if (isAuthenticated) {
-      return 'corporate_fare';
+      return {
+        icon: 'corporate_fare',
+        label:
+          'Anyone with the link can view the document if they are logged in',
+      };
     }
     if (isRestricted) {
-      return 'group';
+      return { icon: 'group', label: 'Only invited people can access' };
     }
 
-    return undefined;
+    return { icon: 'undefined', label: '' };
   }, [isPublic, isAuthenticated, isRestricted]);
 
   if (!icon) {
@@ -52,12 +61,15 @@ export const DocsGridItemSharedButton = ({ doc, handleClick }: Props) => {
       fullWidth
       color={isRestricted ? 'tertiary' : 'primary'}
       size="nano"
+      aria-label={t(`${label}`)}
       icon={
-        <Icon
-          $variation={isRestricted ? '800' : '000'}
-          $theme={isRestricted ? 'primary' : 'greyscale'}
-          iconName={icon}
-        />
+        <span aria-hidden="true">
+          <Icon
+            $variation={isRestricted ? '800' : '000'}
+            $theme={isRestricted ? 'primary' : 'greyscale'}
+            iconName={icon}
+          />
+        </span>
       }
     >
       {isShared ? sharedCount : undefined}

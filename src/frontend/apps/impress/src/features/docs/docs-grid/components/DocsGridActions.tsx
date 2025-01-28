@@ -58,7 +58,6 @@ export const DocsGridActions = ({
         }
         copyDocLink();
       },
-
       testId: `docs-grid-actions-share-${doc.id}`,
     },
 

@@ -43,7 +43,6 @@ export const DropButton = ({
   isOpen = false,
   onOpenChange,
   children,
-  label,
 }: PropsWithChildren<DropButtonProps>) => {
   const [isLocalOpen, setIsLocalOpen] = useState(isOpen);
 
@@ -60,12 +59,8 @@ export const DropButton = ({
 
   return (
     <>
-      <StyledButton
-        ref={triggerRef}
-        onPress={() => onOpenChangeHandler(true)}
-        aria-label={label}
-      >
-        {button}
+      <StyledButton ref={triggerRef} onPress={() => onOpenChangeHandler(true)}>
+        <span aria-hidden="true">{button}</span>
       </StyledButton>
 
       <StyledPopover

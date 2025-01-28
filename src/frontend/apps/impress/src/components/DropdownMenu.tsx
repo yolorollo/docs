@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import { PropsWithChildren, useState } from 'react';
 import { css } from 'styled-components';
 
@@ -44,7 +45,7 @@ export const DropdownMenu = ({
     <DropButton
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      label={label}
+      label={t(`${label}`)}
       button={
         showArrow ? (
           <Box $direction="row" $align="center">

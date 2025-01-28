@@ -11,8 +11,14 @@ from django.test import RequestFactory
 import pytest
 import requests.exceptions
 import responses
+from cryptography.fernet import Fernet
 
 from core import factories
+from core.authentication.backends import (
+    get_cipher_suite,
+    get_oidc_refresh_token,
+    store_oidc_refresh_token,
+)
 from core.authentication.middleware import RefreshOIDCAccessToken
 
 pytestmark = pytest.mark.django_db
@@ -34,7 +40,13 @@ def fixture_oidc_settings(settings):
     settings.OIDC_TOKEN_USE_BASIC_AUTH = False
     settings.OIDC_STORE_ACCESS_TOKEN = True
     settings.OIDC_STORE_REFRESH_TOKEN = True
-    return settings
+    settings.OIDC_STORE_REFRESH_TOKEN_KEY = Fernet.generate_key()
+
+    get_cipher_suite.cache_clear()
+
+    yield settings
+
+    get_cipher_suite.cache_clear()
 
 
 def test_anonymous_user(oidc_settings):  # pylint: disable=unused-argument
@@ -94,7 +106,7 @@ def test_basic_auth_disabled(oidc_settings):  # pylint: disable=unused-argument
     session_middleware.process_request(request)
 
     request.session["oidc_access_token"] = "old_token"
-    request.session["oidc_refresh_token"] = "refresh_token"
+    store_oidc_refresh_token(request.session, "refresh_token")
     request.session["oidc_token_expiration"] = time.time() - 100
     request.session.save()
 
@@ -118,7 +130,7 @@ def test_successful_token_refresh(oidc_settings):  # pylint: disable=unused-argu
     session_middleware.process_request(request)
 
     request.session["oidc_access_token"] = "old_token"
-    request.session["oidc_refresh_token"] = "refresh_token"
+    store_oidc_refresh_token(request.session, "refresh_token")
     request.session["oidc_token_expiration"] = time.time() - 100
     request.session.save()
 
@@ -135,7 +147,7 @@ def test_successful_token_refresh(oidc_settings):  # pylint: disable=unused-argu
 
     assert response is None
     assert request.session["oidc_access_token"] == "new_token"
-    assert request.session["oidc_refresh_token"] == "new_refresh_token"
+    assert get_oidc_refresh_token(request.session) == "new_refresh_token"
 
 
 def test_non_expired_token(oidc_settings):  # pylint: disable=unused-argument
@@ -169,7 +181,7 @@ def test_refresh_token_request_timeout(oidc_settings):  # pylint: disable=unused
     session_middleware = SessionMiddleware(get_response)
     session_middleware.process_request(request)
     request.session["oidc_access_token"] = "old_token"
-    request.session["oidc_refresh_token"] = "refresh_token"
+    store_oidc_refresh_token(request.session, "refresh_token")
     request.session["oidc_token_expiration"] = time.time() - 100
     request.session.save()
 
@@ -200,7 +212,7 @@ def test_refresh_token_request_error_400(oidc_settings):  # pylint: disable=unus
     session_middleware = SessionMiddleware(get_response)
     session_middleware.process_request(request)
     request.session["oidc_access_token"] = "old_token"
-    request.session["oidc_refresh_token"] = "refresh_token"
+    store_oidc_refresh_token(request.session, "refresh_token")
     request.session["oidc_token_expiration"] = time.time() - 100
     request.session.save()
 
@@ -233,7 +245,7 @@ def test_refresh_token_request_error(oidc_settings):  # pylint: disable=unused-a
     session_middleware = SessionMiddleware(get_response)
     session_middleware.process_request(request)
     request.session["oidc_access_token"] = "old_token"
-    request.session["oidc_refresh_token"] = "refresh_token"
+    store_oidc_refresh_token(request.session, "refresh_token")
     request.session["oidc_token_expiration"] = time.time() - 100
     request.session.save()
 
@@ -265,7 +277,7 @@ def test_refresh_token_request_malformed_json_error(oidc_settings):  # pylint: d
     session_middleware = SessionMiddleware(get_response)
     session_middleware.process_request(request)
     request.session["oidc_access_token"] = "old_token"
-    request.session["oidc_refresh_token"] = "refresh_token"
+    store_oidc_refresh_token(request.session, "refresh_token")
     request.session["oidc_token_expiration"] = time.time() - 100
     request.session.save()
 
@@ -297,7 +309,7 @@ def test_refresh_token_request_exception(oidc_settings):  # pylint: disable=unus
     session_middleware = SessionMiddleware(get_response)
     session_middleware.process_request(request)
     request.session["oidc_access_token"] = "old_token"
-    request.session["oidc_refresh_token"] = "refresh_token"
+    store_oidc_refresh_token(request.session, "refresh_token")
     request.session["oidc_token_expiration"] = time.time() - 100
     request.session.save()
 

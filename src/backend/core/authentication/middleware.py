@@ -38,7 +38,7 @@ from mozilla_django_oidc.utils import (
     import_from_settings,
 )
 
-from core.authentication.backends import store_tokens
+from core.authentication.backends import get_oidc_refresh_token, store_tokens
 
 logger = logging.getLogger(__name__)
 
@@ -138,7 +138,7 @@ class RefreshOIDCAccessToken(SessionRefresh):
         token_url = self.get_settings("OIDC_OP_TOKEN_ENDPOINT")
         client_id = self.get_settings("OIDC_RP_CLIENT_ID")
         client_secret = self.get_settings("OIDC_RP_CLIENT_SECRET")
-        refresh_token = request.session.get("oidc_refresh_token")
+        refresh_token = get_oidc_refresh_token(request.session)
 
         if not refresh_token:
             logger.debug("no refresh token stored")

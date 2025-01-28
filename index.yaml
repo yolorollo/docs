@@ -30,6 +30,15 @@ entries:
     version: 2.0.1-test.202501271123
   - apiVersion: v2
     appVersion: latest
+    created: "2025-01-28T09:24:35.13509295Z"
+    digest: f7ed3be3279b92badec488579e9ff4c55b44f270ffe9e18a9f47d80dee1e27cf
+    name: docs
+    type: application
+    urls:
+    - https://suitenumerique.github.io/docs/docs-2.0.1-beta.8.tgz
+    version: 2.0.1-beta.8
+  - apiVersion: v2
+    appVersion: latest
     created: "2025-01-27T12:24:56.797635562Z"
     digest: 658fe6826387125bd0bebaa9b2434194037a5cc636d4a7cb1309a863ee8faacf
     name: docs
@@ -109,4 +118,4 @@ entries:
     urls:
     - https://suitenumerique.github.io/docs/docs-0.0.1.tgz
     version: 0.0.1
-generated: "2025-01-27T12:24:56.796220587Z"
+generated: "2025-01-28T09:24:35.133642638Z"

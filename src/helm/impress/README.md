@@ -104,6 +104,11 @@
 | `backend.migrate.restartPolicy`                       | backend migrate job restart policy                                                 | `Never`                                                                                                                       |
 | `backend.createsuperuser.command`                     | backend migrate command                                                            | `["/bin/sh","-c","python manage.py createsuperuser --email $DJANGO_SUPERUSER_EMAIL --password $DJANGO_SUPERUSER_PASSWORD\n"]` |
 | `backend.createsuperuser.restartPolicy`               | backend migrate job restart policy                                                 | `Never`                                                                                                                       |
+| `backend.job`                                         | job dedicated to run a random management command, for example after a deployment   |                                                                                                                               |
+| `backend.job.name`                                    | The name to use to describe this job                                               | `""`                                                                                                                          |
+| `backend.job.command`                                 | The management command to execute                                                  | `[]`                                                                                                                          |
+| `backend.job.restartPolicy`                           | The restart policy for the job.                                                    | `Never`                                                                                                                       |
+| `backend.job.annotations`                             | Annotations to add to the job [default: argocd.argoproj.io/hook: PostSync]         |                                                                                                                               |
 | `backend.probes.liveness.path`                        | Configure path for backend HTTP liveness probe                                     | `/__heartbeat__`                                                                                                              |
 | `backend.probes.liveness.targetPort`                  | Configure port for backend HTTP liveness probe                                     | `undefined`                                                                                                                   |
 | `backend.probes.liveness.initialDelaySeconds`         | Configure initial delay for backend liveness probe                                 | `10`                                                                                                                          |
@@ -175,6 +180,37 @@
 | `frontend.persistence.volume-name.mountPath`           | Path where the volume should be mounted to                                          |                            |
 | `frontend.extraVolumeMounts`                           | Additional volumes to mount on the frontend.                                        | `[]`                       |
 | `frontend.extraVolumes`                                | Additional volumes to mount on the frontend.                                        | `[]`                       |
+
+### posthog
+
+| Name                                   | Description                                                 | Value                     |
+| -------------------------------------- | ----------------------------------------------------------- | ------------------------- |
+| `posthog.ingress.enabled`              | Enable or disable the ingress resource creation             | `false`                   |
+| `posthog.ingress.className`            | Kubernetes ingress class name to use (e.g., nginx, traefik) | `nil`                     |
+| `posthog.ingress.host`                 | Primary hostname for the ingress resource                   | `impress.example.com`     |
+| `posthog.ingress.path`                 | URL path prefix for the ingress routes (e.g., /)            | `/`                       |
+| `posthog.ingress.hosts`                | Additional hostnames array to be included in the ingress    | `[]`                      |
+| `posthog.ingress.tls.enabled`          | Enable or disable TLS/HTTPS for the ingress                 | `true`                    |
+| `posthog.ingress.tls.additional`       | Additional TLS configurations for extra hosts/certificates  | `[]`                      |
+| `posthog.ingress.customBackends`       | Custom backend service configurations for the ingress       | `[]`                      |
+| `posthog.ingress.annotations`          | Additional Kubernetes annotations to apply to the ingress   | `{}`                      |
+| `posthog.ingressAssets.enabled`        | Enable or disable the ingress resource creation             | `false`                   |
+| `posthog.ingressAssets.className`      | Kubernetes ingress class name to use (e.g., nginx, traefik) | `nil`                     |
+| `posthog.ingressAssets.host`           | Primary hostname for the ingress resource                   | `impress.example.com`     |
+| `posthog.ingressAssets.paths`          | URL paths prefix for the ingress routes (e.g., /static)     | `["/static","/array"]`    |
+| `posthog.ingressAssets.hosts`          | Additional hostnames array to be included in the ingress    | `[]`                      |
+| `posthog.ingressAssets.tls.enabled`    | Enable or disable TLS/HTTPS for the ingress                 | `true`                    |
+| `posthog.ingressAssets.tls.additional` | Additional TLS configurations for extra hosts/certificates  | `[]`                      |
+| `posthog.ingressAssets.customBackends` | Custom backend service configurations for the ingress       | `[]`                      |
+| `posthog.ingressAssets.annotations`    | Additional Kubernetes annotations to apply to the ingress   | `{}`                      |
+| `posthog.service.type`                 | Service type (e.g. ExternalName, ClusterIP, LoadBalancer)   | `ExternalName`            |
+| `posthog.service.externalName`         | External service hostname when type is ExternalName         | `eu.i.posthog.com`        |
+| `posthog.service.port`                 | Port number for the service                                 | `443`                     |
+| `posthog.service.annotations`          | Additional annotations to apply to the service              | `{}`                      |
+| `posthog.assetsService.type`           | Service type (e.g. ExternalName, ClusterIP, LoadBalancer)   | `ExternalName`            |
+| `posthog.assetsService.externalName`   | External service hostname when type is ExternalName         | `eu-assets.i.posthog.com` |
+| `posthog.assetsService.port`           | Port number for the service                                 | `443`                     |
+| `posthog.assetsService.annotations`    | Additional annotations to apply to the service              | `{}`                      |
 
 ### yProvider
 

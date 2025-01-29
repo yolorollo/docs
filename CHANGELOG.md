@@ -11,12 +11,15 @@ and this project adheres to
 
 ## Added
 
-- github actions to managed Crowdin workflow
+- github actions to manage Crowdin workflow
+- 📈Integrate Posthog #540
+- 🏷️(backend) add content-type to uploaded files #552
+- ✨(frontend) export pdf docx front side #537
 
 ## Changed
 
 - 💄(frontend) add abilities on doc row #581
-
+- 💄(frontend) improve DocsGridItem responsive padding  #582
 
 ## [2.0.1] - 2025-01-17
 
@@ -35,6 +38,8 @@ and this project adheres to
 - 💄(frontend) add filtering to left panel #475
 - ✨(frontend) new share modal ui #489
 - ✨(frontend) add favorite feature #515
+- 📝(documentation) Documentation about self-hosted installation #530
+- ✨(helm) helm versioning #530
 
 ## Changed
 
@@ -46,7 +51,7 @@ and this project adheres to
 - 💄(frontend) update DocHeader ui #448
 - 💄(frontend) update doc versioning ui #463
 - 💄(frontend) update doc summary ui #473
-- 📝(doc) update readme.md to match V2 changes #558
+- 📝(doc) update readme.md to match V2 changes #558 & #572
 
 ## Fixed
 

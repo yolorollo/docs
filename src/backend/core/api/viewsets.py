@@ -20,6 +20,7 @@ from django.db.models import (
     Subquery,
     Value,
 )
+from django.db.models.expressions import RawSQL
 from django.http import Http404
 
 import rest_framework as drf
@@ -150,29 +151,35 @@ class UserViewSet(
         """
         queryset = self.queryset
 
-        if self.action == "list":
-            # Exclude all users already in the given document
-            if document_id := self.request.GET.get("document_id", ""):
-                queryset = queryset.exclude(documentaccess__document_id=document_id)
+        if self.action != "list":
+            return queryset
 
-            # Filter users by email similarity
-            if query := self.request.GET.get("q", ""):
-                # For performance reasons we filter first by similarity, which relies on an index,
-                # then only calculate precise similarity scores for sorting purposes
-                queryset = queryset.filter(email__trigram_word_similar=query)
+        # Exclude all users already in the given document
+        if document_id := self.request.GET.get("document_id", ""):
+            queryset = queryset.exclude(documentaccess__document_id=document_id)
 
-                queryset = queryset.annotate(
-                    similarity=TrigramSimilarity("email", query)
+        if not (query := self.request.GET.get("q", "")):
+            return queryset
+
+        # For emails, match emails by Levenstein distance to prevent typing errors
+        if "@" in query:
+            return (
+                queryset.annotate(
+                    distance=RawSQL("levenshtein(email::text, %s::text)", (query,))
                 )
-                # When the query only is on the name part, we should try to make many proposals
-                # But when the query looks like an email we should only propose serious matches
-                threshold = 0.6 if "@" in query else 0.1
+                .filter(distance__lte=3)
+                .order_by("distance", "email")
+            )
 
-                queryset = queryset.filter(similarity__gt=threshold).order_by(
-                    "-similarity", "email"
-                )
-
-        return queryset
+        # Use trigram similarity for non-email-like queries
+        # For performance reasons we filter first by similarity, which relies on an
+        # index, then only calculate precise similarity scores for sorting purposes
+        return (
+            queryset.filter(email__trigram_word_similar=query)
+            .annotate(similarity=TrigramSimilarity("email", query))
+            .filter(similarity__gt=0.2)
+            .order_by("-similarity", "email")
+        )
 
     @drf.decorators.action(
         detail=False,
@@ -605,7 +612,10 @@ class DocumentViewSet(
         key = f"{document.key_base}/{ATTACHMENTS_FOLDER:s}/{file_id!s}.{extension:s}"
 
         # Prepare metadata for storage
-        extra_args = {"Metadata": {"owner": str(request.user.id)}}
+        extra_args = {
+            "Metadata": {"owner": str(request.user.id)},
+            "ContentType": serializer.validated_data["content_type"],
+        }
         if serializer.validated_data["is_unsafe"]:
             extra_args["Metadata"]["is_unsafe"] = "true"
 
@@ -936,40 +946,6 @@ class TemplateViewSet(
             role=models.RoleChoices.OWNER,
         )
 
-    @drf.decorators.action(
-        detail=True,
-        methods=["post"],
-        url_path="generate-document",
-        permission_classes=[permissions.AccessPermission],
-    )
-    # pylint: disable=unused-argument
-    def generate_document(self, request, pk=None):
-        """
-        Generate and return a document for this template around the
-        body passed as argument.
-
-        2 types of body are accepted:
-        - HTML: body_type = "html"
-        - Markdown: body_type = "markdown"
-
-        2 types of documents can be generated:
-        - PDF: format = "pdf"
-        - Docx: format = "docx"
-        """
-        serializer = serializers.DocumentGenerationSerializer(data=request.data)
-
-        if not serializer.is_valid():
-            return drf.response.Response(
-                serializer.errors, status=drf.status.HTTP_400_BAD_REQUEST
-            )
-
-        body = serializer.validated_data["body"]
-        body_type = serializer.validated_data["body_type"]
-        export_format = serializer.validated_data["format"]
-
-        template = self.get_object()
-        return template.generate_document(body, body_type, export_format)
-
 
 class TemplateAccessViewSet(
     ResourceAccessViewsetMixin,
@@ -1124,6 +1100,7 @@ class ConfigView(drf.views.APIView):
             "ENVIRONMENT",
             "FRONTEND_THEME",
             "MEDIA_BASE_URL",
+            "POSTHOG_KEY",
             "LANGUAGES",
             "LANGUAGE_CODE",
             "SENTRY_DSN",

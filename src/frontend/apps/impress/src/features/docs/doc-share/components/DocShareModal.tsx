@@ -137,11 +137,13 @@ export const DocShareModal = ({ doc, onClose }: Props) => {
       short_name: '',
     };
 
+    const hasEmailInUsers = users.some((user) => user.email === userQuery);
+
     return {
       groupName: t('Search user result'),
       elements: users,
       endActions:
-        isEmail && users.length === 0
+        isEmail && !hasEmailInUsers
           ? [
               {
                 content: <DocShareModalInviteUserRow user={newUser} />,

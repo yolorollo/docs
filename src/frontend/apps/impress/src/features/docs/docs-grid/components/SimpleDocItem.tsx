@@ -47,7 +47,7 @@ export const SimpleDocItem = ({
         `}
       >
         {isPinned ? (
-          <PinnedDocumentIcon aria-label={t('Pinned document')} />
+          <PinnedDocumentIcon aria-label={t('Pinned document.')} />
         ) : (
           <SimpleFileIcon aria-label="" />
         )}

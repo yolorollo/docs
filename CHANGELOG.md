@@ -11,7 +11,10 @@ and this project adheres to
 
 ## Added
 
-- github actions to manage Crowdin workflow
+- ✨(backend) add soft delete and restore API endpoints to documents #516
+- ✨(backend) allow organizing documents in a tree structure #516
+- ✨(backend) add "excerpt" field to document list serializer #516
+- ✨(backend) add github actions to manage Crowdin workflow #559 & #563
 - 📈Integrate Posthog #540
 - 🏷️(backend) add content-type to uploaded files #552
 - ✨(frontend) export pdf docx front side #537
@@ -20,6 +23,14 @@ and this project adheres to
 
 - 💄(frontend) add abilities on doc row #581
 - 💄(frontend) improve DocsGridItem responsive padding  #582
+
+## Changed
+
+- 🔧(backend) Bump page size to 200 #516
+
+## Removed
+
+- 🔥(backend) remove "content" field from list serializer # 516
 
 ## [2.0.1] - 2025-01-17
 

@@ -8,8 +8,27 @@ type IconProps = TextType & {
 };
 export const Icon = ({ iconName, ...textProps }: IconProps) => {
   return (
-    <Text $isMaterialIcon {...textProps}>
-      {iconName}
+    <Text
+      $isMaterialIcon
+      {...textProps}
+      aria-hidden="true"
+      $css={`
+        visibility: hidden;
+        display: inline-block;
+        position: relative;
+      `}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          visibility: 'visible',
+        }}
+      >
+        {iconName}
+      </span>
     </Text>
   );
 };
@@ -24,6 +43,7 @@ export const IconBG = ({ iconName, ...textProps }: IconBGProps) => {
   return (
     <Text
       $isMaterialIcon
+      aria-hidden="true"
       $size="36px"
       $theme="primary"
       $variation="600"

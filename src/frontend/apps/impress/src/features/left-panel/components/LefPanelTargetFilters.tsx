@@ -29,25 +29,16 @@ export const LeftPanelTargetFilters = () => {
         icon: 'apps',
         label: t('All docs'),
         targetQuery: DocDefaultFilter.ALL_DOCS,
-        accessibility: {
-          'aria-hidden': true,
-        },
       },
       {
         icon: 'lock',
         label: t('My docs'),
         targetQuery: DocDefaultFilter.MY_DOCS,
-        accessibility: {
-          'aria-hidden': true,
-        },
       },
       {
         icon: 'group',
         label: t('Shared with me'),
         targetQuery: DocDefaultFilter.SHARED_WITH_ME,
-        accessibility: {
-          'aria-hidden': true,
-        },
       },
     ];
   }, [t]);

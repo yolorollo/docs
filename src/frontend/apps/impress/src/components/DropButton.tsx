@@ -12,9 +12,7 @@ const StyledPopover = styled(Popover)`
   background-color: white;
   border-radius: 4px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-
   border: 1px solid #dddddd;
-
   transition: opacity 0.2s ease-in-out;
 `;
 
@@ -45,7 +43,6 @@ export const DropButton = ({
   children,
 }: PropsWithChildren<DropButtonProps>) => {
   const [isLocalOpen, setIsLocalOpen] = useState(isOpen);
-
   const triggerRef = useRef(null);
 
   useEffect(() => {
@@ -59,17 +56,22 @@ export const DropButton = ({
 
   return (
     <>
-      <StyledButton ref={triggerRef} onPress={() => onOpenChangeHandler(true)}>
+      {/* Bouton activant le menu avec les propriétés ARIA */}
+      <StyledButton
+        ref={triggerRef}
+        aria-haspopup="menu"
+        aria-expanded={isLocalOpen}
+        onPress={() => onOpenChangeHandler(true)}
+      >
         <span aria-hidden="true">{button}</span>
       </StyledButton>
 
-      <StyledPopover
-        triggerRef={triggerRef}
-        isOpen={isLocalOpen}
-        onOpenChange={onOpenChangeHandler}
-      >
-        {children}
-      </StyledPopover>
+      {/* Menu accessible */}
+      {isLocalOpen && (
+        <StyledPopover as="div" role="menu">
+          {children}
+        </StyledPopover>
+      )}
     </>
   );
 };

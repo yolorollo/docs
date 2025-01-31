@@ -125,7 +125,7 @@ export const Footer = () => {
               `}
             >
               <Text
-                $variation="700"
+                $variation="600"
                 $size="m"
                 $transition="box-shadow 0.3s"
                 $css={`
@@ -143,7 +143,7 @@ export const Footer = () => {
           as="p"
           $size="m"
           $margin={{ top: 'big' }}
-          $variation="700"
+          $variation="600"
           $display="inline"
         >
           {t('Unless otherwise stated, all content on this site is under')}{' '}
@@ -155,7 +155,7 @@ export const Footer = () => {
               box-shadow: 0px 1px 0 0 var(--c--theme--colors--greyscale-text);
             `}
           >
-            <Text $variation="700">licence etalab-2.0</Text>
+            <Text $variation="600">licence etalab-2.0</Text>
             <IconLink width={18} />
           </StyledLink>
         </Text>

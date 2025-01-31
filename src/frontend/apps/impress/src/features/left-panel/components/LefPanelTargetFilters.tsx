@@ -52,6 +52,7 @@ export const LeftPanelTargetFilters = () => {
 
   return (
     <Box
+      role="tablist"
       $justify="center"
       $padding={{ horizontal: 'sm' }}
       $gap={spacing['2xs']}
@@ -61,7 +62,7 @@ export const LeftPanelTargetFilters = () => {
 
         return (
           <BoxButton
-            aria-label={query.label}
+            role="tab"
             key={query.label}
             onClick={() => onSelectQuery(query.targetQuery)}
             $direction="row"
@@ -79,6 +80,9 @@ export const LeftPanelTargetFilters = () => {
               font-weight: ${isActive ? 700 : undefined};
               &:hover {
                 background-color: ${colors['greyscale-100']};
+              }
+              &:focus {
+                outline: 2px solid #007aff;
               }
             `}
           >

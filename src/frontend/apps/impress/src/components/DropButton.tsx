@@ -56,22 +56,17 @@ export const DropButton = ({
 
   return (
     <>
-      {/* Bouton activant le menu avec les propriétés ARIA */}
-      <StyledButton
-        ref={triggerRef}
-        aria-haspopup="menu"
-        aria-expanded={isLocalOpen}
-        onPress={() => onOpenChangeHandler(true)}
-      >
+      <StyledButton ref={triggerRef} onPress={() => onOpenChangeHandler(true)}>
         <span aria-hidden="true">{button}</span>
       </StyledButton>
 
-      {/* Menu accessible */}
-      {isLocalOpen && (
-        <StyledPopover as="div" role="menu">
-          {children}
-        </StyledPopover>
-      )}
+      <StyledPopover
+        triggerRef={triggerRef}
+        isOpen={isLocalOpen}
+        onOpenChange={onOpenChangeHandler}
+      >
+        {children}
+      </StyledPopover>
     </>
   );
 };

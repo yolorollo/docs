@@ -1,3 +1,4 @@
+//import { t } from 'i18next';
 import { PropsWithChildren, useState } from 'react';
 import { css } from 'styled-components';
 
@@ -55,19 +56,16 @@ export const DropdownMenu = ({
         showArrow ? (
           <Box $direction="row" $align="center">
             <div>{children}</div>
-            <span aria-hidden="true">
-              <Icon
-                role="presentation"
-                $variation="600"
-                $css={
-                  arrowCss ??
-                  css`
-                    color: var(--c--theme--colors--primary-600);
-                  `
-                }
-                iconName={isOpen ? 'arrow_drop_up' : 'arrow_drop_down'}
-              />
-            </span>
+            <Icon
+              $variation="600"
+              $css={
+                arrowCss ??
+                css`
+                  color: var(--c--theme--colors--primary-600);
+                `
+              }
+              iconName={isOpen ? 'arrow_drop_up' : 'arrow_drop_down'}
+            />
           </Box>
         ) : (
           children
@@ -136,14 +134,12 @@ export const DropdownMenu = ({
             >
               <Box $direction="row" $align="center" $gap={spacings['base']}>
                 {option.icon && (
-                  <span aria-hidden="true">
-                    <Icon
-                      $size="20px"
-                      $theme="greyscale"
-                      $variation={isDisabled ? '400' : '1000'}
-                      iconName={option.icon}
-                    />
-                  </span>
+                  <Icon
+                    $size="20px"
+                    $theme="greyscale"
+                    $variation={isDisabled ? '400' : '1000'}
+                    iconName={option.icon}
+                  />
                 )}
                 <Text $variation={isDisabled ? '400' : '1000'}>
                   {option.label}

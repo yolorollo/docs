@@ -68,7 +68,6 @@ const Text = forwardRef<HTMLElement, ComponentPropsWithRef<typeof TextStyled>>(
       <TextStyled
         ref={ref}
         as="span"
-        aria-hidden={$isMaterialIcon ? 'true' : undefined}
         $theme="greyscale"
         $variation="text"
         className={`${className || ''}${$isMaterialIcon ? ' material-icons' : ''}`}

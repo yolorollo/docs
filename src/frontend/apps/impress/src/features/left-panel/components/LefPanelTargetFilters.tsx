@@ -81,9 +81,6 @@ export const LeftPanelTargetFilters = () => {
               &:hover {
                 background-color: ${colors['greyscale-100']};
               }
-              &:focus {
-                outline: 2px solid #007aff;
-              }
             `}
           >
             <Icon

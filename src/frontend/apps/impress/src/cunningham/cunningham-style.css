@@ -627,6 +627,9 @@ input:-webkit-autofill:focus {
 }
 
 button:focus {
-  outline: 3px solid #4D90FE; 
+  background-color: var(
+    --c--components--button--primary-text--background--color-hover
+  );
+  border-radius: var(--c--components--button--border-radius--focus);
+  box-shadow: 0 0 0 2px var(--c--theme--colors--primary-400)
 }
-

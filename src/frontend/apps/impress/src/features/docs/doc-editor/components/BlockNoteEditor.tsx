@@ -53,7 +53,7 @@ const model = createOpenAI({
   baseURL: 'https://albert.api.staging.etalab.gouv.fr/v1',
   ...blocknoteAIClient.getProviderSettings('albert-etalab'),
   compatibility: 'compatible',
-})('albert-etalab/neuralmagic/Meta-Llama-3.1-70B-Instruct-FP8');
+})('neuralmagic/Meta-Llama-3.1-70B-Instruct-FP8');
 
 // We call the model via a proxy server (see above) that has the API key,
 // but we could also call the model directly from the frontend.

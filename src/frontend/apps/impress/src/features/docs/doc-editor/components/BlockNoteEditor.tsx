@@ -134,7 +134,7 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
       },
       dictionary: {
         ...(locales[lang as keyof typeof locales] as Dictionary),
-        ai: aiLocales[lang as keyof typeof aiLocales] as unknown as Dictionary,
+        ai: aiLocales['en'] as unknown as Dictionary,
       },
       uploadFile,
     },

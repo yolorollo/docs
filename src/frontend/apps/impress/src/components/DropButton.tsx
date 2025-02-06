@@ -1,3 +1,4 @@
+import { FocusScope } from '@react-aria/focus';
 import {
   PropsWithChildren,
   ReactNode,
@@ -6,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { Button, Popover } from 'react-aria-components';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 const StyledPopover = styled(Popover)`
@@ -14,6 +16,7 @@ const StyledPopover = styled(Popover)`
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   border: 1px solid #dddddd;
   transition: opacity 0.2s ease-in-out;
+  padding: 1rem;
 `;
 
 const StyledButton = styled(Button)`
@@ -27,6 +30,10 @@ const StyledButton = styled(Button)`
   font-size: 0.938rem;
   padding: 0;
   text-wrap: nowrap;
+
+  &:focus-within {
+    outline: 2px solid #007bff;
+  }
 `;
 
 export interface DropButtonProps {
@@ -42,12 +49,16 @@ export const DropButton = ({
   onOpenChange,
   children,
 }: PropsWithChildren<DropButtonProps>) => {
+  const { t } = useTranslation();
   const [isLocalOpen, setIsLocalOpen] = useState(isOpen);
-  const triggerRef = useRef(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setIsLocalOpen(isOpen);
-  }, [isOpen]);
+    if (isLocalOpen && firstFocusableRef.current) {
+      firstFocusableRef.current.focus();
+    }
+  }, [isLocalOpen]);
 
   const onOpenChangeHandler = (isOpen: boolean) => {
     setIsLocalOpen(isOpen);
@@ -56,17 +67,33 @@ export const DropButton = ({
 
   return (
     <>
-      <StyledButton ref={triggerRef} onPress={() => onOpenChangeHandler(true)}>
+      <StyledButton
+        ref={triggerRef}
+        onPress={() => onOpenChangeHandler(true)}
+        aria-haspopup="true"
+        aria-expanded={isLocalOpen}
+        aria-label={t('Open the document options')}
+      >
         <span aria-hidden="true">{button}</span>
       </StyledButton>
 
-      <StyledPopover
-        triggerRef={triggerRef}
-        isOpen={isLocalOpen}
-        onOpenChange={onOpenChangeHandler}
-      >
-        {children}
-      </StyledPopover>
+      {isLocalOpen && (
+        <StyledPopover
+          triggerRef={triggerRef}
+          isOpen={isLocalOpen}
+          onOpenChange={onOpenChangeHandler}
+        >
+          <FocusScope contain restoreFocus>
+            {children}
+            <button
+              ref={firstFocusableRef}
+              onClick={() => setIsLocalOpen(false)}
+            >
+              {t('Close the modal')}
+            </button>
+          </FocusScope>
+        </StyledPopover>
+      )}
     </>
   );
 };

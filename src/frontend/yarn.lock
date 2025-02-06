@@ -1051,9 +1051,9 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@blocknote/core@*", "@blocknote/core@^0.21.0", "@blocknote/core@^0.23.0", "@blocknote/core@https://gitpkg.vercel.app/typecellOS/blocknote/packages/core?ai-block-built&v=2":
+"@blocknote/core@*", "@blocknote/core@^0.21.0", "@blocknote/core@^0.23.0", "@blocknote/core@https://gitpkg.vercel.app/typecellOS/blocknote/packages/core?ai-block-built&v=3":
   version "0.23.0"
-  resolved "https://gitpkg.vercel.app/typecellOS/blocknote/packages/core?ai-block-built&v=2#dc9b4de3a8076638e53b6e36e030761474c82e7f"
+  resolved "https://gitpkg.vercel.app/typecellOS/blocknote/packages/core?ai-block-built&v=3#ae8498052a2e9bf1f22042b0341f2ecd01e18ae4"
   dependencies:
     "@emoji-mart/data" "^1.2.1"
     "@tiptap/core" "^2.7.1"
@@ -1099,9 +1099,9 @@
     y-protocols "^1.0.6"
     yjs "^13.6.15"
 
-"@blocknote/mantine@*", "@blocknote/mantine@^0.23.0", "@blocknote/mantine@https://gitpkg.vercel.app/typecellOS/blocknote/packages/mantine?ai-block-built&v=2":
+"@blocknote/mantine@*", "@blocknote/mantine@^0.23.0", "@blocknote/mantine@https://gitpkg.vercel.app/typecellOS/blocknote/packages/mantine?ai-block-built&v=3":
   version "0.23.0"
-  resolved "https://gitpkg.vercel.app/typecellOS/blocknote/packages/mantine?ai-block-built&v=2#a6da07a70547d30c96e068b51997dc3e9f2e8af2"
+  resolved "https://gitpkg.vercel.app/typecellOS/blocknote/packages/mantine?ai-block-built&v=3#593a3cc2e8050488ee9fad44df13d637426e2ff4"
   dependencies:
     "@blocknote/core" "^0.23.0"
     "@blocknote/react" "^0.23.0"
@@ -1110,9 +1110,9 @@
     "@mantine/utils" "^6.0.21"
     react-icons "^5.2.1"
 
-"@blocknote/react@*", "@blocknote/react@^0.21.0", "@blocknote/react@^0.23.0", "@blocknote/react@https://gitpkg.vercel.app/typecellOS/blocknote/packages/react?ai-block-built&v=2":
+"@blocknote/react@*", "@blocknote/react@^0.21.0", "@blocknote/react@^0.23.0", "@blocknote/react@https://gitpkg.vercel.app/typecellOS/blocknote/packages/react?ai-block-built&v=3":
   version "0.23.0"
-  resolved "https://gitpkg.vercel.app/typecellOS/blocknote/packages/react?ai-block-built&v=2#e04b163b8cee1f670d07de594f66c8a6f50d4cc3"
+  resolved "https://gitpkg.vercel.app/typecellOS/blocknote/packages/react?ai-block-built&v=3#b5e0398b893c2b3eb31b83a1ab1808f7819c0603"
   dependencies:
     "@blocknote/core" "^0.23.0"
     "@floating-ui/react" "^0.26.4"
@@ -1135,9 +1135,9 @@
     y-protocols "^1.0.6"
     yjs "^13.6.15"
 
-"@blocknote/xl-ai@*", "@blocknote/xl-ai@https://gitpkg.vercel.app/typecellOS/blocknote/packages/xl-ai?ai-block-built&v=2":
+"@blocknote/xl-ai@*", "@blocknote/xl-ai@https://gitpkg.vercel.app/typecellOS/blocknote/packages/xl-ai?ai-block-built&v=3":
   version "0.23.0"
-  resolved "https://gitpkg.vercel.app/typecellOS/blocknote/packages/xl-ai?ai-block-built&v=2#d67f8825d62760583bb23dc92358094f7923be10"
+  resolved "https://gitpkg.vercel.app/typecellOS/blocknote/packages/xl-ai?ai-block-built&v=3#bc0d5d85e802992dc0220b2e7e9941a6f2591312"
   dependencies:
     "@ai-sdk/groq" "^1.1.0"
     "@ai-sdk/openai" "^1.1.0"

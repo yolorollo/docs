@@ -27,6 +27,36 @@ const cssEditor = (readonly: boolean) => css`
   & .ProseMirror {
     height: 100%;
 
+    .collaboration-cursor__label2 {
+      color: #0d0d0d;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      position: absolute;
+      transform: translate(0%, -17px);
+      background-color: #e2b1f2;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      height: 37px;
+      color: black;
+      transition: opacity 0.2s ease-in-out;
+      clip-path: polygon(
+        0% 0%,
+        100% 0%,
+        100% 50%,
+        50% 50%,
+        5% 50%,
+        0 100%,
+        0% 75%
+      );
+    }
+
     .bn-side-menu[data-block-type='heading'][data-level='1'] {
       height: 50px;
     }
@@ -149,19 +179,23 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
             return cursor;
           }
 
-          cursor.classList.add('collaboration-cursor__caret');
-          cursor.setAttribute('style', `border-color: ${user.color}`);
+          cursor.classList.add('collaboration-cursor__caret-new-empty');
+          cursor.setAttribute('spellcheck', `false`);
 
           const label = document.createElement('span');
 
-          label.classList.add('collaboration-cursor__label');
+          label.classList.add('collaboration-cursor__label2');
+          label.setAttribute('spellcheck', `false`);
           label.setAttribute('style', `background-color: ${user.color}`);
           label.insertBefore(document.createTextNode(user.name), null);
 
+          cursor.insertBefore(document.createTextNode('\u2060'), null); // Non-breaking space
           cursor.insertBefore(label, null);
+          cursor.insertBefore(document.createTextNode('\u2060'), null); // Non-breaking space
 
           return cursor;
         },
+        showCursorLabels: 'activity',
       },
       dictionary: locales[lang as keyof typeof locales] as Dictionary,
       uploadFile,

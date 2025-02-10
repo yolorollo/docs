@@ -11,7 +11,7 @@ export const cssEditor = (readonly: boolean) => css`
     }
     .collaboration-cursor-custom__caret {
       position: absolute;
-      height: 85%;
+      height: 100%;
       width: 2px;
       bottom: 4%;
       left: -1px;

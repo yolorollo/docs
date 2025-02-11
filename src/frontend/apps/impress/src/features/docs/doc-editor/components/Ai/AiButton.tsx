@@ -1,7 +1,6 @@
-import { Button, Input, Loader, TextArea } from '@openfun/cunningham-react';
+import { Button, Input, Loader } from '@openfun/cunningham-react';
 import { marked } from 'marked';
 import { useState } from 'react';
-import { ButtonProps } from 'react-aria-components';
 import styled from 'styled-components';
 
 import { fetchAPI } from '@/api';
@@ -49,7 +48,7 @@ export const SuggestionButton = styled.button`
 `;
 
 export const AiButton = ({ doc }: { doc: Doc }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -65,7 +64,7 @@ export const AiButton = ({ doc }: { doc: Doc }) => {
         `}
       >
         <AIButtonEl
-          aria-label="Ask anything to our AI"
+          aria-label="Posez une question à Albert à propos de ce document"
           onClick={() => setIsOpen(true)}
         />
       </Box>
@@ -90,21 +89,15 @@ const AiChat = (props: { isOpen: boolean; onClose: () => void; doc: Doc }) => {
     return null;
   }
 
-  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const newPrompt = async (prompt: string) => {
     if (!editor) {
       return;
     }
 
     setIsLoading(true);
     setMessages([...messages, { role: 'user', content: prompt }]);
-    setPrompt(''); // Clear the prompt after submitting the form
 
     const editorContentFormatted = await editor.blocksToMarkdownLossy();
-
-    console.log('submit', e, prompt);
-    console.log('editorContentFormatted', editorContentFormatted);
 
     const response = await fetchAPI(`documents/${props.doc.id}/ai-proxy/`, {
       method: 'POST',
@@ -116,7 +109,7 @@ const AiChat = (props: { isOpen: boolean; onClose: () => void; doc: Doc }) => {
       }),
     });
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data = await response.json();
+    const data = (await response.json()) as string;
 
     console.log('response', data);
     setMessages((messages) => [
@@ -124,6 +117,12 @@ const AiChat = (props: { isOpen: boolean; onClose: () => void; doc: Doc }) => {
       { role: 'assistant', content: data },
     ]);
     setIsLoading(false);
+  };
+
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPrompt(''); // Clear the prompt after submitting the form
+    await newPrompt(prompt);
   };
 
   return (
@@ -179,13 +178,23 @@ const AiChat = (props: { isOpen: boolean; onClose: () => void; doc: Doc }) => {
               Suggestions
             </Text>
             <Box>
-              <SuggestionButton>
+              <SuggestionButton
+                onClick={() =>
+                  void newPrompt(
+                    'Resume ce document sous forme textuelle uniquement',
+                  )
+                }
+              >
                 <span className="material-icons">description</span>
                 Résumer <span className="sub">cette page</span>
               </SuggestionButton>
-              <SuggestionButton>
+              <SuggestionButton
+                onClick={() =>
+                  void newPrompt('Quel est le sujet principal de ce document ?')
+                }
+              >
                 <span className="material-icons">help_center</span>
-                Poser des questions <span className="sub">surcette page</span>
+                Poser des questions <span className="sub">sur cette page</span>
               </SuggestionButton>
             </Box>
           </Box>
@@ -201,37 +210,16 @@ const AiChat = (props: { isOpen: boolean; onClose: () => void; doc: Doc }) => {
           mask-image: linear-gradient(black calc(100% - 32px), transparent calc(100% - 4px));
           padding-bottom: 32px;
 `}
+        aria-live="polite"
       >
-        {messages.map((message, index) => {
-          if (message.role === 'user') {
-            return (
-              <Box
-                key={index}
-                $css={`
-                border-radius: 16px;
-                padding: 6px 14px;
-                background-color: rgba(55, 53, 47, 0.04);
-                ${message.role === 'user' ? 'margin-left: auto;' : ''}
-              `}
-              >
-                {message.content}
-              </Box>
-            );
-          }
-          return (
-            <Box
-              key={index}
-              dangerouslySetInnerHTML={{
-                __html: marked.parse(message.content),
-              }}
-            ></Box>
-          );
-        })}
+        {messages.map((message, index) => (
+          <Message key={index} message={message} />
+        ))}
 
         {(isLoading || false) && (
           <Box $display="flex" $direction="row" $align="center" $gap="0.5rem">
             <Loader size="small" />
-            Thinking ...
+            Albert réfléchit ...
           </Box>
         )}
       </Box>
@@ -248,6 +236,65 @@ const AiChat = (props: { isOpen: boolean; onClose: () => void; doc: Doc }) => {
           />
         </form>
       </Box>
+    </Box>
+  );
+};
+
+const Message = ({ message }: { message: Message }) => {
+  return (
+    <Box>
+      <Box $direction="row" $align="center" $gap="0.5rem">
+        {message.role === 'user' ? (
+          <Box
+            aria-hidden={true}
+            $css={`
+            background-color:#417DC4;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 10px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            `}
+          >
+            VD
+          </Box>
+        ) : (
+          <Box
+            aria-hidden={true}
+            $css={`
+                background-image: url('/assets/ia_baguette.png');
+                background-size: cover;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: none;
+                cursor: pointer;
+                `}
+          ></Box>
+        )}
+        <Text $weight="bold">
+          {message.role === 'user' ? 'Vous' : 'Albert'}
+        </Text>
+      </Box>
+      <Box
+        $css={`
+            font-size: 12px;
+            padding-left: 34px;
+            color: var(--c--theme--colors--greyscale-700);
+
+            p {
+                margin: 0;
+            }
+            `}
+        dangerouslySetInnerHTML={{
+          __html: marked.parse(message.content) as string,
+        }}
+      ></Box>
     </Box>
   );
 };

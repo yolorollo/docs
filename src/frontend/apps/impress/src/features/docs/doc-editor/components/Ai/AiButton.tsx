@@ -1,5 +1,6 @@
 import { Button, Input, Loader } from '@openfun/cunningham-react';
 import { marked } from 'marked';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -48,7 +49,9 @@ export const SuggestionButton = styled.button`
 `;
 
 export const AiButton = ({ doc }: { doc: Doc }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const searchParams = useSearchParams();
+
+  const [isOpen, setIsOpen] = useState(searchParams.get('albert') === 'true');
 
   return (
     <>

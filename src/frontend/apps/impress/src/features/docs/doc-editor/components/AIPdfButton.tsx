@@ -3,8 +3,13 @@ import {
   useComponentsContext,
   useSelectedBlocks,
 } from '@blocknote/react';
-import { VariantType, useToastProvider } from '@openfun/cunningham-react';
+import {
+  Loader,
+  VariantType,
+  useToastProvider,
+} from '@openfun/cunningham-react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Text } from '@/components';
@@ -21,6 +26,7 @@ export const AIPdfButton = () => {
   const { toast } = useToastProvider();
   const router = useRouter();
   const { mutateAsync: requestAIPdf, isPending } = useDocAIPdfTranscribe();
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!Components || !currentDoc) {
     return null;
@@ -42,13 +48,19 @@ export const AIPdfButton = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
       const response = await requestAIPdf({
         docId: currentDoc.id,
         pdfUrl,
       });
 
-      void router.push(`/docs/${response.document_id}`);
+      setTimeout(() => {
+        // router.push causes the following error:
+        // TypeError: Cannot read properties of undefined (reading 'isDestroyed')
+        // void router.push(`/docs/${response.document_id}`);
+        window.location.href = `/docs/${response.document_id}?albert=true`;
+      }, 1000);
     } catch (error) {
       console.error('error', error);
       toast(t('Failed to transcribe PDF'), VariantType.ERROR);
@@ -62,9 +74,13 @@ export const AIPdfButton = () => {
       label="AI"
       mainTooltip={t('Transcribe PDF')}
       icon={
-        <Text $isMaterialIcon $size="l">
-          auto_awesome
-        </Text>
+        isLoading ? (
+          <Loader size="small" />
+        ) : (
+          <Text $isMaterialIcon $size="l">
+            auto_awesome
+          </Text>
+        )
       }
       onClick={() => void handlePdfTranscription()}
     />

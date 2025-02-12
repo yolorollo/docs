@@ -1142,6 +1142,32 @@ class DocumentViewSet(
 
         return drf.response.Response(response, status=drf.status.HTTP_200_OK)
 
+    @drf.decorators.action(
+        detail=True,
+        methods=["post"],
+        name="Transcribe PDF with AI",
+        url_path="ai-pdf-transcribe",
+        throttle_classes=[utils.AIDocumentRateThrottle, utils.AIUserRateThrottle],
+    )
+    def ai_pdf_transcribe(self, request, *args, **kwargs):
+        """
+        POST /api/v1.0/documents/<resource_id>/ai-pdf-transcribe
+        with expected data:
+        - pdfUrl: str
+        Return JSON response with the new document ID containing the transcription.
+        """
+        serializer = serializers.AIPdfTranscribeSerializer(
+            data=request.data,
+            user=request.user
+        )
+        serializer.is_valid(raise_exception=True)
+        document = serializer.save()
+        
+        return drf.response.Response(
+            {"document_id": str(document.id)}, 
+            status=drf.status.HTTP_201_CREATED
+        )
+
 
 class DocumentAccessViewSet(
     ResourceAccessViewsetMixin,

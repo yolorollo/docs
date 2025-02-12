@@ -16,6 +16,7 @@ from core.services.converter_services import (
     ConversionError,
     YdocConverter,
 )
+from core.services.ai_services import AIService
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -306,7 +307,7 @@ class ServerCreateDocumentSerializer(serializers.Serializer):
         if user:
             email = user.email
             language = user.language or language
-
+        
         try:
             document_content = YdocConverter().convert_markdown(
                 validated_data["content"]
@@ -568,6 +569,56 @@ class AITranslateSerializer(serializers.Serializer):
         if len(value.strip()) == 0:
             raise serializers.ValidationError("Text field cannot be empty.")
         return value
+    
+
+class AIPdfTranscribeSerializer(serializers.Serializer):
+    """Serializer for AI PDF transcribe requests."""
+
+    pdfUrl = serializers.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        """Initialize with user."""
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def validate_pdfUrl(self, value):
+        """Ensure the pdfUrl field is a valid URL."""
+        if not value.startswith(settings.MEDIA_BASE_URL):
+            raise serializers.ValidationError("Invalid PDF URL format.")
+        return value
+
+    def create(self, validated_data):
+        """Create a new document for the transcribed content."""
+        if not self.user:
+            raise serializers.ValidationError("User is required")
+        
+        # Get the transcribed content from AI service
+        pdf_url = validated_data["pdfUrl"]
+        response = AIService().transcribe_pdf(pdf_url)
+        
+        try:
+            # Convert the markdown content to YDoc format
+            document_content = YdocConverter().convert_markdown(response)
+        except ConversionError as err:
+            raise serializers.ValidationError(
+                {"content": [f"Could not convert transcribed content: {str(err)}"]}
+            ) from err
+
+        # Create the document as root node with converted content
+        document = models.Document.add_root(
+            title="PDF Transcription", 
+            content=document_content,
+            creator=self.user,
+        )
+
+        # Create owner access for the user
+        models.DocumentAccess.objects.create(
+            document=document,
+            role=models.RoleChoices.OWNER,
+            user=self.user,
+        )
+
+        return document
 
 
 class MoveDocumentSerializer(serializers.Serializer):

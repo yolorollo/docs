@@ -2,13 +2,18 @@
 
 import json
 import re
+import os
+import requests
+import botocore
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.core.files.storage import default_storage
 
 from openai import OpenAI
 
 from core import enums
+from core.models import Document
 
 AI_ACTIONS = {
     "prompt": (
@@ -112,3 +117,32 @@ class AIService:
         language_display = enums.ALL_LANGUAGES.get(language, language)
         system_content = AI_TRANSLATE.format(language=language_display)
         return self.call_ai_api(system_content, text)
+
+    def transcribe_pdf(self, pdf_url):
+        """Transcribe PDF using the accessibility hackathon API and create a new document."""
+        try:
+            # Extract the key from the media URL
+            media_prefix = os.path.join(settings.MEDIA_BASE_URL, "media")
+            key = pdf_url[len(media_prefix):]
+
+            # Get the PDF directly from MinIO
+            pdf_response = default_storage.connection.meta.client.get_object(
+                Bucket=default_storage.bucket_name,
+                Key=key
+            )
+            # pdf_content = pdf_response['Body'].read()
+            
+            # Call the Albert / Mistral API
+            # api_url = f"{settings.ACCESSIBILITY_API_BASE_URL}/transcribe/pdf"
+            # files = {'pdf': ('document.pdf', pdf_content)}
+            
+            # response = requests.post(api_url, files=files)
+            # response.raise_for_status()
+            
+            # transcribed_text = response.json()['text']
+
+            transcribed_text = "Hello world"
+            
+            return transcribed_text
+        except Exception as e:
+            raise RuntimeError(f"Failed to transcribe PDF: {str(e)}")

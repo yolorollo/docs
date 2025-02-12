@@ -10,6 +10,10 @@ LOGGING_LEVEL_HANDLERS_CONSOLE=INFO
 LOGGING_LEVEL_LOGGERS_ROOT=INFO
 LOGGING_LEVEL_LOGGERS_APP=INFO
 
+# Y-Provider
+Y_PROVIDER_API_KEY="yprovider-api-key" 
+Y_PROVIDER_API_BASE_URL=http://y-provider:4444/api/
+
 # Python
 PYTHONPATH=/app
 
@@ -53,6 +57,9 @@ OIDC_AUTH_REQUEST_EXTRA_PARAMS={"acr_values": "eidas1"}
 AI_BASE_URL=https://openaiendpoint.com
 AI_API_KEY=password
 AI_MODEL=llama
+
+# Accessibility API
+ACCESSIBILITY_API_BASE_URL=https://localhost:8000
 
 # Collaboration
 COLLABORATION_API_URL=http://nginx:8083/collaboration/api/

@@ -10,6 +10,7 @@ and this project adheres to
 
 ## Added
 
+- ✨(backend) allow forcing page size within limits
 - 💄(frontend) add error pages #643
 
 ## Changed

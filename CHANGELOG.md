@@ -10,7 +10,8 @@ and this project adheres to
 
 ## Added
 
-- ✨(backend) allow forcing page size within limits
+- ✨(backend) new "tree" action on document detail endpoint #645
+- ✨(backend) allow forcing page size within limits #645
 - 💄(frontend) add error pages #643
 
 ## Changed

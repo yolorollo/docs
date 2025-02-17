@@ -24,6 +24,7 @@ and this project adheres to
 ## Fixed
 
 - ♻️(frontend) improve table pdf rendering
+- 🐛(backend) refactor to fix filtering on children and descendants views #645
 
 ## [2.2.0] - 2025-02-10
 

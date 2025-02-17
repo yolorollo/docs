@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    document.documentElement.lang = i18n.language || 'fr';
+    document.documentElement.lang = i18n.language;
 
     console.log(
       `%c

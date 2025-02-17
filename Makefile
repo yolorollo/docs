@@ -44,7 +44,6 @@ COMPOSE_EXEC_APP    = $(COMPOSE_EXEC) app-dev
 COMPOSE_RUN         = $(COMPOSE) run --rm
 COMPOSE_RUN_APP     = $(COMPOSE_RUN) app-dev
 COMPOSE_RUN_CROWDIN = $(COMPOSE_RUN) crowdin crowdin
-WAIT_DB             = @$(COMPOSE_RUN) dockerize -wait tcp://$(DB_HOST):$(DB_PORT) -timeout 60s
 
 # -- Backend
 MANAGE              = $(COMPOSE_RUN_APP) python manage.py
@@ -81,12 +80,12 @@ bootstrap: \
 	data/static \
 	create-env-files \
 	build \
-	run-with-frontend \
 	migrate \
 	demo \
 	back-i18n-compile \
 	mails-install \
-	mails-build
+	mails-build \
+	run
 .PHONY: bootstrap
 
 # -- Docker/compose
@@ -109,7 +108,7 @@ build-yjs-provider: ## build the y-provider container
 
 build-frontend: cache ?=
 build-frontend: ## build the frontend container
-	@$(COMPOSE) build frontend-dev $(cache)
+	@$(COMPOSE) build frontend $(cache)
 .PHONY: build-frontend
 
 down: ## stop and remove containers, networks, images, and volumes
@@ -120,18 +119,17 @@ logs: ## display app-dev logs (follow mode)
 	@$(COMPOSE) logs -f app-dev
 .PHONY: logs
 
-run: ## start the wsgi (production) and development server
+run-backend: ## Start only the backend application and all needed services
 	@$(COMPOSE) up --force-recreate -d celery-dev
 	@$(COMPOSE) up --force-recreate -d y-provider
 	@$(COMPOSE) up --force-recreate -d nginx
-	@echo "Wait for postgresql to be up..."
-	@$(WAIT_DB)
-.PHONY: run
+.PHONY: run-backend
 
-run-with-frontend: ## Start all the containers needed (backend to frontend)
-	@$(MAKE) run
-	@$(COMPOSE) up --force-recreate -d frontend-dev
-.PHONY: run-with-frontend
+run: ## start the wsgi (production) and development server
+run: 
+	@$(MAKE) run-backend
+	@$(COMPOSE) up --force-recreate -d frontend
+.PHONY: run
 
 status: ## an alias for "docker compose ps"
 	@$(COMPOSE) ps
@@ -188,14 +186,12 @@ test-back-parallel: ## run all back-end tests in parallel
 makemigrations:  ## run django makemigrations for the impress project.
 	@echo "$(BOLD)Running makemigrations$(RESET)"
 	@$(COMPOSE) up -d postgresql
-	@$(WAIT_DB)
 	@$(MANAGE) makemigrations
 .PHONY: makemigrations
 
 migrate:  ## run django migrations for the impress project.
 	@echo "$(BOLD)Running migrations$(RESET)"
 	@$(COMPOSE) up -d postgresql
-	@$(WAIT_DB)
 	@$(MANAGE) migrate
 .PHONY: migrate
 
@@ -310,16 +306,16 @@ help:
 .PHONY: help
 
 # Front
-frontend-install: ## install the frontend locally
+frontend-development-install: ## install the frontend locally
 	cd $(PATH_FRONT_IMPRESS) && yarn
-.PHONY: frontend-install
+.PHONY: frontend-development-install
 
 frontend-lint: ## run the frontend linter
 	cd $(PATH_FRONT) && yarn lint
 .PHONY: frontend-lint
 
 run-frontend-development: ## Run the frontend in development mode
-	@$(COMPOSE) stop frontend-dev
+	@$(COMPOSE) stop frontend
 	cd $(PATH_FRONT_IMPRESS) && yarn dev
 .PHONY: run-frontend-development
 

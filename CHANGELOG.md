@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Changed
+
+- 📝(doc) minor README.md formatting and wording enhancements
+- ♻️Stop setting a default title on doc creation #634
+
+
 ## [2.2.0] - 2025-02-10
 
 ## Added

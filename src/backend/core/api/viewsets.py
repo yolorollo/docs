@@ -773,22 +773,18 @@ class DocumentViewSet(
         methods=["get"],
         ordering=["path"],
     )
-    def tree(self, request, *args, **kwargs):
+    def tree(self, request, pk, *args, **kwargs):
         """
         List ancestors tree above the document.
         What we need to display is the tree structure opened for the current document.
         """
-        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-        filter_kwargs = {self.lookup_field: self.kwargs[lookup_url_kwarg]}
-        current_document = (
-            self.queryset.filter(**filter_kwargs).only("depth", "path").first()
-        )
-
-        if current_document is None:
-            raise Http404
+        try:
+            current_document = self.queryset.only("depth", "path").get(pk=pk)
+        except models.Document.DoesNotExist as excpt:
+            raise drf.exceptions.NotFound from excpt
 
         ancestors = (
-            (current_document.get_ancestors() | self.queryset.filter(**filter_kwargs))
+            (current_document.get_ancestors() | self.queryset.filter(pk=pk))
             .filter(ancestors_deleted_at__isnull=True)
             .order_by("path")
         )
@@ -830,8 +826,9 @@ class DocumentViewSet(
                 "ancestors_links_definitions": ancestors_links_definitions,
             },
         )
-
-        return drf.response.Response(serializer.data)
+        return drf.response.Response(
+            utils.nest_tree(serializer.data, self.queryset.model.steplen)
+        )
 
     @drf.decorators.action(detail=True, methods=["get"], url_path="versions")
     def versions_list(self, request, *args, **kwargs):

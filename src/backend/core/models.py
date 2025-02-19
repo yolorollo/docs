@@ -29,7 +29,7 @@ from django.utils.translation import gettext_lazy as _
 from botocore.exceptions import ClientError
 from rest_framework.exceptions import ValidationError
 from timezone_field import TimeZoneField
-from treebeard.mp_tree import MP_Node
+from treebeard.mp_tree import MP_Node, MP_NodeManager, MP_NodeQuerySet
 
 logger = getLogger(__name__)
 
@@ -367,7 +367,7 @@ class BaseAccess(BaseModel):
         }
 
 
-class DocumentQuerySet(models.QuerySet):
+class DocumentQuerySet(MP_NodeQuerySet):
     """
     Custom queryset for the Document model, providing additional methods
     to filter documents based on user permissions.
@@ -387,10 +387,10 @@ class DocumentQuerySet(models.QuerySet):
                 | ~models.Q(link_reach=LinkReachChoices.RESTRICTED)
             )
 
-        return self.filter(models.Q(link_reach=LinkReachChoices.PUBLIC))
+        return self.filter(link_reach=LinkReachChoices.PUBLIC)
 
 
-class DocumentManager(models.Manager):
+class DocumentManager(MP_NodeManager):
     """
     Custom manager for the Document model, enabling the use of the custom
     queryset methods directly from the model manager.
@@ -619,7 +619,11 @@ class Document(MP_Node, BaseModel):
     def invalidate_nb_accesses_cache(self):
         """
         Invalidate the cache for number of accesses, including on affected descendants.
+        Args:
+            path: can optionally be passed as argument (useful when invalidating cache for a
+                document we just deleted)
         """
+
         for document in Document.objects.filter(path__startswith=self.path).only("id"):
             cache_key = document.get_nb_accesses_cache_key()
             cache.delete(cache_key)

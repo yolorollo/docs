@@ -82,7 +82,7 @@ ingressCollaborationWS:
   ## @param ingressCollaborationWS.annotations.nginx.ingress.kubernetes.io/proxy-send-timeout
   ## @param ingressCollaborationWS.annotations.nginx.ingress.kubernetes.io/upstream-hash-by
   annotations:
-    nginx.ingress.kubernetes.io/auth-cache-key: "$http_authorization"
+    nginx.ingress.kubernetes.io/auth-cache-key: "$http_authorization-$arg_room"
     nginx.ingress.kubernetes.io/auth-cache-duration: 200 30s
     nginx.ingress.kubernetes.io/auth-response-headers: "Authorization, X-Can-Edit, X-User-Id"
     nginx.ingress.kubernetes.io/auth-snippet: |

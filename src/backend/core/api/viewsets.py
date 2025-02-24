@@ -637,6 +637,7 @@ class DocumentViewSet(
         permission_classes=[],
         url_path="create-for-owner",
     )
+    @transaction.atomic
     def create_for_owner(self, request):
         """
         Create a document on behalf of a specified owner (pre-existing user or invited).

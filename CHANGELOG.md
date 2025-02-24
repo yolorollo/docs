@@ -8,11 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Added
+
+- 💄(frontend) add error pages #643
+
 ## Changed
 
 - 🛂(frontend) Restore version visibility #629
 - 📝(doc) minor README.md formatting and wording enhancements
 - ♻️Stop setting a default title on doc creation #634
+- ♻️(frontend) misc ui improvements #644
 
 ## Fixed
 

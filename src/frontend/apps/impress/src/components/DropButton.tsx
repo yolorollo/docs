@@ -8,17 +8,20 @@ import {
 import { Button, Popover } from 'react-aria-components';
 import styled from 'styled-components';
 
+import { BoxProps } from './Box';
+
 const StyledPopover = styled(Popover)`
   background-color: white;
   border-radius: 4px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-
   border: 1px solid #dddddd;
-
   transition: opacity 0.2s ease-in-out;
 `;
 
-const StyledButton = styled(Button)`
+interface StyledButtonProps {
+  $css?: BoxProps['$css'];
+}
+const StyledButton = styled(Button)<StyledButtonProps>`
   cursor: pointer;
   border: none;
   background: none;
@@ -32,10 +35,12 @@ const StyledButton = styled(Button)`
   &:focus-within {
     outline: 2px solid #007bff;
   }
+  ${({ $css }) => $css};
 `;
 
 export interface DropButtonProps {
   button: ReactNode;
+  buttonCss?: BoxProps['$css'];
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   label?: string;
@@ -43,6 +48,7 @@ export interface DropButtonProps {
 
 export const DropButton = ({
   button,
+  buttonCss,
   isOpen = false,
   onOpenChange,
   children,
@@ -70,6 +76,7 @@ export const DropButton = ({
         ref={triggerRef}
         onPress={() => onOpenChangeHandler(true)}
         aria-label={label}
+        $css={buttonCss}
       >
         {button}
       </StyledButton>

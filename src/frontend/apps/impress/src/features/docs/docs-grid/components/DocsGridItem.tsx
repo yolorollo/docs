@@ -57,6 +57,7 @@ export const DocsGridItem = ({ doc }: DocsGridItemProps) => {
             &:focus {
               outline: 2px solidrgb(33, 34, 82);
             }
+            min-width: 0;
           `}
           href={`/docs/${doc.id}`}
         >
@@ -67,6 +68,7 @@ export const DocsGridItem = ({ doc }: DocsGridItemProps) => {
             $gap={spacings.xs}
             $flex={flexLeft}
             $padding={{ right: isDesktop ? 'md' : '3xs' }}
+            $maxWidth="100%"
           >
             <SimpleDocItem isPinned={doc.is_favorite} doc={doc} />
             {showAccesses && (

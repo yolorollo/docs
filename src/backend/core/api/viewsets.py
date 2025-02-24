@@ -641,6 +641,12 @@ class DocumentViewSet(
         """
         Create a document on behalf of a specified owner (pre-existing user or invited).
         """
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f'LOCK TABLE "{models.Document._meta.db_table}" '  # noqa: SLF001
+                "IN SHARE ROW EXCLUSIVE MODE;"
+            )
+
         # Deserialize and validate the data
         serializer = serializers.ServerCreateDocumentSerializer(data=request.data)
         if not serializer.is_valid():
@@ -747,7 +753,11 @@ class DocumentViewSet(
             serializer.is_valid(raise_exception=True)
 
             with transaction.atomic():
-                child_document = document.add_child(
+                locked_parent = models.Document.objects.select_for_update().get(
+                    pk=document.pk
+                )
+
+                child_document = locked_parent.add_child(
                     creator=request.user,
                     **serializer.validated_data,
                 )

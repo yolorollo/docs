@@ -57,7 +57,7 @@ export const LanguagePicker = () => {
           >
             translate
           </Text>
-          <Text $theme="primary" $weight="500" $variation="800">
+          <Text $theme="primary" $weight="500" $variation="800" lang={lang}>
             {LANGUAGES_ALLOWED[lang]}
           </Text>
         </Box>

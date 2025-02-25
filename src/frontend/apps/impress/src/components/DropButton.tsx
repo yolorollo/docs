@@ -32,9 +32,6 @@ const StyledButton = styled(Button)<StyledButtonProps>`
   font-size: 0.938rem;
   padding: 0;
   text-wrap: nowrap;
-  &:focus-within {
-    outline: 2px solid #007bff;
-  }
   ${({ $css }) => $css};
 `;
 

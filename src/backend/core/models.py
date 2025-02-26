@@ -652,19 +652,38 @@ class Document(MP_Node, BaseModel):
         """Generate a unique cache key for each document."""
         return f"document_{self.id!s}_nb_accesses"
 
-    @property
-    def nb_accesses(self):
-        """Calculate the number of accesses."""
+    def get_nb_accesses(self):
+        """
+        Calculate the number of accesses:
+        - directly attached to the document
+        - attached to any of the document's ancestors
+        """
         cache_key = self.get_nb_accesses_cache_key()
         nb_accesses = cache.get(cache_key)
 
         if nb_accesses is None:
-            nb_accesses = DocumentAccess.objects.filter(
-                document__path=Left(models.Value(self.path), Length("document__path")),
-            ).count()
+            nb_accesses = (
+                DocumentAccess.objects.filter(document=self).count(),
+                DocumentAccess.objects.filter(
+                    document__path=Left(
+                        models.Value(self.path), Length("document__path")
+                    ),
+                    document__ancestors_deleted_at__isnull=True,
+                ).count(),
+            )
             cache.set(cache_key, nb_accesses)
 
         return nb_accesses
+
+    @property
+    def nb_accesses_direct(self):
+        """Returns the number of accesses related to the document or one of its ancestors."""
+        return self.get_nb_accesses()[0]
+
+    @property
+    def nb_accesses_ancestors(self):
+        """Returns the number of accesses related to the document or one of its ancestors."""
+        return self.get_nb_accesses()[1]
 
     def invalidate_nb_accesses_cache(self):
         """
@@ -848,6 +867,11 @@ class Document(MP_Node, BaseModel):
 
         self.send_email(subject, [email], context, language)
 
+    def delete(self, *args, **kwargs):
+        """Invalidate cache for number of accesses when deleting a document."""
+        super().delete(*args, **kwargs)
+        self.invalidate_nb_accesses_cache()
+
     @transaction.atomic
     def soft_delete(self):
         """
@@ -867,6 +891,7 @@ class Document(MP_Node, BaseModel):
 
         self.ancestors_deleted_at = self.deleted_at = timezone.now()
         self.save()
+        self.invalidate_nb_accesses_cache()
 
         # Mark all descendants as soft deleted
         self.get_descendants().filter(ancestors_deleted_at__isnull=True).update(
@@ -902,6 +927,7 @@ class Document(MP_Node, BaseModel):
         )
         self.ancestors_deleted_at = min(ancestors_deleted_at, default=None)
         self.save()
+        self.invalidate_nb_accesses_cache()
 
         # Update descendants excluding those who were deleted prior to the deletion of the
         # current document (the ancestor_deleted_at date for those should already by good)

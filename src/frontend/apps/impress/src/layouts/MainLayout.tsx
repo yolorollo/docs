@@ -20,9 +20,7 @@ const calculateDefaultSize = (targetWidth: number, isDesktop: boolean) => {
     return 0;
   }
   const windowWidth = window.innerWidth;
-  console.log('windowWidth', windowWidth);
   return (targetWidth / windowWidth) * 100;
-  // On limite le pourcentage entre 20 et 40 pour éviter des panneaux trop petits ou trop grands
 };
 
 export function MainLayout({
@@ -83,7 +81,12 @@ export function MainLayout({
           >
             <LeftPanel />
           </Panel>
-          <PanelResizeHandle />
+          <PanelResizeHandle
+            style={{
+              width: '1px',
+              backgroundColor: colors['greyscale-200'],
+            }}
+          />
           <Panel>
             <Box
               as="main"

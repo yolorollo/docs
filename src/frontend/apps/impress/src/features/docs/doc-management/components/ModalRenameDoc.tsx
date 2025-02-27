@@ -1,9 +1,11 @@
-import { Button, Modal, ModalSize } from '@openfun/cunningham-react';
+import { Button, Input, Modal, ModalSize } from '@openfun/cunningham-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Box, Text } from '@/components';
+import { useTreeStore } from '@/components/common/tree/treeStore';
 
+import { useUpdateDoc } from '../api';
 import { Doc } from '../types';
 
 interface ModalRenameDocProps {
@@ -13,7 +15,25 @@ interface ModalRenameDocProps {
 
 export const ModalRenameDoc = ({ onClose, doc }: ModalRenameDocProps) => {
   const { t } = useTranslation();
+  const { updateNode } = useTreeStore();
+  const { mutate: updateDoc } = useUpdateDoc();
   const [title, setTitle] = useState(doc.title);
+
+  const onRename = () => {
+    updateDoc(
+      {
+        id: doc.id,
+        title,
+      },
+      {
+        onSuccess: (doc) => {
+          updateNode(doc.id, doc);
+          onClose();
+        },
+      },
+    );
+  };
+
   return (
     <Modal
       closeOnClickOutside
@@ -35,27 +55,28 @@ export const ModalRenameDoc = ({ onClose, doc }: ModalRenameDocProps) => {
           >
             {t('Cancel')}
           </Button>
-          <Button
-            aria-label={t('Confirm rename')}
-            fullWidth
-            onClick={() => console.log('rename', title)}
-          >
+          <Button aria-label={t('Confirm rename')} fullWidth onClick={onRename}>
             {t('Rename')}
           </Button>
         </>
       }
     >
       <Box $padding={{ top: 'base' }}>
-        <input
+        <Input
           onClick={(e) => {
             e.stopPropagation();
-            e.preventDefault();
           }}
-          defaultValue={title}
-          //   label={t('Nom du document')}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === 'Enter') {
+              onRename();
+            }
+          }}
+          value={title}
+          label={t('Document name')}
           onChange={(e) => {
             e.stopPropagation();
-            e.preventDefault();
+
             setTitle(e.target.value);
           }}
         />

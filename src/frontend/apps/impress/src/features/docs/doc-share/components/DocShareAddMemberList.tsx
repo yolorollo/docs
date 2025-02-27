@@ -9,6 +9,7 @@ import { css } from 'styled-components';
 
 import { APIError } from '@/api';
 import { Box } from '@/components';
+import { useTreeStore } from '@/components/common/tree/treeStore';
 import { useCunninghamTheme } from '@/cunningham';
 import { User } from '@/features/auth';
 import { Doc, Role } from '@/features/docs';
@@ -39,6 +40,7 @@ export const DocShareAddMemberList = ({
   afterInvite,
 }: Props) => {
   const { t } = useTranslation();
+  const { refreshNode } = useTreeStore();
   const { toast } = useToastProvider();
   const [isLoading, setIsLoading] = useState(false);
   const { spacingsTokens, colorsTokens } = useCunninghamTheme();
@@ -94,14 +96,24 @@ export const DocShareAddMemberList = ({
       };
 
       return isInvitationMode
-        ? createInvitation({
-            ...payload,
-            email: user.email,
-          })
-        : createDocAccess({
-            ...payload,
-            memberId: user.id,
-          });
+        ? createInvitation(
+            {
+              ...payload,
+              email: user.email,
+            },
+            {
+              onSuccess: () => refreshNode(doc.id),
+            },
+          )
+        : createDocAccess(
+            {
+              ...payload,
+              memberId: user.id,
+            },
+            {
+              onSuccess: () => refreshNode(doc.id),
+            },
+          );
     });
 
     const settledPromises = await Promise.allSettled(promises);

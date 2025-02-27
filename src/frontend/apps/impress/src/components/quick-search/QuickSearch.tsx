@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Command } from 'cmdk';
 import { ReactNode, useRef } from 'react';
 
@@ -48,7 +49,12 @@ export const QuickSearch = ({
   return (
     <>
       <QuickSearchStyle />
-      <div className="quick-search-container">
+      <div
+        className="quick-search-container"
+        onKeyDown={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <Command label={label} shouldFilter={false} ref={ref}>
           {showInput && (
             <QuickSearchInput

@@ -153,7 +153,12 @@ export const DocTree = ({ docId }: Props) => {
           </Box>
         </Box>
       </SeparatedSection>
-      <Box $padding={{ all: 'sm' }} $margin={{ top: '-35px' }} $width="100%">
+      <Box
+        $padding={{ all: 'sm' }}
+        $margin={{ top: '-35px' }}
+        $width="100%"
+        tabIndex={-1}
+      >
         {initialOpenState && treeDataStore.length > 0 && (
           <TreeView
             initialOpenState={initialOpenState}

@@ -7,6 +7,7 @@ import {
   DropdownMenuOption,
   IconOptions,
 } from '@/components';
+import { useTreeStore } from '@/components/common/tree/treeStore';
 import { useCunninghamTheme } from '@/cunningham';
 import { Access, Doc, Role } from '@/features/docs/doc-management/';
 import { useResponsiveStore } from '@/stores';
@@ -23,6 +24,7 @@ type Props = {
 };
 export const DocShareMemberItem = ({ doc, access }: Props) => {
   const { t } = useTranslation();
+  const { refreshNode } = useTreeStore();
   const { isLastOwner, isOtherOwner } = useWhoAmI(access);
   const { toast } = useToastProvider();
   const { isDesktop } = useResponsiveStore();
@@ -48,15 +50,21 @@ export const DocShareMemberItem = ({ doc, access }: Props) => {
   });
 
   const onUpdate = (newRole: Role) => {
-    updateDocAccess({
-      docId: doc.id,
-      role: newRole,
-      accessId: access.id,
-    });
+    updateDocAccess(
+      {
+        docId: doc.id,
+        role: newRole,
+        accessId: access.id,
+      },
+      { onSuccess: () => refreshNode(doc.id) },
+    );
   };
 
   const onRemove = () => {
-    removeDocAccess({ accessId: access.id, docId: doc.id });
+    removeDocAccess(
+      { accessId: access.id, docId: doc.id },
+      { onSuccess: () => refreshNode(doc.id) },
+    );
   };
 
   const moreActions: DropdownMenuOption[] = [

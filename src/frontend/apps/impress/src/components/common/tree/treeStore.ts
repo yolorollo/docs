@@ -43,6 +43,7 @@ export const createTreeStore = <T>(
         }
         refreshCallback?.(nodeId)
           .then((data) => {
+            console.log('data', data);
             state.updateNode(nodeId, { ...node, ...data });
           })
           .catch((error) => {

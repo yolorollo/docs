@@ -43,6 +43,7 @@ export interface Doc {
   link_reach: LinkReach;
   link_role: LinkRole;
   nb_accesses: number;
+  depth: number;
   created_at: string;
   updated_at: string;
   numchild: number;

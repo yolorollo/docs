@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { css } from 'styled-components';
 
-import { Box, Text } from '@/components';
+import { Box, Icon, Text } from '@/components';
 import { useCunninghamTheme } from '@/cunningham';
 import { Doc } from '@/features/docs/doc-management';
 
@@ -13,7 +13,7 @@ const ItemTextCss = css`
   white-space: initial;
   display: -webkit-box;
   line-clamp: 1;
-  width: 100%;
+  /* width: 100%; */
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 `;
@@ -39,11 +39,12 @@ export const LightDocItem = ({
       $align="center"
       $css={css`
         .light-doc-item-actions {
-          display: ${showActions ? 'flex' : 'none'};
+          opacity: 0;
+          display: 'flex';
         }
         &:hover {
           .light-doc-item-actions {
-            display: flex;
+            opacity: 1;
           }
         }
       `}
@@ -52,9 +53,24 @@ export const LightDocItem = ({
         <Logo />
       </Box>
 
-      <Text $css={ItemTextCss} $size="sm">
-        {doc.title}
-      </Text>
+      <Box
+        $direction="row"
+        $align="center"
+        $css={css`
+          display: flex;
+          flex-direction: row;
+          width: 100%;
+          gap: 0.5rem;
+          align-items: center;
+        `}
+      >
+        <Text $css={ItemTextCss} $size="sm">
+          {doc.title}
+        </Text>
+        {doc.nb_accesses - doc.depth > 1 && (
+          <Icon isFilled iconName="group" $size="16px" $variation="400" />
+        )}
+      </Box>
       {rightContent && (
         <Box
           $direction="row"

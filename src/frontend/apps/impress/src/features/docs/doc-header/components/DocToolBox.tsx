@@ -56,6 +56,8 @@ export const DocToolBox = ({ doc }: DocToolBoxProps) => {
   const { toast } = useToastProvider();
   const copyDocLink = useCopyDocLink(doc.id);
 
+
+
   const options: DropdownMenuOption[] = [
     ...(isSmallMobile
       ? [

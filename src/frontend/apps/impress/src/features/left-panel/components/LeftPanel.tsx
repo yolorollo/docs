@@ -48,7 +48,6 @@ export const LeftPanel = () => {
             width: 100%;
             min-width: 300px;
             overflow: hidden;
-            border-right: 1px solid ${colors['greyscale-200']};
         `}
         >
           <Box

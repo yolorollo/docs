@@ -1,6 +1,6 @@
 import { Button, ModalSize, useModal } from '@openfun/cunningham-react';
 import { t } from 'i18next';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { PropsWithChildren } from 'react';
 
 import { Box, Icon, SeparatedSection } from '@/components';
@@ -8,6 +8,7 @@ import { useTreeStore } from '@/components/common/tree/treeStore';
 import { useAuth } from '@/features/auth';
 import { useCreateDoc, useDocStore } from '@/features/docs/doc-management';
 import { DocSearchModal } from '@/features/docs/doc-search';
+import { DocSearchTarget } from '@/features/docs/doc-search/components/DocSearchFilters';
 import { useCreateChildrenDoc } from '@/features/docs/doc-tree/api/useCreateChildren';
 
 import { useLeftPanelStore } from '../stores';
@@ -18,6 +19,7 @@ export const LeftPanelHeader = ({ children }: Props) => {
   const router = useRouter();
   const { currentDoc } = useDocStore();
   const treeStore = useTreeStore();
+  const isDoc = router.pathname === '/docs/[id]';
 
   const searchModal = useModal();
   const { authenticated } = useAuth();
@@ -25,7 +27,7 @@ export const LeftPanelHeader = ({ children }: Props) => {
 
   const { mutate: createDoc } = useCreateDoc({
     onSuccess: (doc) => {
-      router.push(`/docs/${doc.id}`);
+      void router.push(`/docs/${doc.id}`);
       treeStore.setSelectedNode(doc);
       togglePanel();
     },
@@ -46,7 +48,7 @@ export const LeftPanelHeader = ({ children }: Props) => {
   });
 
   const goToHome = () => {
-    router.push('/');
+    void router.push('/');
     togglePanel();
   };
 
@@ -93,14 +95,27 @@ export const LeftPanelHeader = ({ children }: Props) => {
               )}
             </Box>
             {authenticated && (
-              <Button onClick={createNewDoc}>{t('New doc')}</Button>
+              <Button
+                onClick={createNewDoc}
+                disabled={!currentDoc}
+                color={!isDoc ? 'primary' : 'tertiary'}
+              >
+                {t(isDoc ? 'New page' : 'New doc')}
+              </Button>
             )}
           </Box>
         </SeparatedSection>
         {children}
       </Box>
       {searchModal.isOpen && (
-        <DocSearchModal {...searchModal} size={ModalSize.LARGE} />
+        <DocSearchModal
+          {...searchModal}
+          size={ModalSize.LARGE}
+          showFilters={isDoc}
+          defaultFilters={{
+            target: isDoc ? DocSearchTarget.CURRENT : undefined,
+          }}
+        />
       )}
     </>
   );

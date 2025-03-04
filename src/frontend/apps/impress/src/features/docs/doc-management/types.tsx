@@ -42,7 +42,7 @@ export interface Doc {
   is_favorite: boolean;
   link_reach: LinkReach;
   link_role: LinkRole;
-  nb_accesses: number;
+  nb_accesses_direct: number;
   depth: number;
   created_at: string;
   updated_at: string;

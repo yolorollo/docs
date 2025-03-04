@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import { Box, Text, TextErrors } from '@/components';
+import { useTreeStore } from '@/components/common/tree/treeStore';
 import { setAuthUrl } from '@/features/auth';
 import { DocEditor } from '@/features/docs/doc-editor';
 import {
@@ -14,7 +15,6 @@ import {
   useDoc,
   useDocStore,
 } from '@/features/docs/doc-management/';
-import { useDocRootTreeStore } from '@/features/docs/doc-tree/stores/useDocRootTree';
 import { MainLayout } from '@/layouts';
 import { useBroadcastStore } from '@/stores';
 import { NextPageWithLayout } from '@/types/next';
@@ -61,7 +61,8 @@ const DocPage = ({ id }: DocProps) => {
 
   const [doc, setDoc] = useState<Doc>();
   const { setCurrentDoc } = useDocStore();
-  const { setRootId, rootId } = useDocRootTreeStore();
+  const { initialNode, setInitialNode, reset } = useTreeStore();
+
   const { addTask } = useBroadcastStore();
   const queryClient = useQueryClient();
   const { replace } = useRouter();
@@ -77,10 +78,11 @@ const DocPage = ({ id }: DocProps) => {
 
   useEffect(() => {
     return () => {
-      setRootId(undefined);
+      reset();
       setCurrentDoc(undefined);
     };
-  }, [setRootId, setCurrentDoc]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!docQuery || isFetching) {
@@ -89,10 +91,10 @@ const DocPage = ({ id }: DocProps) => {
 
     setDoc(docQuery);
     setCurrentDoc(docQuery);
-    if (!rootId) {
-      setRootId(docQuery.id);
+    if (!initialNode) {
+      setInitialNode(docQuery);
     }
-  }, [docQuery, setCurrentDoc, setRootId, rootId, isFetching]);
+  }, [docQuery, setCurrentDoc, setInitialNode, initialNode, isFetching]);
 
   /**
    * We add a broadcast task to reset the query cache

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { OpenMap } from 'react-arborist/dist/module/state/open-slice';
+import { useTreeData } from 'react-stately';
 import { css } from 'styled-components';
 
 import { Box, SeparatedSection, StyledLink } from '@/components';
@@ -25,6 +26,12 @@ export const DocTree = ({ docId }: Props) => {
   const { spacingsTokens } = useCunninghamTheme();
   const spacing = spacingsTokens();
   const moveDoc = useMoveDoc();
+  const tree = useTreeData<Doc>({
+    initialItems: [],
+    getKey: (item) => item.id,
+    initialSelectedKeys: [],
+    getChildren: (item) => item.children ?? [],
+  });
 
   const [initialOpenState, setInitialOpenState] = useState<OpenMap | undefined>(
     undefined,
@@ -41,8 +48,6 @@ export const DocTree = ({ docId }: Props) => {
 
   const { data, isLoading, isFetching, isRefetching } = useDocTree({
     docId,
-    page_size: 25,
-    page: 1,
   });
 
   const afterMove = (
@@ -74,7 +79,7 @@ export const DocTree = ({ docId }: Props) => {
     }
 
     const initialOpenState: OpenMap = {};
-    const root = data[0];
+    const root = data;
 
     initialOpenState[root.id] = true;
 
@@ -106,6 +111,8 @@ export const DocTree = ({ docId }: Props) => {
         return node;
       });
     };
+
+    console.log('open state', initialOpenState);
 
     root.children = serialize(root.children ?? [], docId);
 

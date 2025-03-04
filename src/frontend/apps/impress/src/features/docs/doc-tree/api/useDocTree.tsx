@@ -6,20 +6,11 @@ import { Doc } from '../../doc-management';
 
 export type DocsTreeParams = {
   docId: string;
-  page: number;
-  page_size?: number;
 };
 
-export const getDocTree = async (params: DocsTreeParams): Promise<Doc[]> => {
-  const { docId, page, page_size } = params;
+export const getDocTree = async (params: DocsTreeParams): Promise<Doc> => {
+  const { docId } = params;
   const searchParams = new URLSearchParams();
-
-  if (page) {
-    searchParams.set('page', page.toString());
-  }
-  if (page_size) {
-    searchParams.set('page_size', page_size.toString());
-  }
 
   const response = await fetchAPI(
     `documents/${docId}/tree/?${searchParams.toString()}`,
@@ -32,7 +23,7 @@ export const getDocTree = async (params: DocsTreeParams): Promise<Doc[]> => {
     );
   }
 
-  return response.json() as Promise<Doc[]>;
+  return response.json() as Promise<Doc>;
 };
 
 export const KEY_LIST_DOC_CHILDREN = 'doc-tree';
@@ -40,11 +31,11 @@ export const KEY_LIST_DOC_CHILDREN = 'doc-tree';
 export function useDocTree(
   params: DocsTreeParams,
   queryConfig?: Omit<
-    UseQueryOptions<Doc[], APIError, Doc[]>,
+    UseQueryOptions<Doc, APIError, Doc>,
     'queryKey' | 'queryFn'
   >,
 ) {
-  return useQuery<Doc[], APIError, Doc[]>({
+  return useQuery<Doc, APIError, Doc>({
     queryKey: [KEY_LIST_DOC_CHILDREN, params],
     queryFn: () => getDocTree(params),
     staleTime: 0,

@@ -4,12 +4,11 @@ import { Box } from '@/components';
 import { useTreeStore } from '@/components/common/tree/treeStore';
 import { useDocStore } from '@/features/docs/doc-management';
 import { DocTree } from '@/features/docs/doc-tree/components/DocTree';
-import { useDocRootTreeStore } from '@/features/docs/doc-tree/stores/useDocRootTree';
 
 export const LeftPanelDocContent = () => {
-  const { rootId } = useDocRootTreeStore();
+  // const { rootId } = useDocRootTreeStore();
   const { currentDoc, setCurrentDoc } = useDocStore();
-  const { reset } = useTreeStore();
+  const { reset, initialNode } = useTreeStore();
 
   useEffect(() => {
     return () => {
@@ -29,7 +28,8 @@ export const LeftPanelDocContent = () => {
       $width="100%"
       $css="width: 100%; overflow-y: auto; overflow-x: hidden;"
     >
-      {rootId && <DocTree docId={rootId} />}
+      {initialNode?.id}
+      {initialNode && <DocTree docId={initialNode.id} />}
     </Box>
   );
 };

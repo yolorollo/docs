@@ -57,6 +57,7 @@ export const TreeView = <T,>({
     const newData = JSON.parse(
       JSON.stringify(treeData),
     ) as TreeViewDataType<T>[];
+    console.log('drag', args);
 
     const sourceNodeId = args.dragNodes[0].data.id;
     const sourceNode = args.dragNodes[0].data;
@@ -68,10 +69,8 @@ export const TreeView = <T,>({
       ? (args.parentNode?.children ?? [])
       : newData;
 
-    let result: TreeViewMoveResult | null = null;
-
     if (newIndex === 0) {
-      result = {
+      return {
         targetNodeId: targetNodeId ?? rootNodeId,
         mode: TreeViewMoveModeEnum.FIRST_CHILD,
         sourceNodeId,
@@ -79,7 +78,7 @@ export const TreeView = <T,>({
       };
     }
     if (newIndex === children.length) {
-      result = {
+      return {
         targetNodeId: targetNodeId ?? rootNodeId,
         mode: TreeViewMoveModeEnum.LAST_CHILD,
         sourceNodeId,
@@ -91,7 +90,7 @@ export const TreeView = <T,>({
     const sibling = children[siblingIndex];
 
     if (sibling) {
-      result = {
+      return {
         targetNodeId: sibling.id,
         mode: TreeViewMoveModeEnum.RIGHT,
         sourceNodeId,
@@ -102,7 +101,7 @@ export const TreeView = <T,>({
     const nextSiblingIndex = newIndex + 1;
     const nextSibling = children[nextSiblingIndex];
     if (nextSibling) {
-      result = {
+      return {
         targetNodeId: nextSibling.id,
         mode: TreeViewMoveModeEnum.LEFT,
         sourceNodeId,
@@ -110,7 +109,7 @@ export const TreeView = <T,>({
       };
     }
 
-    return result;
+    return null;
   };
 
   const onMove = (args: {

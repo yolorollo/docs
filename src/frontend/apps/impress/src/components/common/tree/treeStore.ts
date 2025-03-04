@@ -7,6 +7,8 @@ interface TreeStore<T> {
   treeData: TreeViewDataType<T>[];
   selectedNode: TreeViewDataType<T> | null;
   rootId: string | undefined;
+  initialNode: TreeViewDataType<T> | undefined;
+  setInitialNode: (node: TreeViewDataType<T> | undefined) => void;
   setSelectedNode: (node: TreeViewDataType<T> | null) => void;
   setTreeData: (data: TreeViewDataType<T>[]) => void;
   updateNode: (nodeId: string, newData: Partial<TreeViewDataType<T>>) => void;
@@ -16,7 +18,11 @@ interface TreeStore<T> {
   refreshNode: (nodeId: string) => void;
   findNode: (nodeId: string) => TreeViewDataType<T> | null;
   setRootId: (id?: string) => void;
-  reset: () => void;
+  reset: (
+    rootId?: string,
+    treeData?: TreeViewDataType<T>[],
+    selectedNode?: TreeViewDataType<T> | null,
+  ) => void;
 }
 
 export const createTreeStore = <T>(
@@ -26,8 +32,12 @@ export const createTreeStore = <T>(
     treeData: [],
     selectedNode: null,
     rootId: undefined,
+    initialNode: undefined,
     setSelectedNode: (node) => {
       set({ selectedNode: node });
+    },
+    setInitialNode: (node) => {
+      set({ initialNode: node });
     },
     setTreeData: (data) => {
       set({ treeData: data });
@@ -157,8 +167,14 @@ export const createTreeStore = <T>(
 
       return findNodeInTree(get().treeData);
     },
-    reset: () => {
-      set({ treeData: [], selectedNode: null, rootId: undefined });
+    reset: (rootId, treeData, selectedNode) => {
+      console.log('reset', rootId, treeData, selectedNode);
+      set({
+        treeData: treeData ?? [],
+        selectedNode: selectedNode ?? null,
+        rootId: rootId,
+        initialNode: selectedNode ?? undefined,
+      });
     },
   }));
 

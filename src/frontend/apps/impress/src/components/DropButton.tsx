@@ -75,12 +75,13 @@ export const DropButton = ({
   return (
     <>
       <StyledButton
+        // {...props}
         ref={triggerRef}
-        onPress={() => onOpenChangeHandler(true)}
+        onPress={(e) => {
+          onOpenChangeHandler(!isLocalOpen);
+        }}
         aria-label={label}
         $css={buttonCss}
-        {...props}
-
       >
         {button}
       </StyledButton>

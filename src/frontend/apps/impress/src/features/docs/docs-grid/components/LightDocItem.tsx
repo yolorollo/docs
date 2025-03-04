@@ -67,7 +67,7 @@ export const LightDocItem = ({
         <Text $css={ItemTextCss} $size="sm">
           {doc.title}
         </Text>
-        {doc.nb_accesses - doc.depth > 1 && (
+        {doc.nb_accesses_direct > 1 && (
           <Icon isFilled iconName="group" $size="16px" $variation="400" />
         )}
       </Box>

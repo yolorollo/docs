@@ -636,6 +636,37 @@ def test_models_documents__email_invitation__success():
     assert f"docs/{document.id}/" in email_content
 
 
+def test_models_documents__email_invitation__success_empty_title():
+    """
+    The email invitation is sent successfully.
+    """
+    document = factories.DocumentFactory(title=None)
+
+    # pylint: disable-next=no-member
+    assert len(mail.outbox) == 0
+
+    sender = factories.UserFactory(full_name="Test Sender", email="sender@example.com")
+    document.send_invitation_email(
+        "guest@example.com", models.RoleChoices.EDITOR, sender, "en"
+    )
+
+    # pylint: disable-next=no-member
+    assert len(mail.outbox) == 1
+
+    # pylint: disable-next=no-member
+    email = mail.outbox[0]
+
+    assert email.to == ["guest@example.com"]
+    email_content = " ".join(email.body.split())
+
+    assert "Test sender shared a document with you!" in email.subject
+    assert (
+        "Test Sender (sender@example.com) invited you with the role &quot;editor&quot; "
+        "on the following document: Untitled Document" in email_content
+    )
+    assert f"docs/{document.id}/" in email_content
+
+
 def test_models_documents__email_invitation__success_fr():
     """
     The email invitation is sent successfully in french.

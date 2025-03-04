@@ -697,6 +697,7 @@ class Document(MP_Node, BaseModel):
                 "document": self,
                 "domain": domain,
                 "link": f"{domain}/docs/{self.id}/",
+                "document_title": self.title or str(_("Untitled Document")),
                 "logo_img": settings.EMAIL_LOGO_IMG,
             }
         )
@@ -738,8 +739,12 @@ class Document(MP_Node, BaseModel):
                     '{name} invited you with the role "{role}" on the following document:'
                 ).format(name=sender_name_email, role=role.lower()),
             }
-            subject = _("{name} shared a document with you: {title}").format(
-                name=sender_name, title=self.title
+            subject = (
+                context["title"]
+                if not self.title
+                else _("{name} shared a document with you: {title}").format(
+                    name=sender_name, title=self.title
+                )
             )
 
         self.send_email(subject, [email], context, language)

@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.4.0] - 2025-03-06
+
+## Added
+
+- ✨(frontend) synchronize language-choice #401
+
 ## Changed
 
 - Use sentry tags instead of extra scope

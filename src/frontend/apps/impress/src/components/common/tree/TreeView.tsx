@@ -54,10 +54,11 @@ export const TreeView = <T,>({
     parentNode: NodeApi<BaseType<T>> | null;
     index: number;
   }): TreeViewMoveResult | null => {
-    const newData = JSON.parse(
-      JSON.stringify(treeData),
-    ) as TreeViewDataType<T>[];
-    console.log('drag', args);
+    const newData = treeData.map((rootItem) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { children, ...rest } = rootItem;
+      return rest;
+    });
 
     const sourceNodeId = args.dragNodes[0].data.id;
     const sourceNode = args.dragNodes[0].data;

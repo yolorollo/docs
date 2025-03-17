@@ -1,4 +1,8 @@
-import { cunninghamConfig as tokens } from '@gouvfr-lasuite/ui-kit';
+import { cunninghamConfig } from '@gouvfr-lasuite/ui-kit';
+
+const tokens = {
+  ...cunninghamConfig,
+};
 
 const customColors = {
   'primary-action': '#1212FF',
@@ -34,7 +38,6 @@ const customColors = {
   'yellow-500': '#B7A73F',
   'yellow-600': '#66673D',
 };
-
 tokens.themes.default.theme.colors = {
   ...tokens.themes.default.theme.colors,
   ...customColors,

@@ -13416,6 +13416,38 @@ react-stately@3.35.0, react-stately@^3.35.0:
     "@react-stately/tree" "^3.8.7"
     "@react-types/shared" "^3.27.0"
 
+react-stately@3.36.1:
+  version "3.36.1"
+  resolved "https://registry.yarnpkg.com/react-stately/-/react-stately-3.36.1.tgz#605c18e6aa7a900f19b066699b5b35b7800cb759"
+  integrity sha512-H9kiGAylNec/iE5qk7qQLV1cvtSAIVq3mgt87zx2EA+f+/sYy2oBtchFPaDiBf/m7xMEKf0Fr9zSLU6G99xQ8g==
+  dependencies:
+    "@react-stately/calendar" "^3.7.1"
+    "@react-stately/checkbox" "^3.6.12"
+    "@react-stately/collections" "^3.12.2"
+    "@react-stately/color" "^3.8.3"
+    "@react-stately/combobox" "^3.10.3"
+    "@react-stately/data" "^3.12.2"
+    "@react-stately/datepicker" "^3.13.0"
+    "@react-stately/disclosure" "^3.0.2"
+    "@react-stately/dnd" "^3.5.2"
+    "@react-stately/form" "^3.1.2"
+    "@react-stately/list" "^3.12.0"
+    "@react-stately/menu" "^3.9.2"
+    "@react-stately/numberfield" "^3.9.10"
+    "@react-stately/overlays" "^3.6.14"
+    "@react-stately/radio" "^3.10.11"
+    "@react-stately/searchfield" "^3.5.10"
+    "@react-stately/select" "^3.6.11"
+    "@react-stately/selection" "^3.20.0"
+    "@react-stately/slider" "^3.6.2"
+    "@react-stately/table" "^3.14.0"
+    "@react-stately/tabs" "^3.8.0"
+    "@react-stately/toast" "^3.0.0"
+    "@react-stately/toggle" "^3.8.2"
+    "@react-stately/tooltip" "^3.5.2"
+    "@react-stately/tree" "^3.8.8"
+    "@react-types/shared" "^3.28.0"
+
 react-stately@^3.34.0:
   version "3.36.0"
   resolved "https://registry.yarnpkg.com/react-stately/-/react-stately-3.36.0.tgz#1544f0a742145d9bc2d67a8c76af3648a9982fd6"

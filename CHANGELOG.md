@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- ⚡️(docker) Optimize Dockerfile to use apk with --no-cache #743
+
 ## [3.4.1] - 2025-07-15
 
 ### Fixed

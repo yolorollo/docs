@@ -10,6 +10,7 @@ and this project adheres to
 
 ### Added
 
+- ✨(helm) Service Account support for K8s Resources in Helm Charts #778
 - ✨(backend) allow masking documents from the list view #1171
 - ✨(frontend) subdocs can manage link reach #1190
 - ✨(frontend) add duplicate action to doc tree #1175

@@ -8,9 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.6.0] - 2025-03-21
+
 ## Added
 
-- 📝(doc) add publiccode.yml
+- 📝(doc) add publiccode.yml #770
 
 ## Changed
 
@@ -485,7 +487,8 @@ and this project adheres to
 - ✨(frontend) Coming Soon page (#67)
 - 🚀 Impress, project to manage your documents easily and collaboratively.
 
-[unreleased]: https://github.com/numerique-gouv/impress/compare/v2.5.0...main
+[unreleased]: https://github.com/numerique-gouv/impress/compare/v2.6.0...main
+[v2.5.0]: https://github.com/numerique-gouv/impress/releases/v2.6.0
 [v2.5.0]: https://github.com/numerique-gouv/impress/releases/v2.5.0
 [v2.4.0]: https://github.com/numerique-gouv/impress/releases/v2.4.0
 [v2.3.0]: https://github.com/numerique-gouv/impress/releases/v2.3.0

@@ -60,6 +60,7 @@ export const DocTree = ({ initialTargetId }: DocTreeProps) => {
       });
     };
     serialize(children);
+    console.log(children);
 
     treeData?.tree.resetTree(children);
     setInitialOpenState(initialOpenState);

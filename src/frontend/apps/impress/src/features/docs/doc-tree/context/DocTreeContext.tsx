@@ -49,7 +49,7 @@ export const DocTreeProvider: React.FC<DocTreeProviderProps> = ({
     },
     async (docId) => {
       const doc = await getDocChildren({ docId: docId });
-      return doc.results ?? [];
+      return subPageToTree(doc.results ?? []);
     },
   );
 
@@ -83,4 +83,12 @@ export const useDocTreeData = (): DocTreeContextType | undefined => {
     return;
   }
   return context;
+};
+
+export const subPageToTree = (children: Doc[]): TreeViewDataType<Doc>[] => {
+  children.forEach((child) => {
+    child.childrenCount = child.numchild ?? 0;
+    subPageToTree(child.children ?? []);
+  });
+  return children;
 };

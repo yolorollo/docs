@@ -3,6 +3,7 @@ import {
   VariantType,
   useToastProvider,
 } from '@openfun/cunningham-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { css } from 'styled-components';
@@ -11,9 +12,8 @@ import { APIError } from '@/api';
 import { Box } from '@/components';
 import { useCunninghamTheme } from '@/cunningham';
 import { User } from '@/features/auth';
-import { Doc, Role } from '@/features/docs';
+import { Doc, KEY_SUB_DOC, Role } from '@/features/docs';
 
-import { useDocTreeData } from '../../doc-tree/context/DocTreeContext';
 import { useCreateDocAccess, useCreateDocInvitation } from '../api';
 import { OptionType } from '../types';
 
@@ -40,7 +40,7 @@ export const DocShareAddMemberList = ({
 }: Props) => {
   const { t } = useTranslation();
   const { toast } = useToastProvider();
-  const treeData = useDocTreeData();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const { spacingsTokens, colorsTokens } = useCunninghamTheme();
   const [invitationRole, setInvitationRole] = useState<Role>(Role.EDITOR);
@@ -100,7 +100,9 @@ export const DocShareAddMemberList = ({
             },
             {
               onSuccess: () => {
-                void treeData?.tree.refreshNode(doc.id);
+                void queryClient.invalidateQueries({
+                  queryKey: [KEY_SUB_DOC, { id: doc.id }],
+                });
               },
             },
           )
@@ -111,7 +113,9 @@ export const DocShareAddMemberList = ({
             },
             {
               onSuccess: () => {
-                void treeData?.tree.refreshNode(doc.id);
+                void queryClient.invalidateQueries({
+                  queryKey: [KEY_SUB_DOC, { id: doc.id }],
+                });
               },
             },
           );

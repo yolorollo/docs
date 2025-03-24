@@ -1,4 +1,10 @@
-import { OpenMap, TreeView, TreeViewMoveResult } from '@gouvfr-lasuite/ui-kit';
+import {
+  OpenMap,
+  TreeView,
+  TreeViewMoveResult,
+  useTree,
+} from '@gouvfr-lasuite/ui-kit';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { css } from 'styled-components';
@@ -6,11 +12,18 @@ import { css } from 'styled-components';
 import { Box, SeparatedSection, StyledLink } from '@/components';
 import { useCunninghamTheme } from '@/cunningham';
 
-import { Doc } from '../../doc-management';
+import {
+  Doc,
+  KEY_DOC,
+  LinkReach,
+  LinkRole,
+  getDoc,
+} from '../../doc-management';
 import { SimpleDocItem } from '../../docs-grid';
+import { getDocChildren } from '../api/useDocChildren';
 import { useDocTree } from '../api/useDocTree';
 import { useMoveDoc } from '../api/useMove';
-import { useDocTreeData } from '../context/DocTreeContext';
+import { subPageToTree, useDocTreeStore } from '../context/DocTreeContext';
 
 import { DocSubPageItem } from './DocSubPageItem';
 import { DocTreeItemActions } from './DocTreeItemActions';
@@ -20,8 +33,24 @@ type DocTreeProps = {
 };
 export const DocTree = ({ initialTargetId }: DocTreeProps) => {
   const { spacingsTokens } = useCunninghamTheme();
+  const queryClient = useQueryClient();
+  const store = useDocTreeStore();
+
   const spacing = spacingsTokens();
-  const treeData = useDocTreeData();
+
+  const treeData = useTree(
+    [],
+    async (docId) => {
+      const doc = await getDoc({ id: docId });
+      const newDoc = { ...doc, childrenCount: doc.numchild };
+      void queryClient.setQueryData([KEY_DOC, { id: docId }], newDoc);
+      return newDoc;
+    },
+    async (docId) => {
+      const doc = await getDocChildren({ docId: docId });
+      return subPageToTree(doc.results ?? []);
+    },
+  );
   const router = useRouter();
   const [initialOpenState, setInitialOpenState] = useState<OpenMap | undefined>(
     undefined,
@@ -39,42 +68,47 @@ export const DocTree = ({ initialTargetId }: DocTreeProps) => {
       targetDocumentId: result.targetModeId,
       position: result.mode,
     });
-    treeData?.tree.handleMove(result);
+    treeData?.handleMove(result);
   };
-  useEffect(() => {
+
+  const buildDocTree = (data?: Doc) => {
     if (!data) {
       return;
     }
     const { children: rootChildren, ...root } = data;
     const children = rootChildren ?? [];
-    treeData?.setRoot(root);
+    store.setRoot(root);
     const initialOpenState: OpenMap = {};
     initialOpenState[root.id] = true;
-    const serialize = (children: Doc[]) => {
-      children.forEach((child) => {
-        child.childrenCount = child.numchild ?? 0;
-        if (child?.children?.length && child?.children?.length > 0) {
-          initialOpenState[child.id] = true;
-        }
-        serialize(child.children ?? []);
-      });
-    };
-    serialize(children);
-    console.log(children);
+    subPageToTree(children, (child) => {
+      if (child?.children?.length && child?.children?.length > 0) {
+        initialOpenState[child.id] = true;
+      }
+    });
 
-    treeData?.tree.resetTree(children);
+    treeData.resetTree(children);
     setInitialOpenState(initialOpenState);
     if (initialTargetId === root.id) {
-      treeData?.tree.setSelectedNode(root);
+      treeData?.setSelectedNode(root);
     } else {
-      treeData?.tree.selectNodeById(initialTargetId);
+      treeData?.selectNodeById(initialTargetId);
     }
+  };
+
+  useEffect(() => {
+    if (treeData?.selectedNode?.id !== store.selectedNode?.id) {
+      store.setSelectedNode(treeData?.selectedNode ?? null);
+    }
+  }, [store, treeData?.selectedNode]);
+
+  useEffect(() => {
+    buildDocTree(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  const rootIsSelected = treeData?.tree.selectedNode?.id === treeData?.root?.id;
+  const rootIsSelected = treeData?.selectedNode?.id === store.root?.id;
 
-  if (!initialTargetId || !treeData) {
+  if (!initialTargetId) {
     return null;
   }
 
@@ -110,32 +144,33 @@ export const DocTree = ({ initialTargetId }: DocTreeProps) => {
               }
             `}
           >
-            {treeData.root !== null && (
+            {store.root !== null && (
               <StyledLink
                 $css={css`
                   width: 100%;
                 `}
-                href={`/docs/${treeData.root.id}`}
+                href={`/docs/${store.root.id}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  treeData.tree.setSelectedNode(treeData.root ?? undefined);
-                  router.push(`/docs/${treeData?.root?.id}`);
+                  treeData?.setSelectedNode(store.root ?? undefined);
+                  router.push(`/docs/${store.root?.id}`);
                 }}
               >
                 <Box $direction="row" $align="center" $width="100%">
-                  <SimpleDocItem doc={treeData.root} showAccesses={true} />
+                  <SimpleDocItem doc={store.root} showAccesses={true} />
                   <div className="doc-tree-root-item-actions">
                     <DocTreeItemActions
-                      doc={treeData.root}
+                      doc={store.root}
+                      treeData={treeData}
                       onCreateSuccess={(createdDoc) => {
                         const newDoc = {
                           ...createdDoc,
                           children: [],
                           childrenCount: 0,
-                          parentId: treeData.root?.id ?? undefined,
+                          parentId: store.root?.id ?? undefined,
                         };
-                        treeData?.tree.addChild(null, newDoc);
+                        treeData?.addChild(null, newDoc);
                       }}
                     />
                   </div>
@@ -145,27 +180,54 @@ export const DocTree = ({ initialTargetId }: DocTreeProps) => {
           </Box>
         </Box>
       </SeparatedSection>
+      <button
+        onClick={() => {
+          const children = data?.children ?? [];
+          const newDoc = {
+            id: '1',
+            children: [],
+            childrenCount: 0,
+            title: 'TITI',
+            creator: 'test',
+            is_favorite: false,
+          };
 
-      {initialOpenState && (
+          // Ajout des propriétés manquantes pour correspondre au type Doc
+          const completeDoc = {
+            ...newDoc,
+            link_reach: LinkReach.PUBLIC,
+            link_role: LinkRole.EDITOR,
+            user_roles: [],
+            // Ajoutez ici les autres propriétés requises par le type Doc
+          };
+
+          children.push(completeDoc);
+          buildDocTree(data);
+        }}
+      >
+        Refresh
+      </button>
+
+      {initialOpenState && treeData.nodes.length > 0 && (
         <TreeView
           handleMove={handleMove}
           initialOpenState={initialOpenState}
           selectedNodeId={
-            treeData.tree.selectedNode?.id ??
-            treeData.initialTargetId ??
-            undefined
+            treeData.selectedNode?.id ?? store.initialTargetId ?? undefined
           }
-          treeData={treeData.tree.nodes ?? []}
-          rootNodeId={treeData.root?.id ?? ''}
+          treeData={treeData.nodes ?? []}
+          rootNodeId={store.root?.id ?? ''}
           renderNode={(props) => {
+            if (treeData === undefined) {
+              return null;
+            }
             return (
               <DocSubPageItem
                 {...props}
+                treeData={treeData}
                 doc={props.node.data.value as Doc}
-                loadChildren={(node) =>
-                  treeData.tree.handleLoadChildren(node.id)
-                }
-                setSelectedNode={treeData.tree.setSelectedNode}
+                loadChildren={(node) => treeData.handleLoadChildren(node.id)}
+                setSelectedNode={(node) => treeData.setSelectedNode(node)}
               />
             );
           }}

@@ -1,4 +1,8 @@
-import { DropdownMenu, DropdownMenuOption } from '@gouvfr-lasuite/ui-kit';
+import {
+  DropdownMenu,
+  DropdownMenuOption,
+  useTree,
+} from '@gouvfr-lasuite/ui-kit';
 import { useModal } from '@openfun/cunningham-react';
 import { useRouter } from 'next/navigation';
 import { Fragment, useState } from 'react';
@@ -10,11 +14,12 @@ import { useLeftPanelStore } from '@/features/left-panel';
 
 import { Doc, ModalRemoveDoc } from '../../doc-management';
 import { useCreateChildrenDoc } from '../api/useCreateChildren';
-import { useDocTreeData } from '../context/DocTreeContext';
+import { useDocTreeStore } from '../context/DocTreeContext';
 
 type DocTreeItemActionsProps = {
   doc: Doc;
   parentId?: string | null;
+  treeData: ReturnType<typeof useTree<Doc>>;
   onCreateSuccess?: (newDoc: Doc) => void;
 };
 
@@ -22,14 +27,16 @@ export const DocTreeItemActions = ({
   doc,
   parentId,
   onCreateSuccess,
+  treeData,
 }: DocTreeItemActionsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+
+  const treeStore = useDocTreeStore();
   const { t } = useTranslation();
   const deleteModal = useModal();
   const { togglePanel } = useLeftPanelStore();
 
-  const treeData = useDocTreeData();
   const options: DropdownMenuOption[] = [
     {
       label: t('Delete'),
@@ -43,22 +50,23 @@ export const DocTreeItemActions = ({
       onCreateSuccess?.(doc);
 
       togglePanel();
-      treeData?.tree.setSelectedNode(doc);
+      treeData.setSelectedNode(doc);
+      router.push(`/docs/${doc.id}`);
     },
   });
 
   const afterDelete = () => {
     if (parentId) {
       router.push(`/docs/${parentId}`);
-      treeData?.tree.selectNodeById(parentId);
-      treeData?.tree.deleteNode(doc.id);
-      void treeData?.tree.refreshNode(parentId);
-    } else if (doc.id === treeData?.root?.id && !parentId) {
+      treeData?.selectNodeById(parentId);
+      treeData?.deleteNode(doc.id);
+      void treeData?.refreshNode(parentId);
+    } else if (doc.id === treeStore.root?.id && !parentId) {
       router.push(`/docs/`);
-    } else if (treeData && treeData.root) {
-      router.push(`/docs/${treeData.root.id}`);
-      treeData?.tree.deleteNode(doc.id);
-      treeData?.tree.setSelectedNode(treeData.root);
+    } else if (treeStore.root) {
+      router.push(`/docs/${treeStore.root.id}`);
+      treeData?.deleteNode(doc.id);
+      treeData?.setSelectedNode(treeStore.root);
     }
   };
 
@@ -84,7 +92,7 @@ export const DocTreeItemActions = ({
               setIsOpen(!isOpen);
             }}
             iconName="more_horiz"
-            isFilled
+            $isMaterialIcon="filled"
             $theme="primary"
             $variation="600"
           />
@@ -101,7 +109,12 @@ export const DocTreeItemActions = ({
           }}
           color="primary"
         >
-          <Icon $variation="800" $theme="primary" isFilled iconName="add_box" />
+          <Icon
+            $variation="800"
+            $theme="primary"
+            $isMaterialIcon="filled"
+            iconName="add_box"
+          />
         </BoxButton>
       </Box>
       {deleteModal.isOpen && (

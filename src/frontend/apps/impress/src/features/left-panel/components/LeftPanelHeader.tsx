@@ -9,7 +9,7 @@ import { useAuth } from '@/features/auth';
 import { useCreateDoc, useDocStore } from '@/features/docs/doc-management';
 import { DocSearchTarget } from '@/features/docs/doc-search/components/DocSearchFilters';
 import { useCreateChildrenDoc } from '@/features/docs/doc-tree/api/useCreateChildren';
-import { useDocTreeData } from '@/features/docs/doc-tree/context/DocTreeContext';
+import { useDocTreeStore } from '@/features/docs/doc-tree/context/DocTreeContext';
 import { useCmdK } from '@/hook/useCmdK';
 
 import { useLeftPanelStore } from '../stores';
@@ -18,8 +18,8 @@ export const LeftPanelHeader = ({ children }: PropsWithChildren) => {
   const router = useRouter();
   const searchModal = useModal();
   const { authenticated } = useAuth();
-  const docTreeData = useDocTreeData();
-  const tree = docTreeData?.tree;
+  const treeStore = useDocTreeStore();
+
   const { currentDoc } = useDocStore();
   const isDoc = router.pathname === '/docs/[id]';
 
@@ -43,8 +43,8 @@ export const LeftPanelHeader = ({ children }: PropsWithChildren) => {
 
   const { mutate: createChildrenDoc } = useCreateChildrenDoc({
     onSuccess: (doc) => {
-      tree?.addRootNode(doc);
-      tree?.selectNodeById(doc.id);
+      treeStore.treeData?.addRootNode(doc);
+      treeStore.treeData?.selectNodeById(doc.id);
       void router.push(`/docs/${doc.id}`);
       togglePanel();
     },
@@ -56,10 +56,10 @@ export const LeftPanelHeader = ({ children }: PropsWithChildren) => {
   };
 
   const createNewDoc = () => {
-    if (docTreeData && docTreeData.root && isDoc) {
+    if (treeStore.root && isDoc) {
       createChildrenDoc({
         title: t('Untitled page'),
-        parentId: docTreeData.root.id,
+        parentId: treeStore.root.id,
       });
     } else {
       createDoc();

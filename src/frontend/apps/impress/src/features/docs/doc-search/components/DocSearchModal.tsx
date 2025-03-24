@@ -15,7 +15,7 @@ import {
 import { Doc, useInfiniteDocs } from '@/docs/doc-management';
 import { useResponsiveStore } from '@/stores';
 
-import { useDocTreeData } from '../../doc-tree/context/DocTreeContext';
+import { useDocTreeStore } from '../../doc-tree/context/DocTreeContext';
 import EmptySearchIcon from '../assets/illustration-docs-empty.png';
 
 import {
@@ -36,8 +36,9 @@ export const DocSearchModal = ({
   ...modalProps
 }: DocSearchModalProps) => {
   const { t } = useTranslation();
-  const tree = useDocTreeData();
+
   const router = useRouter();
+  const treeStore = useDocTreeStore();
 
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<DocSearchFiltersValues>(
@@ -56,17 +57,16 @@ export const DocSearchModal = ({
     page: 1,
     title: search,
     ...filters,
-    parent_id: tree?.root?.id,
+    parent_id: treeStore?.root?.id,
   });
   const loading = isFetching || isRefetching || isLoading;
   const handleInputSearch = useDebouncedCallback(setSearch, 300);
 
   const handleSelect = (doc: Doc) => {
-    if (tree?.initialRootId !== doc.id) {
-      tree?.tree.resetTree([]);
-      tree?.tree.setSelectedNode(doc);
-      tree?.setRoot(doc);
-      tree?.setInitialTargetId(doc.id);
+    if (treeStore?.initialRootId !== doc.id) {
+      treeStore.setSelectedNode(doc);
+      treeStore.setRoot(doc);
+      treeStore.setInitialTargetId(doc.id);
     }
     router.push(`/docs/${doc.id}`);
     modalProps.onClose?.();

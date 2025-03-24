@@ -15,7 +15,7 @@ import {
   useDoc,
   useDocStore,
 } from '@/features/docs/doc-management/';
-import { DocTreeProvider } from '@/features/docs/doc-tree/context/DocTreeContext';
+import { useDocTreeStore } from '@/features/docs/doc-tree/context/DocTreeContext';
 import { MainLayout } from '@/layouts';
 import { useBroadcastStore } from '@/stores';
 import { NextPageWithLayout } from '@/types/next';
@@ -24,6 +24,14 @@ export function DocLayout() {
   const {
     query: { id },
   } = useRouter();
+
+  const treeStore = useDocTreeStore();
+
+  useEffect(() => {
+    if (typeof id === 'string' && !treeStore.initialTargetId) {
+      treeStore.setInitialTargetId(id);
+    }
+  }, [id, treeStore]);
 
   if (typeof id !== 'string') {
     return null;
@@ -35,11 +43,9 @@ export function DocLayout() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <DocTreeProvider initialTargetId={id}>
-        <MainLayout>
-          <DocPage id={id} />
-        </MainLayout>
-      </DocTreeProvider>
+      <MainLayout>
+        {treeStore.initialTargetId && <DocPage id={id} />}
+      </MainLayout>
     </>
   );
 }
@@ -59,6 +65,8 @@ const DocPage = ({ id }: DocProps) => {
     {
       staleTime: 0,
       queryKey: [KEY_DOC, { id }],
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     },
   );
 
@@ -89,7 +97,6 @@ const DocPage = ({ id }: DocProps) => {
 
   useEffect(() => {
     return () => {
-      console.log('unmount');
       setCurrentDoc(undefined);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

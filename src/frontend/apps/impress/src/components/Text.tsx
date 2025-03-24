@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { CSSProperties, ComponentPropsWithRef, forwardRef } from 'react';
 import styled from 'styled-components';
 
@@ -11,7 +12,7 @@ type TextSizes = keyof typeof sizes;
 export interface TextProps extends BoxProps {
   as?: 'p' | 'span' | 'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   $elipsis?: boolean;
-  $isMaterialIcon?: boolean;
+  $isMaterialIcon?: boolean | 'filled';
   $weight?: CSSProperties['fontWeight'];
   $textAlign?: CSSProperties['textAlign'];
   $size?: TextSizes | (string & {});
@@ -58,13 +59,20 @@ export const TextStyled = styled(Box)<TextProps>`
 
 const Text = forwardRef<HTMLElement, ComponentPropsWithRef<typeof TextStyled>>(
   ({ className, $isMaterialIcon, ...props }, ref) => {
+    const isFilled = $isMaterialIcon === 'filled';
+    const isMaterialIcon =
+      typeof $isMaterialIcon === 'boolean' && $isMaterialIcon;
+
     return (
       <TextStyled
         ref={ref}
         as="span"
         $theme="greyscale"
         $variation="text"
-        className={`${className || ''}${$isMaterialIcon ? ' material-icons' : ''}`}
+        className={clsx(className || '', {
+          'material-icons': isMaterialIcon,
+          'material-icons-filled': isFilled,
+        })}
         {...props}
       />
     );

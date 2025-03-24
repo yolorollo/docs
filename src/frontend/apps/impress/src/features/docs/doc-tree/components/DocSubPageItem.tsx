@@ -1,13 +1,16 @@
-import { TreeViewItem, TreeViewNodeProps } from '@gouvfr-lasuite/ui-kit';
+import {
+  TreeViewItem,
+  TreeViewNodeProps,
+  useTree,
+} from '@gouvfr-lasuite/ui-kit';
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import { css } from 'styled-components';
 
 import { Box, Icon, Text } from '@/components';
 import { useCunninghamTheme } from '@/cunningham';
-import { Doc } from '@/features/docs/doc-management';
+import { Doc, KEY_SUB_DOC, useDoc } from '@/features/docs/doc-management';
 import { useLeftPanelStore } from '@/features/left-panel';
-
-import { useDocTreeData } from '../context/DocTreeContext';
 
 import Logo from './../assets/sub-page-logo.svg';
 import { DocTreeItemActions } from './DocTreeItemActions';
@@ -24,18 +27,43 @@ const ItemTextCss = css`
 `;
 
 type Props = TreeViewNodeProps<Doc> & {
+  treeData: ReturnType<typeof useTree<Doc>>;
   doc: Doc;
   setSelectedNode: (node: Doc) => void;
 };
 
-export const DocSubPageItem = ({ doc, setSelectedNode, ...props }: Props) => {
+export const DocSubPageItem = ({
+  doc,
+  setSelectedNode,
+  treeData,
+  ...props
+}: Props) => {
   const { loadChildren, node } = props;
-
+  const isInitialLoad = useRef(false);
   const { spacingsTokens } = useCunninghamTheme();
   const spacing = spacingsTokens();
   const router = useRouter();
   const { togglePanel } = useLeftPanelStore();
-  const treeData = useDocTreeData();
+
+  const { data: docQuery } = useDoc(
+    { isTree: true, id: doc.id },
+    {
+      initialData: doc,
+      queryKey: [KEY_SUB_DOC, { id: doc.id }],
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  useEffect(() => {
+    if (docQuery && isInitialLoad.current === true) {
+      console.log('docQuery', docQuery);
+      treeData?.updateNode(docQuery.id, docQuery);
+    }
+    if (docQuery) {
+      isInitialLoad.current = true;
+    }
+  }, [docQuery, treeData]);
 
   const afterCreate = (createdDoc: Doc) => {
     const actualChildren = node.data.children ?? [];
@@ -46,7 +74,7 @@ export const DocSubPageItem = ({ doc, setSelectedNode, ...props }: Props) => {
           node.open();
 
           router.push(`/docs/${doc.id}`);
-          treeData?.tree.setChildren(node.data.value.id, allChildren);
+          treeData?.setChildren(node.data.value.id, allChildren);
           togglePanel();
         })
         .catch(console.error);
@@ -57,7 +85,7 @@ export const DocSubPageItem = ({ doc, setSelectedNode, ...props }: Props) => {
         childrenCount: 0,
         parentId: node.id,
       };
-      treeData?.tree.addChild(node.data.value.id, newDoc);
+      treeData?.addChild(node.data.value.id, newDoc);
       node.open();
       router.push(`/docs/${createdDoc.id}`);
       togglePanel();
@@ -72,7 +100,7 @@ export const DocSubPageItem = ({ doc, setSelectedNode, ...props }: Props) => {
     <TreeViewItem
       {...props}
       loadChildren={() =>
-        treeData?.tree.handleLoadChildren(props.node.data.value.id)
+        treeData?.handleLoadChildren(props.node.data.value.id)
       }
       onClick={() => {
         setSelectedNode(props.node.data.value as Doc);
@@ -122,7 +150,12 @@ export const DocSubPageItem = ({ doc, setSelectedNode, ...props }: Props) => {
             {doc.title}
           </Text>
           {doc.nb_accesses_direct > 1 && (
-            <Icon isFilled iconName="group" $size="16px" $variation="400" />
+            <Icon
+              $isMaterialIcon="filled"
+              iconName="group"
+              $size="16px"
+              $variation="400"
+            />
           )}
         </Box>
 
@@ -134,6 +167,7 @@ export const DocSubPageItem = ({ doc, setSelectedNode, ...props }: Props) => {
         >
           <DocTreeItemActions
             doc={doc}
+            treeData={treeData}
             parentId={node.data.parentKey}
             onCreateSuccess={afterCreate}
           />

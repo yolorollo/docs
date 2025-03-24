@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { Tooltip } from '@openfun/cunningham-react';
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { css } from 'styled-components';
@@ -11,13 +12,13 @@ import {
   Doc,
   KEY_DOC,
   KEY_LIST_DOC,
+  KEY_SUB_DOC,
   useTrans,
   useUpdateDoc,
 } from '@/docs/doc-management';
 import { useBroadcastStore, useResponsiveStore } from '@/stores';
 
-import { useDocTreeData } from '../../doc-tree/context/DocTreeContext';
-
+import { useDocTreeStore } from '../../doc-tree/context/DocTreeContext';
 interface DocTitleProps {
   doc: Doc;
 }
@@ -53,22 +54,27 @@ export const DocTitleText = ({ title }: DocTitleTextProps) => {
 const DocTitleInput = ({ doc }: DocTitleProps) => {
   const { isDesktop } = useResponsiveStore();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const { colorsTokens } = useCunninghamTheme();
+  const treeStore = useDocTreeStore();
   const [titleDisplay, setTitleDisplay] = useState(doc.title);
-  const data = useDocTreeData();
+
   const { untitledDocument } = useTrans();
 
   const { broadcast } = useBroadcastStore();
 
   const { mutate: updateDoc } = useUpdateDoc({
-    listInvalideQueries: [KEY_DOC, KEY_LIST_DOC],
+    listInvalideQueries: [KEY_LIST_DOC],
     onSuccess(updatedDoc) {
       // Broadcast to every user connected to the document
       broadcast(`${KEY_DOC}-${updatedDoc.id}`);
-      data?.tree?.updateNode(updatedDoc.id, { title: updatedDoc.title });
-      if (updatedDoc.id === data?.root?.id) {
-        void data?.refreshRoot();
+      if (updatedDoc.id === treeStore.root?.id) {
+        treeStore.setRoot(updatedDoc);
       }
+      queryClient.setQueryData(
+        [KEY_SUB_DOC, { id: updatedDoc.id }],
+        updatedDoc,
+      );
     },
   });
 

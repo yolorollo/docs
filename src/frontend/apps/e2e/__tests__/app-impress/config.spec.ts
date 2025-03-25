@@ -5,25 +5,6 @@ import { expect, test } from '@playwright/test';
 import { CONFIG, createDoc, overrideConfig } from './common';
 
 test.describe('Config', () => {
-  test('it checks the config api is called', async ({ page }) => {
-    const responsePromise = page.waitForResponse(
-      (response) =>
-        response.url().includes('/config/') && response.status() === 200,
-    );
-
-    await page.goto('/');
-
-    const response = await responsePromise;
-    expect(response.ok()).toBeTruthy();
-
-    const json = (await response.json()) as typeof CONFIG;
-    const { theme_customization, ...configApi } = json;
-    expect(theme_customization).toBeDefined();
-    const { theme_customization: _, ...CONFIG_LEFT } = CONFIG;
-
-    expect(configApi).toStrictEqual(CONFIG_LEFT);
-  });
-
   test('it checks that sentry is trying to init from config endpoint', async ({
     page,
   }) => {
@@ -143,9 +124,7 @@ test.describe('Config', () => {
 test.describe('Config: Not loggued', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
-  test('it checks that theme is configured from config endpoint', async ({
-    page,
-  }) => {
+  test('it checks the config api is called', async ({ page }) => {
     const responsePromise = page.waitForResponse(
       (response) =>
         response.url().includes('/config/') && response.status() === 200,
@@ -156,8 +135,22 @@ test.describe('Config: Not loggued', () => {
     const response = await responsePromise;
     expect(response.ok()).toBeTruthy();
 
-    const jsonResponse = await response.json();
-    expect(jsonResponse.FRONTEND_THEME).toStrictEqual('default');
+    const json = (await response.json()) as typeof CONFIG;
+    const { theme_customization, ...configApi } = json;
+    expect(theme_customization).toBeDefined();
+    const { theme_customization: _, ...CONFIG_LEFT } = CONFIG;
+
+    expect(configApi).toStrictEqual(CONFIG_LEFT);
+  });
+
+  test('it checks that theme is configured from config endpoint', async ({
+    page,
+  }) => {
+    await overrideConfig(page, {
+      FRONTEND_THEME: 'dsfr',
+    });
+
+    await page.goto('/');
 
     const header = page.locator('header').first();
     // alt 'Gouvernement Logo' comes from the theme

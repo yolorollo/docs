@@ -20,7 +20,6 @@ test.describe('Footer', () => {
 
     await expect(footer.getByAltText('Docs Logo')).toBeVisible();
     await expect(footer.getByRole('heading', { name: 'Docs' })).toBeVisible();
-    await expect(footer.getByText('BETA')).toBeVisible();
 
     await expect(footer.getByRole('link', { name: 'Github' })).toBeVisible();
     await expect(footer.getByRole('link', { name: 'DINUM' })).toBeVisible();
@@ -57,6 +56,7 @@ test.describe('Footer', () => {
 
   test('checks the footer is correctly overrided', async ({ page }) => {
     await overrideConfig(page, {
+      FRONTEND_THEME: 'dsfr',
       theme_customization: {
         footer: {
           default: {

@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test';
 import cs from 'convert-stream';
 
 import {
+  CONFIG,
   createDoc,
   goToGridDoc,
   mockedDocument,
@@ -279,6 +280,22 @@ test.describe('Doc Editor', () => {
   });
 
   test('it checks the AI buttons', async ({ page, browserName }) => {
+    await page.route('**/api/v1.0/config/', async (route) => {
+      const request = route.request();
+      if (request.method().includes('GET')) {
+        await route.fulfill({
+          json: {
+            ...CONFIG,
+            AI_FEATURE_ENABLED: true,
+          },
+        });
+      } else {
+        await route.continue();
+      }
+    });
+
+    await page.goto('/');
+
     await page.route(/.*\/ai-translate\//, async (route) => {
       const request = route.request();
       if (request.method().includes('POST')) {
@@ -338,7 +355,24 @@ test.describe('Doc Editor', () => {
   ].forEach(({ ai_transform, ai_translate }) => {
     test(`it checks AI buttons when can transform is at "${ai_transform}" and can translate is at "${ai_translate}"`, async ({
       page,
+      browserName,
     }) => {
+      await page.route('**/api/v1.0/config/', async (route) => {
+        const request = route.request();
+        if (request.method().includes('GET')) {
+          await route.fulfill({
+            json: {
+              ...CONFIG,
+              AI_FEATURE_ENABLED: true,
+            },
+          });
+        } else {
+          await route.continue();
+        }
+      });
+
+      await page.goto('/');
+
       await mockedDocument(page, {
         accesses: [
           {
@@ -364,11 +398,17 @@ test.describe('Doc Editor', () => {
         link_reach: 'public',
         link_role: 'editor',
         created_at: '2021-09-01T09:00:00Z',
+        title: '',
       });
 
-      await goToGridDoc(page);
+      const [randomDoc] = await createDoc(
+        page,
+        'doc-editor-ai',
+        browserName,
+        1,
+      );
 
-      await verifyDocName(page, 'Mocked document');
+      await verifyDocName(page, randomDoc);
 
       await page.locator('.bn-block-outer').last().fill('Hello World');
 

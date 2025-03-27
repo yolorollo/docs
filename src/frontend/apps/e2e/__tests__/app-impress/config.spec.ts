@@ -2,24 +2,7 @@ import path from 'path';
 
 import { expect, test } from '@playwright/test';
 
-import { createDoc, verifyDocName } from './common';
-
-const config = {
-  CRISP_WEBSITE_ID: null,
-  COLLABORATION_WS_URL: 'ws://localhost:4444/collaboration/ws/',
-  ENVIRONMENT: 'development',
-  FRONTEND_THEME: 'default',
-  MEDIA_BASE_URL: 'http://localhost:8083',
-  LANGUAGES: [
-    ['en-us', 'English'],
-    ['fr-fr', 'Français'],
-    ['de-de', 'Deutsch'],
-    ['nl-nl', 'Nederlands'],
-  ],
-  LANGUAGE_CODE: 'en-us',
-  POSTHOG_KEY: {},
-  SENTRY_DSN: null,
-};
+import { CONFIG, createDoc, verifyDocName } from './common';
 
 test.describe('Config', () => {
   test('it checks the config api is called', async ({ page }) => {
@@ -33,7 +16,7 @@ test.describe('Config', () => {
     const response = await responsePromise;
     expect(response.ok()).toBeTruthy();
 
-    expect(await response.json()).toStrictEqual(config);
+    expect(await response.json()).toStrictEqual(CONFIG);
   });
 
   test('it checks that sentry is trying to init from config endpoint', async ({
@@ -44,7 +27,7 @@ test.describe('Config', () => {
       if (request.method().includes('GET')) {
         await route.fulfill({
           json: {
-            ...config,
+            ...CONFIG,
             SENTRY_DSN: 'https://sentry.io/123',
           },
         });
@@ -117,6 +100,24 @@ test.describe('Config', () => {
     expect(webSocket.url()).toContain('ws://localhost:4444/collaboration/ws/');
   });
 
+  test('it checks the AI feature flag from config endpoint', async ({
+    page,
+    browserName,
+  }) => {
+    await page.goto('/');
+
+    await createDoc(page, 'doc-ai-feature', browserName, 1);
+
+    await page.locator('.bn-block-outer').last().fill('Anything');
+    await page.getByText('Anything').dblclick();
+    expect(
+      await page.locator('button[data-test="convertMarkdown"]').count(),
+    ).toBe(1);
+    expect(await page.locator('button[data-test="ai-actions"]').count()).toBe(
+      0,
+    );
+  });
+
   test('it checks that Crisp is trying to init from config endpoint', async ({
     page,
   }) => {
@@ -125,7 +126,7 @@ test.describe('Config', () => {
       if (request.method().includes('GET')) {
         await route.fulfill({
           json: {
-            ...config,
+            ...CONFIG,
             CRISP_WEBSITE_ID: '1234',
           },
         });

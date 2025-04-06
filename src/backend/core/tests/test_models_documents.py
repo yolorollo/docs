@@ -172,7 +172,7 @@ def test_models_documents_get_abilities_forbidden(
         "link_select_options": {
             "authenticated": ["reader", "editor"],
             "public": ["reader", "editor"],
-            "restricted": ["reader", "editor"],
+            "restricted": None,
         },
         "partial_update": False,
         "restore": False,
@@ -231,7 +231,7 @@ def test_models_documents_get_abilities_reader(
         "link_select_options": {
             "authenticated": ["reader", "editor"],
             "public": ["reader", "editor"],
-            "restricted": ["reader", "editor"],
+            "restricted": None,
         },
         "media_auth": True,
         "media_check": True,
@@ -295,7 +295,7 @@ def test_models_documents_get_abilities_editor(
         "link_select_options": {
             "authenticated": ["reader", "editor"],
             "public": ["reader", "editor"],
-            "restricted": ["reader", "editor"],
+            "restricted": None,
         },
         "media_auth": True,
         "media_check": True,
@@ -348,7 +348,7 @@ def test_models_documents_get_abilities_owner(django_assert_num_queries):
         "link_select_options": {
             "authenticated": ["reader", "editor"],
             "public": ["reader", "editor"],
-            "restricted": ["reader", "editor"],
+            "restricted": None,
         },
         "media_auth": True,
         "media_check": True,
@@ -398,7 +398,7 @@ def test_models_documents_get_abilities_administrator(django_assert_num_queries)
         "link_select_options": {
             "authenticated": ["reader", "editor"],
             "public": ["reader", "editor"],
-            "restricted": ["reader", "editor"],
+            "restricted": None,
         },
         "media_auth": True,
         "media_check": True,
@@ -451,7 +451,7 @@ def test_models_documents_get_abilities_editor_user(django_assert_num_queries):
         "link_select_options": {
             "authenticated": ["reader", "editor"],
             "public": ["reader", "editor"],
-            "restricted": ["reader", "editor"],
+            "restricted": None,
         },
         "media_auth": True,
         "media_check": True,
@@ -511,7 +511,7 @@ def test_models_documents_get_abilities_reader_user(
         "link_select_options": {
             "authenticated": ["reader", "editor"],
             "public": ["reader", "editor"],
-            "restricted": ["reader", "editor"],
+            "restricted": None,
         },
         "media_auth": True,
         "media_check": True,
@@ -569,7 +569,7 @@ def test_models_documents_get_abilities_preset_role(django_assert_num_queries):
         "link_select_options": {
             "authenticated": ["reader", "editor"],
             "public": ["reader", "editor"],
-            "restricted": ["reader", "editor"],
+            "restricted": None,
         },
         "media_auth": True,
         "media_check": True,
@@ -1190,7 +1190,6 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
         (
             [{"link_reach": "public", "link_role": "reader"}],
             {
-                "restricted": ["editor"],
                 "authenticated": ["editor"],
                 "public": ["reader", "editor"],
             },
@@ -1199,7 +1198,6 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
         (
             [{"link_reach": "authenticated", "link_role": "reader"}],
             {
-                "restricted": ["editor"],
                 "authenticated": ["reader", "editor"],
                 "public": ["reader", "editor"],
             },
@@ -1211,7 +1209,7 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
         (
             [{"link_reach": "restricted", "link_role": "reader"}],
             {
-                "restricted": ["reader", "editor"],
+                "restricted": None,
                 "authenticated": ["reader", "editor"],
                 "public": ["reader", "editor"],
             },
@@ -1219,7 +1217,7 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
         (
             [{"link_reach": "restricted", "link_role": "editor"}],
             {
-                "restricted": ["editor"],
+                "restricted": None,
                 "authenticated": ["reader", "editor"],
                 "public": ["reader", "editor"],
             },
@@ -1245,7 +1243,7 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
                 {"link_reach": "restricted", "link_role": "editor"},
             ],
             {
-                "restricted": ["editor"],
+                "restricted": None,
                 "authenticated": ["reader", "editor"],
                 "public": ["reader", "editor"],
             },
@@ -1257,7 +1255,6 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
                 {"link_reach": "public", "link_role": "reader"},
             ],
             {
-                "restricted": ["editor"],
                 "authenticated": ["editor"],
                 "public": ["reader", "editor"],
             },
@@ -1269,7 +1266,6 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
                 {"link_reach": "public", "link_role": "reader"},
             ],
             {
-                "restricted": ["editor"],
                 "authenticated": ["editor"],
                 "public": ["reader", "editor"],
             },
@@ -1295,7 +1291,6 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
                 {"link_reach": "authenticated", "link_role": "reader"},
             ],
             {
-                "restricted": ["editor"],
                 "authenticated": ["reader", "editor"],
                 "public": ["reader", "editor"],
             },
@@ -1313,7 +1308,7 @@ def test_models_documents_restore_complex_bis(django_assert_num_queries):
             {
                 "public": ["reader", "editor"],
                 "authenticated": ["reader", "editor"],
-                "restricted": ["reader", "editor"],
+                "restricted": None,
             },
         ),
     ],

@@ -46,7 +46,7 @@ def test_api_documents_retrieve_anonymous_public_standalone():
             "link_select_options": {
                 "authenticated": ["reader", "editor"],
                 "public": ["reader", "editor"],
-                "restricted": ["reader", "editor"],
+                "restricted": None,
             },
             "media_auth": True,
             "media_check": True,
@@ -212,7 +212,7 @@ def test_api_documents_retrieve_authenticated_unrelated_public_or_authenticated(
             "link_select_options": {
                 "authenticated": ["reader", "editor"],
                 "public": ["reader", "editor"],
-                "restricted": ["reader", "editor"],
+                "restricted": None,
             },
             "media_auth": True,
             "media_check": True,

@@ -31,6 +31,7 @@ and this project adheres to
 
 ### Fixed
 
+- 🐛(backend) fix link definition select options linked to ancestors #846
 - 🐛(frontend) table of content disappearing #982
 - 🐛(frontend) fix multiple EmojiPicker #1012
 - 🐛(frontend) fix meta title #1017
@@ -110,6 +111,10 @@ and this project adheres to
 - 🔒(frontend) enhance file download security #889
 - 🐛(backend) race condition create doc #633
 - 🐛(frontend) fix breaklines in custom blocks #908
+
+## Fixed
+
+- 🐛(backend) fix link definition select options linked to ancestors #846
 
 ## [3.1.0] - 2025-04-07
 

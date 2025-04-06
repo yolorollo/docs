@@ -10,6 +10,7 @@ and this project adheres to
 
 ### Added
 
+- ✨(backend) add ancestors links definitions to document abilities #846
 - ✨(frontend) add customization for translations #857
 - ✨(frontend) Duplicate a doc #1078
 - 📝(project) add troubleshoot doc #1066

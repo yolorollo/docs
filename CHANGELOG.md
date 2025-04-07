@@ -8,10 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [3.1.0] - 2025-04-07
+
 ## Added
 
 - 🚩(backend) add feature flag for the footer #841
 - 🔧(backend) add view to manage footer json #841
+- ✨(frontend) add custom css style #771
+- 🚩(frontend) conditionally render AI button only when feature is enabled #814
 
 ## Changed
 
@@ -27,7 +31,6 @@ and this project adheres to
 ## Added
 
 - 📄(legal) Require contributors to sign a DCO #779
-- ✨(frontend) add custom css style #771
 
 ## Changed
 
@@ -36,7 +39,6 @@ and this project adheres to
 
 ## Fixed
 
-- 🐛(frontend) conditionally render AI button only when feature is enabled #814
 - 🐛(backend) compute ancestor_links in get_abilities if needed #725
 - 🔒️(back) restrict access to document accesses #801
 
@@ -522,7 +524,8 @@ and this project adheres to
 - ✨(frontend) Coming Soon page (#67)
 - 🚀 Impress, project to manage your documents easily and collaboratively.
 
-[unreleased]: https://github.com/numerique-gouv/impress/compare/v3.0.0...main
+[unreleased]: https://github.com/numerique-gouv/impress/compare/v3.1.0...main
+[v3.1.0]: https://github.com/numerique-gouv/impress/releases/v3.1.0
 [v3.0.0]: https://github.com/numerique-gouv/impress/releases/v3.0.0
 [v2.6.0]: https://github.com/numerique-gouv/impress/releases/v2.6.0
 [v2.5.0]: https://github.com/numerique-gouv/impress/releases/v2.5.0

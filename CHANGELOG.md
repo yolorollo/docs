@@ -24,6 +24,10 @@ and this project adheres to
 
 ⚡️(frontend) reduce unblocking time for config #867
 
+## Fixed
+
+- 🐛(nginx) fix 404 when accessing a doc #866
+
 ## [3.1.0] - 2025-04-07
 
 ## Added

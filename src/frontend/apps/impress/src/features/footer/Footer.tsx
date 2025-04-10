@@ -78,6 +78,7 @@ export const Footer = () => {
                 >
                   {logo?.src && (
                     <Image
+                      className="c__image-system-filter"
                       priority
                       src={logo.src}
                       alt={logo?.alt || t('Logo')}

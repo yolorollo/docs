@@ -59,6 +59,7 @@ tokens.themes.default.components = {
     'la-gaufre': false,
     'home-proconnect': false,
     beta: false,
+    'image-system-filter': '',
   },
 };
 
@@ -228,6 +229,7 @@ const genericTheme = {
           },
         },
       },
+      'image-system-filter': 'saturate(0.2)',
     },
   },
 };

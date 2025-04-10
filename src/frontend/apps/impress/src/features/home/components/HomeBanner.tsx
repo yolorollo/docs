@@ -88,6 +88,7 @@ export default function HomeBanner() {
         </Box>
         {!isMobile && (
           <Image
+            className="c__image-system-filter"
             src={banner}
             alt={t('Banner image')}
             priority

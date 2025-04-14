@@ -1,6 +1,7 @@
 """
 Test document accesses API endpoints for users in impress's core app.
 """
+# pylint: disable=too-many-lines
 
 import random
 from uuid import uuid4
@@ -624,14 +625,18 @@ def test_api_document_accesses_update_administrator_to_owner(
 
 
 @pytest.mark.parametrize("via", VIA)
+@pytest.mark.parametrize(
+    "role", [role for role in models.RoleChoices if role != models.RoleChoices.OWNER]
+)
 def test_api_document_accesses_update_owner(
     via,
+    role,
     mock_user_teams,
     mock_reset_connections,  # pylint: disable=redefined-outer-name
 ):
     """
     A user who is an owner in a document should be allowed to update
-    a user access for this document whatever the role.
+    a user access for this document for all roles except owner.
     """
     user = factories.UserFactory(with_owned_document=True)
 
@@ -648,9 +653,7 @@ def test_api_document_accesses_update_owner(
         )
 
     factories.UserFactory()
-    access = factories.UserDocumentAccessFactory(
-        document=document,
-    )
+    access = factories.UserDocumentAccessFactory(document=document, role=role)
     old_values = serializers.DocumentAccessSerializer(instance=access).data
 
     new_values = {
@@ -729,11 +732,30 @@ def test_api_document_accesses_update_owner_self(
     access.refresh_from_db()
     assert access.role == "owner"
 
-    # Add another owner and it should now work
+    # Add another owner and it should now work only for user, not for team
     factories.UserDocumentAccessFactory(document=document, role="owner")
 
-    user_id = str(access.user_id) if via == USER else None
-    with mock_reset_connections(document.id, user_id):
+    if via == USER:
+        factories.UserDocumentAccessFactory(document=document, role="owner")
+
+        user_id = str(access.user_id) if via == USER else None
+        with mock_reset_connections(document.id, user_id):
+            response = client.put(
+                f"/api/v1.0/documents/{document.id!s}/accesses/{access.id!s}/",
+                data={
+                    **old_values,
+                    "role": new_role,
+                    "user_id": old_values.get("user", {}).get("id")
+                    if old_values.get("user") is not None
+                    else None,
+                },
+                format="json",
+            )
+
+            assert response.status_code == 200
+            access.refresh_from_db()
+            assert access.role == new_role
+    else:
         response = client.put(
             f"/api/v1.0/documents/{document.id!s}/accesses/{access.id!s}/",
             data={
@@ -745,13 +767,41 @@ def test_api_document_accesses_update_owner_self(
             },
             format="json",
         )
-
-        assert response.status_code == 200
-        access.refresh_from_db()
-        assert access.role == new_role
+        assert response.status_code == 403
 
 
-# Delete
+@pytest.mark.parametrize("via", VIA)
+def test_api_document_accesses_update_owner_from_other_owner(via, mock_user_teams):
+    """
+    A user who is an owner in a document should not be allowed to update
+    access for another user who is also an owner in the document.
+    """
+    user = factories.UserFactory(with_owned_document=True)
+
+    client = APIClient()
+    client.force_login(user)
+
+    document = factories.DocumentFactory()
+    if via == USER:
+        factories.UserDocumentAccessFactory(document=document, user=user, role="owner")
+    elif via == TEAM:
+        mock_user_teams.return_value = ["lasuite", "unknown"]
+        factories.TeamDocumentAccessFactory(
+            document=document, team="lasuite", role="owner"
+        )
+    other_owner = factories.UserFactory()
+    access = factories.UserDocumentAccessFactory(
+        document=document, user=other_owner, role="owner"
+    )
+
+    old_values = serializers.DocumentAccessSerializer(instance=access).data
+    response = client.put(
+        f"/api/v1.0/documents/{document.id!s}/accesses/{access.id!s}/",
+        data={**old_values, "role": models.RoleChoices.ADMIN},
+        format="json",
+    )
+
+    assert response.status_code == 403
 
 
 def test_api_document_accesses_delete_anonymous():
@@ -898,14 +948,18 @@ def test_api_document_accesses_delete_administrator_on_owners(via, mock_user_tea
 
 
 @pytest.mark.parametrize("via", VIA)
+@pytest.mark.parametrize(
+    "role", [role for role in models.RoleChoices if role != models.RoleChoices.OWNER]
+)
 def test_api_document_accesses_delete_owners(
     via,
+    role,
     mock_user_teams,
     mock_reset_connections,  # pylint: disable=redefined-outer-name
 ):
     """
     Users should be able to delete the document access of another user
-    for a document of which they are owner.
+    for a document of which they are owner but can not delete other owners.
     """
     user = factories.UserFactory()
 
@@ -921,7 +975,7 @@ def test_api_document_accesses_delete_owners(
             document=document, team="lasuite", role="owner"
         )
 
-    access = factories.UserDocumentAccessFactory(document=document)
+    access = factories.UserDocumentAccessFactory(document=document, role=role)
 
     assert models.DocumentAccess.objects.count() == 2
     assert models.DocumentAccess.objects.filter(user=access.user).exists()
@@ -933,6 +987,79 @@ def test_api_document_accesses_delete_owners(
 
         assert response.status_code == 204
         assert models.DocumentAccess.objects.count() == 1
+
+
+@pytest.mark.parametrize("via", VIA)
+def test_api_document_accesses_delete_other_owners(via, mock_user_teams):
+    """
+    A user should not be able to delete the document access of another owner.
+    """
+    user = factories.UserFactory()
+
+    client = APIClient()
+    client.force_login(user)
+
+    document = factories.DocumentFactory()
+    if via == USER:
+        factories.UserDocumentAccessFactory(document=document, user=user, role="owner")
+    elif via == TEAM:
+        mock_user_teams.return_value = ["lasuite", "unknown"]
+        factories.TeamDocumentAccessFactory(
+            document=document, team="lasuite", role="owner"
+        )
+
+    access = factories.UserDocumentAccessFactory(document=document, role="owner")
+
+    assert models.DocumentAccess.objects.count() == 2
+    assert models.DocumentAccess.objects.filter(user=access.user).exists()
+
+    response = client.delete(
+        f"/api/v1.0/documents/{document.id!s}/accesses/{access.id!s}/",
+    )
+
+    assert response.status_code == 403
+    assert models.DocumentAccess.objects.count() == 2
+
+
+@pytest.mark.parametrize("via", VIA)
+def test_api_document_accesses_delete_self_owner_if_other_owner_exists(
+    via,
+    mock_reset_connections,  # pylint: disable=redefined-outer-name
+):
+    """
+    A user should be able to delete their own ownership access if there is another owner in the
+    document.
+    """
+    user = factories.UserFactory(with_owned_document=True)
+
+    client = APIClient()
+    client.force_login(user)
+
+    document = factories.DocumentFactory()
+    access = None
+    if via == USER:
+        access = factories.UserDocumentAccessFactory(
+            document=document, user=user, role="owner"
+        )
+    elif via == TEAM:
+        pytest.skip("Implement when team ownership is implemented")
+
+    factories.UserDocumentAccessFactory(document=document, role="owner")
+
+    assert (
+        models.DocumentAccess.objects.filter(document=document, role="owner").count()
+        == 2
+    )
+    with mock_reset_connections(document.id, str(access.user_id)):
+        response = client.delete(
+            f"/api/v1.0/documents/{document.id!s}/accesses/{access.id!s}/",
+        )
+
+    assert response.status_code == 204
+    assert (
+        models.DocumentAccess.objects.filter(document=document, role="owner").count()
+        == 1
+    )
 
 
 @pytest.mark.parametrize("via", VIA)
@@ -957,10 +1084,16 @@ def test_api_document_accesses_delete_owners_last_owner(via, mock_user_teams):
             document=document, team="lasuite", role="owner"
         )
 
-    assert models.DocumentAccess.objects.count() == 2
+    assert (
+        models.DocumentAccess.objects.filter(document=document, role="owner").count()
+        == 1
+    )
     response = client.delete(
         f"/api/v1.0/documents/{document.id!s}/accesses/{access.id!s}/",
     )
 
     assert response.status_code == 403
-    assert models.DocumentAccess.objects.count() == 2
+    assert (
+        models.DocumentAccess.objects.filter(document=document, role="owner").count()
+        == 1
+    )

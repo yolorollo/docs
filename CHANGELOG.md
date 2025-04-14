@@ -12,6 +12,10 @@ and this project adheres to
 
 - 🚩 add homepage feature flag #861
 
+## Fixed
+
+- 🔒️(back) don't allow an owner to change or delete other owner accesses
+
 
 ## [3.1.0] - 2025-04-07
 

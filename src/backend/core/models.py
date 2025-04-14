@@ -1113,11 +1113,17 @@ class DocumentAccess(BaseAccess):
         """
         roles = self._get_roles(self.document, user)
         is_owner_or_admin = bool(set(roles).intersection(set(PRIVILEGED_ROLES)))
+
         if self.role == RoleChoices.OWNER:
+            # An owner can only delete its own access if other owners exist
             can_delete = (
-                RoleChoices.OWNER in roles
+                self.user
+                and self.user.id == user.id
                 and self.document.accesses.filter(role=RoleChoices.OWNER).count() > 1
             )
+
+            # An owner can only update its own access to a non-owner role
+            # and only if other owners exist
             set_role_to = (
                 [RoleChoices.ADMIN, RoleChoices.EDITOR, RoleChoices.READER]
                 if can_delete

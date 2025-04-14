@@ -151,6 +151,23 @@ def test_models_document_access_get_abilities_for_owner_of_owner():
     ).user
     abilities = access.get_abilities(user)
     assert abilities == {
+        "destroy": False,
+        "retrieve": True,
+        "update": False,
+        "partial_update": False,
+        "set_role_to": [],
+    }
+
+
+def test_models_document_access_get_abilities_for_owner_of_self_with_other_owner():
+    """
+    Check abilities of self access for the owner of a document when there is at least one other
+    owner left.
+    """
+    access = factories.UserDocumentAccessFactory(role="owner")
+    factories.UserDocumentAccessFactory(document=access.document, role="owner")
+    abilities = access.get_abilities(access.user)
+    assert abilities == {
         "destroy": True,
         "retrieve": True,
         "update": True,

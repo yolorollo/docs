@@ -48,6 +48,10 @@ All commit messages must adhere to the following format:
 Implemented login and signup features, and integrated OAuth2 for social login.
 ```
 
+## Signing commits
+
+Only signed commits are accepted. They can be signed using a SSH or GPG key. Github documentation about signing commits contains all the information you need : https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification#about-commit-signature-verification
+
 ## Changelog Update
 
 Please add a line to the changelog describing your development. The changelog entry should include a brief summary of the changes, this helps in tracking changes effectively and keeping everyone informed. We usually include the title of the pull request, followed by the pull request ID to finish the log entry. The changelog line should be less than 80 characters in total.

@@ -1,5 +1,8 @@
 """API filters for Impress' core application."""
 
+import unicodedata
+
+from django.db.models import CharField, Func
 from django.utils.translation import gettext_lazy as _
 
 import django_filters
@@ -7,12 +10,64 @@ import django_filters
 from core import models
 
 
-class DocumentFilter(django_filters.FilterSet):
+def remove_accents(value):
+    """Remove accents from a string (vélo -> velo)."""
+    return "".join(
+        c
+        for c in unicodedata.normalize("NFD", value)
+        if unicodedata.category(c) != "Mn"
+    )
+
+
+# pylint: disable=abstract-method
+class Unaccent(Func):
     """
-    Custom filter for filtering documents.
+    PostgreSQL unaccent function wrapper for use in Django ORM queries.
+
+    This allows you to annotate a field using the unaccented version of a
+    text column, enabling accent-insensitive filtering.
     """
 
-    title = django_filters.CharFilter(
+    function = "unaccent"
+    template = "unaccent(%(expressions)s::text)"
+    output_field = CharField()
+
+
+class AccentInsensitiveCharFilter(django_filters.CharFilter):
+    """
+    A custom CharFilter that performs case-insensitive and accent-insensitive filtering.
+
+    This filter uses PostgreSQL's extension `unaccent` function to remove diacritics (accents)
+    from characters before applying the lookup expression (e.g., `icontains`).
+    """
+
+    def filter(self, qs, value):
+        """
+        Apply the filter to the queryset using the unaccented version of the field.
+
+        Args:
+            qs: The queryset to filter.
+            value: The value to search for in the unaccented field.
+
+        Returns:
+            A filtered queryset.
+        """
+        if value:
+            value = remove_accents(value)
+            field_name = self.field_name
+            annotated_field = f"unaccented_{field_name}"
+            return qs.annotate(**{annotated_field: Unaccent(field_name)}).filter(
+                **{f"{annotated_field}__{self.lookup_expr}": value}
+            )
+        return qs
+
+
+class DocumentFilter(django_filters.FilterSet):
+    """
+    Custom filter for filtering documents on title (accent and case insensitive).
+    """
+
+    title = AccentInsensitiveCharFilter(
         field_name="title", lookup_expr="icontains", label=_("Title")
     )
 

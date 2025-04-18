@@ -61,6 +61,23 @@ export const cssEditor = (readonly: boolean) => css`
       height: 38px;
     }
 
+    /**
+     * Callout, Paragraph and Heading blocks
+     */
+    .bn-block {
+      border-radius: var(--c--theme--spacings--3xs);
+    }
+
+    .bn-block-outer {
+      border-radius: var(--c--theme--spacings--3xs);
+    }
+
+    .bn-block-content[data-content-type='paragraph'],
+    .bn-block-content[data-content-type='heading'] {
+      padding: var(--c--theme--spacings--3xs) var(--c--theme--spacings--3xs);
+      border-radius: var(--c--theme--spacings--3xs);
+    }
+
     h1 {
       font-size: 1.875rem;
     }

@@ -452,4 +452,41 @@ test.describe('Doc Editor', () => {
     const svgBuffer = await cs.toBuffer(await download.createReadStream());
     expect(svgBuffer.toString()).toContain('Hello svg');
   });
+
+  test('it checks if callout custom block', async ({ page, browserName }) => {
+    await createDoc(page, 'doc-toolbar', browserName, 1);
+
+    const editor = page.locator('.ProseMirror');
+    await editor.click();
+    await page.locator('.bn-block-outer').last().fill('/');
+    await page.getByText('Add a callout block').click();
+
+    const calloutBlock = page
+      .locator('div[data-content-type="callout"]')
+      .first();
+
+    await expect(calloutBlock).toBeVisible();
+
+    await calloutBlock.locator('.inline-content').fill('example text');
+
+    await expect(page.locator('.bn-block').first()).toHaveAttribute(
+      'data-background-color',
+      'yellow',
+    );
+
+    const emojiButton = calloutBlock.getByRole('button');
+    await expect(emojiButton).toHaveText('💡');
+    await emojiButton.click();
+    await page.locator('button[aria-label="⚠️"]').click();
+    await expect(emojiButton).toHaveText('⚠️');
+
+    await page.locator('.bn-side-menu > button').last().click();
+    await page.locator('.mantine-Menu-dropdown > button').last().click();
+    await page.locator('.bn-color-picker-dropdown > button').last().click();
+
+    await expect(page.locator('.bn-block').first()).toHaveAttribute(
+      'data-background-color',
+      'pink',
+    );
+  });
 });

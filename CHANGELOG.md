@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Added
+
+✨ Add a custom callout block to the editor #892
+
 ## [3.2.1] - 2025-05-06
 
 ## Fixed

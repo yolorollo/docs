@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Fixed
+
+- 🐛(helm) charts generate invalid YAML for collaboration API / WS #890
+
 ## [3.4.2] - 2025-07-18
 
 ### Changed
@@ -140,7 +144,6 @@ and this project adheres to
 - 🔒(frontend) enhance file download security #889
 - 🐛(backend) race condition create doc #633
 - 🐛(frontend) fix breaklines in custom blocks #908
-
 
 ## [3.1.0] - 2025-04-07
 

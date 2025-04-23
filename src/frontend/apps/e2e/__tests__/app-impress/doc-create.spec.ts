@@ -29,6 +29,28 @@ test.describe('Doc Create', () => {
     await expect(page.getByTestId('grid-loader')).toBeHidden();
     await expect(docsGrid.getByText(docTitle)).toBeVisible();
   });
+
+  test('it creates a sub doc from slash menu editor', async ({
+    page,
+    browserName,
+  }) => {
+    const [title] = await createDoc(page, 'my-new-slash-doc', browserName, 1);
+
+    await verifyDocName(page, title);
+
+    await page.locator('.bn-block-outer').last().fill('/');
+    await page
+      .getByText('New sub-doc', {
+        exact: true,
+      })
+      .click();
+
+    const input = page.getByRole('textbox', { name: 'doc title input' });
+    await expect(input).toHaveText('');
+    await expect(
+      page.locator('.c__tree-view--row-content').getByText('Untitled document'),
+    ).toBeVisible();
+  });
 });
 
 test.describe('Doc Create: Not logged', () => {

@@ -3,9 +3,13 @@ import { Button } from '@openfun/cunningham-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
-import { Doc, useCreateDoc, useDocStore } from '@/features/docs';
-import { useCreateChildrenDoc } from '@/features/docs/doc-tree/api/useCreateChildren';
-import { isOwnerOrAdmin } from '@/features/docs/doc-tree/utils';
+import {
+  Doc,
+  isOwnerOrAdmin,
+  useCreateChildDoc,
+  useCreateDoc,
+  useDocStore,
+} from '@/docs/doc-management';
 
 import { useLeftPanelStore } from '../stores';
 
@@ -44,7 +48,7 @@ export const LeftPanelHeaderDocButton = () => {
   const { togglePanel } = useLeftPanelStore();
   const treeContext = useTreeContext<Doc>();
   const tree = treeContext?.treeData;
-  const { mutate: createChildrenDoc } = useCreateChildrenDoc({
+  const { mutate: createChildDoc } = useCreateChildDoc({
     onSuccess: (doc) => {
       tree?.addRootNode(doc);
       tree?.selectNodeById(doc.id);
@@ -54,19 +58,20 @@ export const LeftPanelHeaderDocButton = () => {
   });
 
   const onCreateDoc = () => {
-    if (treeContext && treeContext.root) {
-      createChildrenDoc({
-        parentId: treeContext.root.id,
-      });
+    if (!treeContext?.root) {
+      return;
     }
+
+    createChildDoc({
+      parentId: treeContext.root.id,
+    });
   };
 
+  const disabled =
+    (currentDoc && !isOwnerOrAdmin(currentDoc)) || !treeContext?.root;
+
   return (
-    <Button
-      color="tertiary"
-      onClick={onCreateDoc}
-      disabled={currentDoc && !isOwnerOrAdmin(currentDoc)}
-    >
+    <Button color="tertiary" onClick={onCreateDoc} disabled={disabled}>
       {t('New page')}
     </Button>
   );

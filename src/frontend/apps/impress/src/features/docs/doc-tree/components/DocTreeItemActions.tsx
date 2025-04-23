@@ -10,14 +10,18 @@ import { useTranslation } from 'react-i18next';
 import { css } from 'styled-components';
 
 import { Box, BoxButton, Icon } from '@/components';
+import {
+  Doc,
+  ModalRemoveDoc,
+  isOwnerOrAdmin,
+  useCopyDocLink,
+  useCreateChildDoc,
+} from '@/docs/doc-management';
 import { useLeftPanelStore } from '@/features/left-panel';
 
-import { Doc, ModalRemoveDoc, useCopyDocLink } from '../../doc-management';
-import { useCreateChildrenDoc } from '../api/useCreateChildren';
 import { useDetachDoc } from '../api/useDetach';
 import MoveDocIcon from '../assets/doc-extract-bold.svg';
 import { useTreeUtils } from '../hooks';
-import { isOwnerOrAdmin } from '../utils';
 
 type DocTreeItemActionsProps = {
   doc: Doc;
@@ -92,7 +96,7 @@ export const DocTreeItemActions = ({
     },
   ];
 
-  const { mutate: createChildrenDoc } = useCreateChildrenDoc({
+  const { mutate: createChildDoc } = useCreateChildDoc({
     onSuccess: (doc) => {
       onCreateSuccess?.(doc);
       togglePanel();
@@ -144,7 +148,7 @@ export const DocTreeItemActions = ({
               e.stopPropagation();
               e.preventDefault();
 
-              createChildrenDoc({
+              createChildDoc({
                 parentId: doc.id,
               });
             }}

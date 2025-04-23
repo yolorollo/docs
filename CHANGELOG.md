@@ -14,6 +14,7 @@ and this project adheres to
 - ✨(backend) allow masking documents from the list view #1171
 - ✨(frontend) subdocs can manage link reach #1190
 - ✨(frontend) add duplicate action to doc tree #1175
+- ✨(frontend) Interlinking doc #904
 - ✨(frontend) add multi columns support for editor #1219
 
 ### Changed

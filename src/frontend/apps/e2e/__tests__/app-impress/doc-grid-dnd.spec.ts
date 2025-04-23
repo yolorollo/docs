@@ -179,7 +179,7 @@ test.describe('Doc grid dnd mobile', () => {
     await expect(docsGrid.getByRole('row').first()).toBeVisible();
     await expect(docsGrid.locator('.--docs--grid-droppable')).toHaveCount(0);
 
-    await createDoc(page, 'Draggable doc mobile', browserName, 1, false, true);
+    await createDoc(page, 'Draggable doc mobile', browserName, 1, true);
 
     await createRootSubPage(
       page,

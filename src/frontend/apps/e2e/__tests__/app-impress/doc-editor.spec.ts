@@ -706,4 +706,59 @@ test.describe('Doc Editor', () => {
       'pink',
     );
   });
+
+  test('it checks interlink feature', async ({ page, browserName }) => {
+    const [randomDoc] = await createDoc(page, 'doc-interlink', browserName, 1);
+
+    await verifyDocName(page, randomDoc);
+
+    const { name: docChild1 } = await createRootSubPage(
+      page,
+      browserName,
+      'doc-interlink-child-1',
+    );
+
+    await verifyDocName(page, docChild1);
+
+    const { name: docChild2 } = await createRootSubPage(
+      page,
+      browserName,
+      'doc-interlink-child-2',
+    );
+
+    await verifyDocName(page, docChild2);
+
+    await page.locator('.bn-block-outer').last().fill('/');
+    await page.getByText('Link a doc').first().click();
+
+    const input = page.locator(
+      "span[data-inline-content-type='interlinkingSearchInline'] input",
+    );
+    const searchContainer = page.locator('.quick-search-container');
+
+    await input.fill('doc-interlink');
+
+    await expect(searchContainer.getByText(randomDoc)).toBeVisible();
+    await expect(searchContainer.getByText(docChild1)).toBeVisible();
+    await expect(searchContainer.getByText(docChild2)).toBeVisible();
+
+    await input.pressSequentially('-child');
+
+    await expect(searchContainer.getByText(docChild1)).toBeVisible();
+    await expect(searchContainer.getByText(docChild2)).toBeVisible();
+    await expect(searchContainer.getByText(randomDoc)).toBeHidden();
+
+    // use keydown to select the second result
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+
+    const interlink = page.getByRole('link', {
+      name: 'child-2',
+    });
+
+    await expect(interlink).toBeVisible();
+    await interlink.click();
+
+    await verifyDocName(page, docChild2);
+  });
 });

@@ -11,8 +11,7 @@ import { css } from 'styled-components';
 
 import { Box, StyledLink } from '@/components';
 import { useCunninghamTheme } from '@/cunningham';
-import { Doc } from '@/docs/doc-management';
-import { SimpleDocItem } from '@/docs/docs-grid';
+import { Doc, SimpleDocItem } from '@/docs/doc-management';
 
 import { KEY_DOC_TREE, useDocTree } from '../api/useDocTree';
 import { useMoveDoc } from '../api/useMove';

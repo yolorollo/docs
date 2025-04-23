@@ -2,6 +2,7 @@ import {
   BlockNoteSchema,
   Dictionary,
   defaultBlockSpecs,
+  defaultInlineContentSpecs,
   locales,
   withPageBreak,
 } from '@blocknote/core';
@@ -28,6 +29,10 @@ import { randomColor } from '../utils';
 import { BlockNoteSuggestionMenu } from './BlockNoteSuggestionMenu';
 import { BlockNoteToolbar } from './BlockNoteToolBar/BlockNoteToolbar';
 import { DividerBlock, QuoteBlock } from './custom-blocks';
+import {
+  InterlinkingLinkInlineContent,
+  InterlinkingSearchInlineContent,
+} from './custom-inline-content';
 
 export const blockNoteSchema = withPageBreak(
   BlockNoteSchema.create({
@@ -35,6 +40,11 @@ export const blockNoteSchema = withPageBreak(
       ...defaultBlockSpecs,
       divider: DividerBlock,
       quote: QuoteBlock,
+    },
+    inlineContentSpecs: {
+      ...defaultInlineContentSpecs,
+      interlinkingSearchInline: InterlinkingSearchInlineContent,
+      interlinkingLinkInline: InterlinkingLinkInlineContent,
     },
   }),
 );

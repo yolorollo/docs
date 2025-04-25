@@ -5,6 +5,7 @@ import {
 } from '@blocknote/core';
 import { useBlockNoteEditor } from '@blocknote/react';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { css } from 'styled-components';
 
 import {
@@ -12,6 +13,7 @@ import {
   Card,
   Icon,
   QuickSearch,
+  QuickSearchGroup,
   QuickSearchItemContent,
   Text,
 } from '@/components';
@@ -22,7 +24,12 @@ import {
   DocsStyleSchema,
 } from '@/docs/doc-editor';
 import FoundPageIcon from '@/docs/doc-editor/assets/doc-found.svg';
-import { useTrans } from '@/docs/doc-management';
+import AddPageIcon from '@/docs/doc-editor/assets/doc-plus.svg';
+import {
+  useCreateChildDocTree,
+  useDocStore,
+  useTrans,
+} from '@/docs/doc-management';
 import { DocSearchSubPageContent, DocSearchTarget } from '@/docs/doc-search';
 import { useResponsiveStore } from '@/stores';
 
@@ -64,6 +71,9 @@ export const SearchPage = ({
     DocsInlineContentSchema,
     DocsStyleSchema
   >();
+  const { t } = useTranslation();
+  const { currentDoc } = useDocStore();
+  const createChildDoc = useCreateChildDocTree(currentDoc?.id);
   const inputRef = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState('');
   const { isDesktop } = useResponsiveStore();
@@ -247,6 +257,52 @@ export const SearchPage = ({
                   }
                 />
               )}
+            />
+            <QuickSearchGroup
+              group={{
+                groupName: '',
+                elements: [],
+                endActions: [
+                  {
+                    onSelect: createChildDoc,
+                    content: (
+                      <Box
+                        $css={css`
+                          border-top: 1px solid
+                            var(--c--theme--colors--greyscale-200);
+                        `}
+                        $width="100%"
+                      >
+                        <Box
+                          $direction="row"
+                          $gap="0.4rem"
+                          $align="center"
+                          $padding={{
+                            vertical: '0.5rem',
+                            horizontal: '0.3rem',
+                          }}
+                          $css={css`
+                            &:hover {
+                              background-color: var(
+                                --c--theme--colors--greyscale-100
+                              );
+                            }
+                          `}
+                        >
+                          <AddPageIcon />
+                          <Text
+                            $size="14px"
+                            $color="var(--c--theme--colors--greyscale-1000)"
+                            contentEditable={false}
+                          >
+                            {t('New sub-doc')}
+                          </Text>
+                        </Box>
+                      </Box>
+                    ),
+                  },
+                ],
+              }}
             />
           </Card>
         </QuickSearch>

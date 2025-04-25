@@ -51,6 +51,28 @@ test.describe('Doc Create', () => {
       page.locator('.c__tree-view--row-content').getByText('Untitled document'),
     ).toBeVisible();
   });
+
+  test('it creates a sub doc from interlinking dropdown', async ({
+    page,
+    browserName,
+  }) => {
+    const [title] = await createDoc(page, 'my-new-slash-doc', browserName, 1);
+
+    await verifyDocName(page, title);
+
+    await page.locator('.bn-block-outer').last().fill('/');
+    await page.getByText('Link a doc').first().click();
+    await page
+      .locator('.quick-search-container')
+      .getByText('New sub-doc')
+      .click();
+
+    const input = page.getByRole('textbox', { name: 'doc title input' });
+    await expect(input).toHaveText('');
+    await expect(
+      page.locator('.c__tree-view--row-content').getByText('Untitled document'),
+    ).toBeVisible();
+  });
 });
 
 test.describe('Doc Create: Not logged', () => {

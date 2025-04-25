@@ -664,7 +664,7 @@ class Document(MP_Node, BaseModel):
 
     @property
     def ancestors_link_definition(self):
-        """Link defintion equivalent to all document's ancestors."""
+        """Link definition equivalent to all document's ancestors."""
         if getattr(self, "_ancestors_link_definition", None) is None:
             if self.depth <= 1:
                 ancestors_links = []

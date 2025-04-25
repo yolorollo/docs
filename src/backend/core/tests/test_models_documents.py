@@ -154,7 +154,6 @@ def test_models_documents_get_abilities_forbidden(
         "accesses_view": False,
         "ai_transform": False,
         "ai_translate": False,
-        "ancestors_links_definitions": {},
         "attachment_upload": False,
         "can_edit": False,
         "children_create": False,
@@ -217,7 +216,6 @@ def test_models_documents_get_abilities_reader(
         "accesses_view": False,
         "ai_transform": False,
         "ai_translate": False,
-        "ancestors_links_definitions": {},
         "attachment_upload": False,
         "can_edit": False,
         "children_create": False,
@@ -256,7 +254,7 @@ def test_models_documents_get_abilities_reader(
     assert all(
         value is False
         for key, value in document.get_abilities(user).items()
-        if key not in ["link_select_options", "ancestors_links_definitions"]
+        if key not in ["link_select_options", "ancestors_links_definition"]
     )
 
 
@@ -282,7 +280,6 @@ def test_models_documents_get_abilities_editor(
         "accesses_view": False,
         "ai_transform": is_authenticated,
         "ai_translate": is_authenticated,
-        "ancestors_links_definitions": {},
         "attachment_upload": True,
         "can_edit": True,
         "children_create": is_authenticated,
@@ -320,7 +317,7 @@ def test_models_documents_get_abilities_editor(
     assert all(
         value is False
         for key, value in document.get_abilities(user).items()
-        if key not in ["link_select_options", "ancestors_links_definitions"]
+        if key not in ["link_select_options", "ancestors_links_definition"]
     )
 
 
@@ -336,7 +333,6 @@ def test_models_documents_get_abilities_owner(django_assert_num_queries):
         "accesses_view": True,
         "ai_transform": True,
         "ai_translate": True,
-        "ancestors_links_definitions": {},
         "attachment_upload": True,
         "can_edit": True,
         "children_create": True,
@@ -387,7 +383,6 @@ def test_models_documents_get_abilities_administrator(django_assert_num_queries)
         "accesses_view": True,
         "ai_transform": True,
         "ai_translate": True,
-        "ancestors_links_definitions": {},
         "attachment_upload": True,
         "can_edit": True,
         "children_create": True,
@@ -425,7 +420,7 @@ def test_models_documents_get_abilities_administrator(django_assert_num_queries)
     assert all(
         value is False
         for key, value in document.get_abilities(user).items()
-        if key not in ["link_select_options", "ancestors_links_definitions"]
+        if key not in ["link_select_options", "ancestors_links_definition"]
     )
 
 
@@ -441,7 +436,6 @@ def test_models_documents_get_abilities_editor_user(django_assert_num_queries):
         "accesses_view": True,
         "ai_transform": True,
         "ai_translate": True,
-        "ancestors_links_definitions": {},
         "attachment_upload": True,
         "can_edit": True,
         "children_create": True,
@@ -479,7 +473,7 @@ def test_models_documents_get_abilities_editor_user(django_assert_num_queries):
     assert all(
         value is False
         for key, value in document.get_abilities(user).items()
-        if key not in ["link_select_options", "ancestors_links_definitions"]
+        if key not in ["link_select_options", "ancestors_links_definition"]
     )
 
 
@@ -502,7 +496,6 @@ def test_models_documents_get_abilities_reader_user(
         # You should not access AI if it's restricted to users with specific access
         "ai_transform": access_from_link and ai_access_setting != "restricted",
         "ai_translate": access_from_link and ai_access_setting != "restricted",
-        "ancestors_links_definitions": {},
         "attachment_upload": access_from_link,
         "can_edit": access_from_link,
         "children_create": access_from_link,
@@ -542,7 +535,7 @@ def test_models_documents_get_abilities_reader_user(
         assert all(
             value is False
             for key, value in document.get_abilities(user).items()
-            if key not in ["link_select_options", "ancestors_links_definitions"]
+            if key not in ["link_select_options", "ancestors_links_definition"]
         )
 
 
@@ -561,7 +554,6 @@ def test_models_documents_get_abilities_preset_role(django_assert_num_queries):
         "accesses_view": True,
         "ai_transform": False,
         "ai_translate": False,
-        "ancestors_links_definitions": {},
         "attachment_upload": False,
         "can_edit": False,
         "children_create": False,
@@ -1269,45 +1261,60 @@ def test_models_documents_get_select_options(reach, role, select_options):
     assert models.LinkReachChoices.get_select_options(reach, role) == select_options
 
 
-def test_models_documents_compute_ancestors_links_no_highest_readable():
-    """Test the compute_ancestors_links method."""
-    document = factories.DocumentFactory(link_reach="public")
-    assert document.compute_ancestors_links(user=AnonymousUser()) == []
-
-
-def test_models_documents_compute_ancestors_links_highest_readable(
+def test_models_documents_compute_ancestors_links_paths_mapping_single(
     django_assert_num_queries,
 ):
-    """Test the compute_ancestors_links method."""
+    """Test the compute_ancestors_links_paths_mapping method on a single document."""
+    document = factories.DocumentFactory(link_reach="public")
+    with django_assert_num_queries(1):
+        assert document.compute_ancestors_links_paths_mapping() == {
+            document.path: [{"link_reach": "public", "link_role": document.link_role}]
+        }
+
+
+def test_models_documents_compute_ancestors_links_paths_mapping_structure(
+    django_assert_num_queries,
+):
+    """Test the compute_ancestors_links_paths_mapping method on a tree of documents."""
     user = factories.UserFactory()
     other_user = factories.UserFactory()
-    root = factories.DocumentFactory(
-        link_reach="restricted", link_role="reader", users=[user]
-    )
 
-    factories.DocumentFactory(
-        parent=root, link_reach="public", link_role="reader", users=[user]
-    )
-    child2 = factories.DocumentFactory(
+    root = factories.DocumentFactory(link_reach="restricted", users=[user])
+    document = factories.DocumentFactory(
         parent=root,
         link_reach="authenticated",
         link_role="editor",
         users=[user, other_user],
     )
-    child3 = factories.DocumentFactory(
-        parent=child2,
+    sibling = factories.DocumentFactory(parent=root, link_reach="public", users=[user])
+    child = factories.DocumentFactory(
+        parent=document,
         link_reach="authenticated",
         link_role="reader",
         users=[user, other_user],
     )
 
-    with django_assert_num_queries(2):
-        assert child3.compute_ancestors_links(user=user) == [
-            {"link_reach": root.link_reach, "link_role": root.link_role},
-            {"link_reach": child2.link_reach, "link_role": child2.link_role},
-        ]
+    # Child
+    with django_assert_num_queries(1):
+        assert child.compute_ancestors_links_paths_mapping() == {
+            root.path: [{"link_reach": "restricted", "link_role": root.link_role}],
+            document.path: [
+                {"link_reach": "restricted", "link_role": root.link_role},
+                {"link_reach": document.link_reach, "link_role": document.link_role},
+            ],
+            child.path: [
+                {"link_reach": "restricted", "link_role": root.link_role},
+                {"link_reach": document.link_reach, "link_role": document.link_role},
+                {"link_reach": child.link_reach, "link_role": child.link_role},
+            ],
+        }
 
-    with django_assert_num_queries(2):
-        assert child3.compute_ancestors_links(user=other_user) == [
-            {"link_reach": child2.link_reach, "link_role": child2.link_role},
-        ]
+    # Sibling
+    with django_assert_num_queries(1):
+        assert sibling.compute_ancestors_links_paths_mapping() == {
+            root.path: [{"link_reach": "restricted", "link_role": root.link_role}],
+            sibling.path: [
+                {"link_reach": "restricted", "link_role": root.link_role},
+                {"link_reach": sibling.link_reach, "link_role": sibling.link_role},
+            ],
+        }

@@ -25,6 +25,7 @@ and this project adheres to
 
 ### Changed
 
+- ♻️(backend) simplify roles by ranking them and return only the max role #846
 - 📌(yjs) stop pinning node to minor version on yjs docker image #1005
 - 🧑‍💻(docker) add .next to .dockerignore #1055
 - 🧑‍💻(docker) handle frontend development images with docker compose #1033
@@ -113,10 +114,6 @@ and this project adheres to
 - 🔒(frontend) enhance file download security #889
 - 🐛(backend) race condition create doc #633
 - 🐛(frontend) fix breaklines in custom blocks #908
-
-## Fixed
-
-- 🐛(backend) fix link definition select options linked to ancestors #846
 
 ## [3.1.0] - 2025-04-07
 

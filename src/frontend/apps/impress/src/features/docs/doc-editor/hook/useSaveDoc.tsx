@@ -10,7 +10,7 @@ import { toBase64 } from '../utils';
 
 const SAVE_INTERVAL = 60000;
 
-const useSaveDoc = (docId: string, yDoc: Y.Doc, canSave: boolean) => {
+export const useSaveDoc = (docId: string, yDoc: Y.Doc, canSave: boolean) => {
   const { mutate: updateDoc } = useUpdateDoc({
     listInvalideQueries: [KEY_LIST_DOC_VERSIONS],
     onSuccess: () => {
@@ -92,5 +92,3 @@ const useSaveDoc = (docId: string, yDoc: Y.Doc, canSave: boolean) => {
     };
   }, [router.events, saveDoc]);
 };
-
-export default useSaveDoc;

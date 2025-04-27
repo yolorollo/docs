@@ -19,9 +19,7 @@ import { Box, TextErrors } from '@/components';
 import { Doc } from '@/docs/doc-management';
 import { useAuth } from '@/features/auth';
 
-import { useUploadFile } from '../hook';
-import { useHeadings } from '../hook/useHeadings';
-import useSaveDoc from '../hook/useSaveDoc';
+import { useHeadings, useSaveDoc, useShortcuts, useUploadFile } from '../hook';
 import { useEditorStore } from '../stores';
 import { cssEditor } from '../styles';
 import { randomColor } from '../utils';
@@ -129,6 +127,7 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
     [collabName, lang, provider, uploadFile],
   );
   useHeadings(editor);
+  useShortcuts(editor);
 
   useEffect(() => {
     setEditor(editor);

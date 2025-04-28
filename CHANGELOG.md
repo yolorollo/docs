@@ -33,6 +33,7 @@ and this project adheres to
 - 🐛(frontend) fix meta title #1017
 - 🔧(git) set LF line endings for all text files #1032
 - 📝(docs) minor fixes to docs/env.md
+- ✨(backend) support `_FILE` environment variables for secrets #912
 
 ### Removed
 

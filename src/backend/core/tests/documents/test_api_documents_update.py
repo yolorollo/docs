@@ -160,6 +160,8 @@ def test_api_documents_update_anonymous_or_authenticated_unrelated(
     for key, value in document_values.items():
         if key in [
             "id",
+            "ancestors_link_reach",
+            "ancestors_link_role",
             "accesses",
             "created_at",
             "creator",
@@ -277,6 +279,8 @@ def test_api_documents_update_authenticated_editor_administrator_or_owner(
     for key, value in document_values.items():
         if key in [
             "id",
+            "ancestors_link_reach",
+            "ancestors_link_role",
             "created_at",
             "creator",
             "depth",

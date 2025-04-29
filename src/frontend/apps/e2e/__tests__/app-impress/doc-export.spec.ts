@@ -235,7 +235,7 @@ test.describe('Doc Export', () => {
     // Trigger slash menu to show menu
     await editor.click();
     await editor.fill('/');
-    await page.getByText('Add a quote block').click();
+    await page.getByText('Quote or excerpt').click();
 
     await expect(
       editor.locator('.bn-block-content[data-content-type="quote"]'),

@@ -34,6 +34,7 @@ and this project adheres to
 - 🔧(git) set LF line endings for all text files #1032
 - 📝(docs) minor fixes to docs/env.md
 - ✨(backend) support `_FILE` environment variables for secrets #912
+- ✨(frontend) support `_FILE` environment variables for secrets #912
 
 ### Removed
 

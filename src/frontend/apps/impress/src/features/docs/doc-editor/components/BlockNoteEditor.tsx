@@ -113,6 +113,12 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
         showCursorLabels: showCursorLabels as 'always' | 'activity',
       },
       dictionary: locales[lang as keyof typeof locales],
+      tables: {
+        splitCells: true,
+        cellBackgroundColor: true,
+        cellTextColor: true,
+        headers: true,
+      },
       uploadFile,
       schema: blockNoteSchema,
     },

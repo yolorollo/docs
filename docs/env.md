@@ -85,6 +85,7 @@ These are the environmental variables you can set for the impress-backend contai
 | AI_BASE_URL                                     | OpenAI compatible AI base url                                                                 |                                                         |
 | AI_MODEL                                        | AI Model to use                                                                               |                                                         |
 | AI_ALLOW_REACH_FROM                             | Users that can use AI must be this level. options are "public", "authenticated", "restricted" | authenticated                                           |
+| AI_FEATURE_ENABLED                              | Enable AI options                                                                             | false                                                   |
 | Y_PROVIDER_API_KEY                              | Y provider API key                                                                            |                                                         |
 | Y_PROVIDER_API_BASE_URL                         | Y Provider url                                                                                |                                                         |
 | CONVERSION_API_ENDPOINT                         | Conversion API endpoint                                                                       | convert-markdown                                        |

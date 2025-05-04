@@ -25,6 +25,7 @@ and this project adheres to
 
 ### Changed
 
+- ♻️(backend) stop requiring owner for non-root documents #846
 - ♻️(backend) simplify roles by ranking them and return only the max role #846
 - 📌(yjs) stop pinning node to minor version on yjs docker image #1005
 - 🧑‍💻(docker) add .next to .dockerignore #1055

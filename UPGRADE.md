@@ -16,6 +16,14 @@ the following command inside your docker container:
 
 ## [Unreleased]
 
+## [4.0.0] - 2025-05-02
+
+We included the library `django-lasuite` in the project. 
+This library is used to manage the authentication.  
+2 settings name have changed with this new library:
+- `USER_OIDC_FIELDS_TO_FULLNAME` is now `OIDC_USERINFO_FULLNAME_FIELDS`
+- `USER_OIDC_FIELD_TO_SHORTNAME` is now `OIDC_USERINFO_SHORTNAME_FIELD`
+
 ## [3.0.0] - 2025-03-28
 
 We are not using the nginx auth request anymore to access the collaboration server (`yProvider`)

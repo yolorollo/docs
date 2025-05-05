@@ -418,7 +418,7 @@ class Base(Configuration):
         None, environ_name="FRONTEND_THEME", environ_prefix=None
     )
     FRONTEND_HOMEPAGE_FEATURE_ENABLED = values.BooleanValue(
-        default=False,
+        default=True,
         environ_name="FRONTEND_HOMEPAGE_FEATURE_ENABLED",
         environ_prefix=None,
     )

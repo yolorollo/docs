@@ -15,6 +15,7 @@ and this project adheres to
 - 🚩(frontend) version MIT only #911
 - ✨(backend) integrate maleware_detection from django-lasuite #936
 - 🩺(CI) add lint spell mistakes #954
+- 🛂(frontend) block edition to not connected users #945
 
 ## Changed
 

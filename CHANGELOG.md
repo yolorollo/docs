@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [3.2.1] - 2025-05-06
+
 ## Fixed
 
 - 🐛(frontend) fix list copy paste #943
@@ -553,7 +555,8 @@ and this project adheres to
 - ✨(frontend) Coming Soon page (#67)
 - 🚀 Impress, project to manage your documents easily and collaboratively.
 
-[unreleased]: https://github.com/numerique-gouv/impress/compare/v3.2.0...main
+[unreleased]: https://github.com/numerique-gouv/impress/compare/v3.2.1...main
+[v3.2.1]: https://github.com/numerique-gouv/impress/releases/v3.2.1
 [v3.2.0]: https://github.com/numerique-gouv/impress/releases/v3.2.0
 [v3.1.0]: https://github.com/numerique-gouv/impress/releases/v3.1.0
 [v3.0.0]: https://github.com/numerique-gouv/impress/releases/v3.0.0

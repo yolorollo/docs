@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Fixed
+
+- 🐛(frontend) fix list copy paste #943
+
 ## [3.2.0] - 2025-05-05
 
 ## Added

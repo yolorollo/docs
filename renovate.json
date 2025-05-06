@@ -11,22 +11,14 @@
     },
     {
       "groupName": "allowed django versions",
-      "matchManagers": [
-        "pep621"
-      ],
-      "matchPackageNames": [
-        "Django"
-      ],
+      "matchManagers": ["pep621"],
+      "matchPackageNames": ["Django"],
       "allowedVersions": "<5.2"
     },
     {
       "groupName": "allowed redis versions",
-      "matchManagers": [
-        "pep621"
-      ],
-      "matchPackageNames": [
-        "redis"
-      ],
+      "matchManagers": ["pep621"],
+      "matchPackageNames": ["redis"],
       "allowedVersions": "<6.0.0"
     },
     {
@@ -36,6 +28,7 @@
       "matchPackageNames": [
         "eslint",
         "fetch-mock",
+        "prosemirror-model",
         "node",
         "node-fetch",
         "workbox-webpack-plugin"

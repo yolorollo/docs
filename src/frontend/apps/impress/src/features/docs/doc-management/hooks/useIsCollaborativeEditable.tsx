@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { useIsOffline } from '@/features/service-worker';
+
 import { useProviderStore } from '../stores';
 import { Doc, LinkReach } from '../types';
 
@@ -12,12 +14,13 @@ export const useIsCollaborativeEditable = (doc: Doc) => {
   const isShared = docIsPublic || docIsAuth || docHasMember;
   const [isEditable, setIsEditable] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const { isOffline } = useIsOffline();
 
   /**
    * Connection can take a few seconds
    */
   useEffect(() => {
-    const _isEditable = isConnected || !isShared;
+    const _isEditable = isConnected || !isShared || isOffline;
     setIsLoading(true);
 
     if (_isEditable) {
@@ -32,7 +35,7 @@ export const useIsCollaborativeEditable = (doc: Doc) => {
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, [isConnected, isShared]);
+  }, [isConnected, isOffline, isShared]);
 
   return {
     isEditable,

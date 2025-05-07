@@ -20,6 +20,10 @@ and this project adheres to
 - 📝(frontend) Update documentation
 - ✅(frontend) Improve tests coverage
 
+### Removed
+
+- 🔥(back) remove footer endpoint
+
 ## [3.2.1] - 2025-05-06
 
 ## Fixed

@@ -4,3 +4,4 @@ BURST_THROTTLE_RATES="200/minute"
 DJANGO_SERVER_TO_SERVER_API_TOKENS=test-e2e
 Y_PROVIDER_API_KEY=yprovider-api-key
 Y_PROVIDER_API_BASE_URL=http://y-provider:4444/api/
+THEME_CUSTOMIZATION_FILE_PATH="" #force theme_customization to be empty

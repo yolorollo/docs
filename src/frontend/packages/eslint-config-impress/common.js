@@ -56,6 +56,7 @@ const globalRules = {
     'error',
     { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
   ],
+  'no-var': 'error',
   'react/jsx-curly-brace-presence': [
     'error',
     { props: 'never', children: 'never', propElementValues: 'always' },

@@ -13,6 +13,8 @@ and this project adheres to
 ## Fixed
 
 - 🐛(frontend) fix list copy paste #943
+- 📝(doc) update contributing policy (commit signatures are now mandatory) #895
+
 
 ## [3.2.0] - 2025-05-05
 
@@ -20,6 +22,7 @@ and this project adheres to
 
 - 🚸(backend) make document search on title accent-insensitive #874
 - 🚩 add homepage feature flag #861
+- 📝(doc) update contributing policy (commit signatures are now mandatory) #895
 - ✨(settings) Allow configuring PKCE for the SSO #886
 - 🌐(i18n) activate chinese and spanish languages #884
 - 🔧(backend) allow overwriting the data directory #893

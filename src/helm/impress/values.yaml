@@ -317,7 +317,7 @@ backend:
   themeCustomization:
     enabled: false
     file_content: ""
-    mount_path: /app/configuration/theme/
+    mount_path: /app/impress/configuration/theme
 
 
   ## @param backend.celery.replicas Amount of celery replicas

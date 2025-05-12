@@ -166,6 +166,18 @@ Requires top level scope
 {{ include "impress.fullname" . }}-y-provider
 {{- end }}
 
+
+{{/*
+Full name for the Celery Worker
+
+Requires top level scope
+*/}}
+
+
+{{- define "impress.celery.worker.fullname" -}}
+{{ include "impress.fullname" . }}-celery-worker
+{{- end }}
+
 {{/*
 Usage : {{ include "impress.secret.dockerconfigjson.name" (dict "fullname" (include "impress.fullname" .) "imageCredentials" .Values.path.to.the.image1) }}
 */}}

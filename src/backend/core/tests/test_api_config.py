@@ -18,6 +18,7 @@ pytestmark = pytest.mark.django_db
 
 
 @override_settings(
+    AI_FEATURE_ENABLED=False,
     COLLABORATION_WS_URL="http://testcollab/",
     CRISP_WEBSITE_ID="123",
     FRONTEND_CSS_URL="http://testcss/",

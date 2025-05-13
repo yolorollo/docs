@@ -3,7 +3,16 @@ entries:
   docs:
   - apiVersion: v2
     appVersion: latest
-    created: "2025-05-06T14:22:40.955746842Z"
+    created: "2025-05-13T07:19:47.099101464+02:00"
+    digest: f756d84b1bfae0c29c5737728a7b584ecc22f3c0b9d1962a77c41fb8948f230a
+    name: docs
+    type: application
+    urls:
+    - https://suitenumerique.github.io/docs/docs-3.3.0-test.20250513.tgz
+    version: 3.3.0-test.20250513
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-05-13T07:19:47.098275593+02:00"
     digest: 97350c0f49508051087d389e9517f9227454922e56a8ef8d777eb0647a9e75d0
     name: docs
     type: application
@@ -12,7 +21,7 @@ entries:
     version: 3.2.1
   - apiVersion: v2
     appVersion: latest
-    created: "2025-05-05T13:14:33.390115997Z"
+    created: "2025-05-13T07:19:47.096625736+02:00"
     digest: d92cb04aeb5fc8d5f84ded816a84f589b7f24b414aa5be2024d1eea32658093e
     name: docs
     type: application
@@ -21,7 +30,7 @@ entries:
     version: 3.2.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-04-07T13:57:55.111106773Z"
+    created: "2025-05-13T07:19:47.094456703+02:00"
     digest: d9545a00b10ace11d7ba01541b190bcba7c187a4717a0467f7ba0ca8d4c9d5d5
     name: docs
     type: application
@@ -30,7 +39,7 @@ entries:
     version: 3.1.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-03-28T10:54:28.839571862Z"
+    created: "2025-05-13T07:19:47.093701088+02:00"
     digest: e181ae9a0db62f4a165247e3505862e36e70cbaba12a2b1eb9444e19ecd4a4ae
     name: docs
     type: application
@@ -39,7 +48,7 @@ entries:
     version: 3.0.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-03-28T09:00:50.91264955Z"
+    created: "2025-05-13T07:19:47.092945558+02:00"
     digest: 49291c20f9123ba635618e624bd2e8a8db555acf4c05ab54c58623065e1ceff8
     name: docs
     type: application
@@ -48,7 +57,7 @@ entries:
     version: 2.7.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-03-21T10:54:00.874061177Z"
+    created: "2025-05-13T07:19:47.092163999+02:00"
     digest: faeea5f4eb7f5d06648f88fb430b70449c6d89b15e444f0745049b5550202e73
     name: docs
     type: application
@@ -57,7 +66,7 @@ entries:
     version: 2.6.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-03-18T13:45:14.567079112Z"
+    created: "2025-05-13T07:19:47.091158657+02:00"
     digest: b3c1f1083436b9c86be2c1bd576b86aef3946ffb5cdda6eb32b5843c9df39393
     name: docs
     type: application
@@ -66,7 +75,7 @@ entries:
     version: 2.5.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-03-06T08:50:24.206465971Z"
+    created: "2025-05-13T07:19:47.089700363+02:00"
     digest: 87ac783388b23aed82fbf9071db0ffdc0a1820414847596962db38eb79595b06
     name: docs
     type: application
@@ -75,7 +84,7 @@ entries:
     version: 2.4.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-03-03T12:22:30.687442485Z"
+    created: "2025-05-13T07:19:47.087728764+02:00"
     digest: f08c95288a2f8ed0db3fcb4dea7aef00cb1bde39de2cbce1bd4b41b4b9194628
     name: docs
     type: application
@@ -84,7 +93,7 @@ entries:
     version: 2.3.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-02-10T12:07:42.862863851Z"
+    created: "2025-05-13T07:19:47.086873836+02:00"
     digest: 5c9d2ac076184b6ae52f7258e4c9a43d59f283b0aa36a893c8850e5bc23b7170
     name: docs
     type: application
@@ -93,7 +102,7 @@ entries:
     version: 2.2.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-02-10T12:11:23.714222568Z"
+    created: "2025-05-13T07:19:47.082681697+02:00"
     digest: f7d58d8ab55e134176f0f2965bec563028213619bcc4595df19741874a387e1a
     name: docs
     type: application
@@ -102,7 +111,7 @@ entries:
     version: 2.2.0-beta-1
   - apiVersion: v2
     appVersion: latest
-    created: "2025-02-14T18:52:12.550468436Z"
+    created: "2025-05-13T07:19:47.085604721+02:00"
     digest: 85c6e8fa601d109c6126a472d7036f72557590d1b06d7126d7f7baf966cb4d15
     name: docs
     type: application
@@ -111,7 +120,7 @@ entries:
     version: 2.2.0-beta.2
   - apiVersion: v2
     appVersion: latest
-    created: "2025-02-10T15:20:11.832952085Z"
+    created: "2025-05-13T07:19:47.083885481+02:00"
     digest: 24b29dc5d5b8a7cdfe79c4968f03f46009e94192c8a69b5a9ce3102f7c176720
     name: docs
     type: application
@@ -120,7 +129,7 @@ entries:
     version: 2.2.0-beta.1
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-29T15:13:25.880322398Z"
+    created: "2025-05-13T07:19:47.080820385+02:00"
     digest: 02d1e924a036958ab08f654d907ffdca1e808e3b9a0ca7a983f58c16ca467174
     name: docs
     type: application
@@ -129,7 +138,7 @@ entries:
     version: 2.1.0
   - apiVersion: v2
     appVersion: latest
-    created: "2025-02-07T15:39:13.596643792Z"
+    created: "2025-05-13T07:19:47.079537634+02:00"
     digest: bcb7b0c844dc86127e8066bd78c12554a3ba97a64bc92bf3111f57c4af27c1df
     name: docs
     type: application
@@ -138,7 +147,7 @@ entries:
     version: 2.1.0-beta-1
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-27T12:08:31.061755098Z"
+    created: "2025-05-13T07:19:47.07881556+02:00"
     digest: b3e16439473497bfa04381e60a32015273b38c0d9e294a4a3552011a5db35532
     name: docs
     type: application
@@ -147,7 +156,7 @@ entries:
     version: 2.0.1-test.202501271307
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-27T11:55:23.401248402Z"
+    created: "2025-05-13T07:19:47.078142451+02:00"
     digest: c57aefc0990cc1a58b271afdb212706fe89a3af8e152c11e18014ba70815a5a2
     name: docs
     type: application
@@ -156,7 +165,7 @@ entries:
     version: 2.0.1-test.202501271238
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-27T10:50:36.043438044Z"
+    created: "2025-05-13T07:19:47.077447162+02:00"
     digest: d6c6b467c28b62af843fe18e90d0377db50a54e3271709ffb67172ee54178dfb
     name: docs
     type: application
@@ -165,7 +174,7 @@ entries:
     version: 2.0.1-test.202501271123
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-28T09:24:35.13509295Z"
+    created: "2025-05-13T07:19:47.076593014+02:00"
     digest: f7ed3be3279b92badec488579e9ff4c55b44f270ffe9e18a9f47d80dee1e27cf
     name: docs
     type: application
@@ -174,7 +183,7 @@ entries:
     version: 2.0.1-beta.8
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-27T12:24:56.797635562Z"
+    created: "2025-05-13T07:19:47.075294801+02:00"
     digest: 658fe6826387125bd0bebaa9b2434194037a5cc636d4a7cb1309a863ee8faacf
     name: docs
     type: application
@@ -183,7 +192,7 @@ entries:
     version: 2.0.1-beta.7
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-27T11:11:09.65542761Z"
+    created: "2025-05-13T07:19:47.074001639+02:00"
     digest: ce923243a136196ae209f76d71008fb42d21f309d85b23fb99ba71f29ea482d1
     name: docs
     type: application
@@ -192,7 +201,7 @@ entries:
     version: 2.0.1-beta.6
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-22T13:25:11.57666071Z"
+    created: "2025-05-13T07:19:47.073320194+02:00"
     digest: c617654d9bdadc9e09ad2ade77614e53dea371ce6543abe92224cdfc56097915
     name: docs
     type: application
@@ -201,7 +210,7 @@ entries:
     version: 2.0.1-beta.5
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-22T12:24:58.599968647Z"
+    created: "2025-05-13T07:19:47.072563172+02:00"
     digest: 0d7088537a3399235517a3c008eb9a28949f68b1e8f18697f3d142cf0076d213
     name: docs
     type: application
@@ -210,7 +219,7 @@ entries:
     version: 2.0.1-beta.4
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-22T12:23:13.581904477Z"
+    created: "2025-05-13T07:19:47.071780645+02:00"
     digest: 3cfa5a04699538165447bf6b4f78819fb10af8c4cc7488b55faa0169861593dd
     name: docs
     type: application
@@ -219,7 +228,7 @@ entries:
     version: 2.0.1-beta.3
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-22T12:14:28.913622761Z"
+    created: "2025-05-13T07:19:47.070915983+02:00"
     digest: b8a047ced70734c2864a307f13bc8eb55fbc05176d416b0f4690efca56be6a45
     name: docs
     type: application
@@ -228,7 +237,7 @@ entries:
     version: 2.0.1-beta.2
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-21T11:52:16.166431735Z"
+    created: "2025-05-13T07:19:47.069685582+02:00"
     digest: d31417263a3d052d58aa27acd630987f0833384be4ae52054daa12cd1a2ce3ac
     name: docs
     type: application
@@ -237,7 +246,7 @@ entries:
     version: 2.0.1-beta.1
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-08T16:09:17.988144773Z"
+    created: "2025-05-13T07:19:47.067506888+02:00"
     digest: 2749fb08010e74dfd1615311edc4a68d58af2a775bc7d3f67d9b64f780839c66
     name: docs
     type: application
@@ -246,11 +255,11 @@ entries:
     version: 0.0.2
   - apiVersion: v2
     appVersion: latest
-    created: "2025-01-08T10:18:28.34901844Z"
+    created: "2025-05-13T07:19:47.066743515+02:00"
     digest: e5112ad11d9b9908d4797c879d03ca1219fa61b0ddaba8a91ea7a0e2c90dcf24
     name: docs
     type: application
     urls:
     - https://suitenumerique.github.io/docs/docs-0.0.1.tgz
     version: 0.0.1
-generated: "2025-05-06T14:22:40.954220933Z"
+generated: "2025-05-13T07:19:47.065995758+02:00"

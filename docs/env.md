@@ -4,7 +4,7 @@ Here we describe all environment variables that can be set for the docs applicat
 
 ## impress-backend container
 
-These are the environmental variables you can set for the impress-backend container.
+These are the environment variables you can set for the `impress-backend` container.
 
 | Option                                          | Description                                                                                   | default                                                 |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
@@ -100,3 +100,14 @@ These are the environmental variables you can set for the impress-backend contai
 | MALWARE_DETECTION_PARAMETERS                    | A dict containing all the parameters to initiate the malware detection backend                | {"callback_path": "core.malware_detection.malware_detection_callback",} |
 | THEME_CUSTOMIZATION_FILE_PATH                   | full path to the file customizing the theme. An example is provided in src/backend/impress/configuration/theme/default.json | BASE_DIR/impress/configuration/theme/default.json       |
 | THEME_CUSTOMIZATION_CACHE_TIMEOUT               | Cache duration for the customization settings                                                  | 86400                                                   |
+
+
+## impress-frontend image
+
+These are the environment variables you can set to build the `impress-frontend` image.
+
+| Option                                          | Description                                                                                   | default                                                 |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| API_ORIGIN                                      | backend domain - it uses the current domain if not initialized                                |                                                         |
+| SW_DEACTIVATED                                  | To not install the service worker                                                             |                                                         |
+| PUBLISH_AS_MIT                                  | MIT licence does not include the export feature                                               | true                                                    |

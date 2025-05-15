@@ -1,4 +1,4 @@
-FROM node:20-alpine AS frontend-deps
+FROM node:24-alpine AS frontend-deps
 
 WORKDIR /home/frontend/
 
@@ -45,7 +45,7 @@ ENV NEXT_PUBLIC_PUBLISH_AS_MIT=${PUBLISH_AS_MIT}
 RUN yarn build
 
 # ---- Front-end image ----
-FROM nginxinc/nginx-unprivileged:1.26-alpine AS frontend-production
+FROM nginxinc/nginx-unprivileged:1.27-alpine AS frontend-production
 
 # Un-privileged user running the application
 ARG DOCKER_USER

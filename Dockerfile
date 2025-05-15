@@ -1,7 +1,7 @@
 # Django impress
 
 # ---- base image to inherit from ----
-FROM python:3.12.6-alpine3.20 AS base
+FROM python:3.12.10-alpine AS base
 
 # Upgrade pip to its latest release to speed up dependencies installation
 RUN python -m pip install --upgrade pip setuptools
@@ -30,12 +30,13 @@ RUN mkdir /install && \
 
 
 # ---- mails ----
-FROM node:20 AS mail-builder
+FROM node:24-alpine AS mail-builder
 
 COPY ./src/mail /mail/app
 
 WORKDIR /mail/app
 
+RUN apk update && apk add --no-cache bash
 RUN yarn install --frozen-lockfile && \
     yarn build
 

@@ -1,4 +1,4 @@
-FROM node:20-alpine AS y-provider-builder
+FROM node:24-alpine AS y-provider-builder
 
 WORKDIR /home/frontend/
 
@@ -15,7 +15,7 @@ COPY ./src/frontend/servers/y-provider ./servers/y-provider
 WORKDIR /home/frontend/servers/y-provider
 RUN yarn build
 
-FROM node:20-alpine AS y-provider
+FROM node:24-alpine AS y-provider
 
 WORKDIR /home/frontend/
 

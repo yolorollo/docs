@@ -20,6 +20,8 @@ and this project adheres to
 
 - 📝(frontend) Update documentation
 - ✅(frontend) Improve tests coverage
+- ⬆️(docker) upgrade backend image to python 3.13 #973
+
 
 ### Removed
 

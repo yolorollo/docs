@@ -1,6 +1,6 @@
 import * as Y from 'yjs';
 
-import { Doc, Role } from './types';
+import { Doc, LinkReach, LinkRole, Role } from './types';
 
 export const currentDocRole = (abilities: Doc['abilities']): Role => {
   return abilities.destroy
@@ -21,4 +21,24 @@ export const base64ToYDoc = (base64: string) => {
 
 export const base64ToBlocknoteXmlFragment = (base64: string) => {
   return base64ToYDoc(base64).getXmlFragment('document-store');
+};
+
+export const getDocLinkReach = (doc: Doc): LinkReach => {
+  return doc.computed_link_reach ?? doc.link_reach;
+};
+
+export const getDocLinkRole = (doc: Doc): LinkRole => {
+  return doc.computed_link_role ?? doc.link_role;
+};
+
+export const docLinkIsDesync = (doc: Doc) => {
+  // If the document has no ancestors
+  if (!doc.ancestors_link_reach) {
+    return false;
+  }
+
+  return (
+    doc.computed_link_reach !== doc.ancestors_link_reach ||
+    doc.computed_link_role !== doc.ancestors_link_role
+  );
 };

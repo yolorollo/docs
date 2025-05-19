@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Box, Text } from '@/components';
 import { Doc, KEY_LIST_DOC } from '@/docs/doc-management';
-import { useMoveDoc } from '@/docs/doc-tree/api/useMove';
+import { useMoveDoc } from '@/docs/doc-tree';
 
 import { useDragAndDrop } from '../hooks/useDragAndDrop';
 

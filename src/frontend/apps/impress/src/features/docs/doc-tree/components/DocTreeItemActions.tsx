@@ -17,7 +17,6 @@ import { useCreateChildrenDoc } from '../api/useCreateChildren';
 import { useDetachDoc } from '../api/useDetach';
 import MoveDocIcon from '../assets/doc-extract-bold.svg';
 import { useTreeUtils } from '../hooks';
-import { isOwnerOrAdmin } from '../utils';
 
 type DocTreeItemActionsProps = {
   doc: Doc;
@@ -36,7 +35,6 @@ export const DocTreeItemActions = ({
   const deleteModal = useModal();
   const { togglePanel } = useLeftPanelStore();
   const copyLink = useCopyDocLink(doc.id);
-  const canUpdate = isOwnerOrAdmin(doc);
   const { isCurrentParent } = useTreeUtils(doc);
   const { mutate: detachDoc } = useDetachDoc();
   const treeContext = useTreeContext<Doc>();
@@ -70,7 +68,7 @@ export const DocTreeItemActions = ({
       ? [
           {
             label: t('Convert to doc'),
-            isDisabled: !canUpdate,
+            isDisabled: !doc.abilities.move,
             icon: (
               <Box
                 $css={css`
@@ -86,7 +84,7 @@ export const DocTreeItemActions = ({
       : []),
     {
       label: t('Delete'),
-      isDisabled: !canUpdate,
+      isDisabled: !doc.abilities.destroy,
       icon: <Icon iconName="delete" $size="24px" />,
       callback: deleteModal.open,
     },
@@ -138,7 +136,7 @@ export const DocTreeItemActions = ({
             $variation="600"
           />
         </DropdownMenu>
-        {canUpdate && (
+        {doc.abilities.children_create && (
           <BoxButton
             onClick={(e) => {
               e.stopPropagation();

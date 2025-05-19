@@ -21,7 +21,7 @@ export function useDragAndDrop(
   const [selectedDoc, setSelectedDoc] = useState<Doc>();
   const [canDrop, setCanDrop] = useState<boolean>();
 
-  const canDrag = selectedDoc?.abilities.move;
+  const canDrag = !!selectedDoc?.abilities.move;
 
   const mouseSensor = useSensor(MouseSensor, { activationConstraint });
   const touchSensor = useSensor(TouchSensor, { activationConstraint });

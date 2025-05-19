@@ -10,12 +10,11 @@ import { css } from 'styled-components';
 
 import { Box, StyledLink } from '@/components';
 import { useCunninghamTheme } from '@/cunningham';
+import { Doc, KEY_SUB_PAGE, useDoc, useDocStore } from '@/docs/doc-management';
+import { SimpleDocItem } from '@/docs/docs-grid';
 
-import { Doc, KEY_SUB_PAGE, useDoc, useDocStore } from '../../doc-management';
-import { SimpleDocItem } from '../../docs-grid';
 import { useDocTree } from '../api/useDocTree';
 import { useMoveDoc } from '../api/useMove';
-import { canDrag, canDrop } from '../utils';
 
 import { DocSubPageItem } from './DocSubPageItem';
 import { DocTreeItemActions } from './DocTreeItemActions';
@@ -211,13 +210,13 @@ export const DocTree = ({ initialTargetId }: DocTreeProps) => {
             }
             const parentDoc = parentNode?.data.value as Doc;
             if (!parentDoc) {
-              return canDrop(rootNode);
+              return rootNode?.abilities.move;
             }
-            return canDrop(parentDoc);
+            return parentDoc?.abilities.move;
           }}
           canDrag={(node) => {
             const doc = node.value as Doc;
-            return canDrag(doc);
+            return doc.abilities.move;
           }}
           rootNodeId={treeContext.root?.id ?? ''}
           renderNode={DocSubPageItem}

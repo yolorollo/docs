@@ -18,6 +18,7 @@ and this project adheres to
 - ✨(backend) integrate maleware_detection from django-lasuite #936
 - 🩺(CI) add lint spell mistakes #954
 - 🛂(frontend) block edition to not connected users #945
+- 🚸 Let loader during upload analyze #984
 
 ### Changed
 

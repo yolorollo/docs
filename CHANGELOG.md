@@ -16,6 +16,11 @@ and this project adheres to
 
 - 🧑‍💻(docker): add .next to .dockerignore #1055
 
+### Fixed
+
+🐛(frontend) table of content disappearing #982
+
+
 ## [3.3.0] - 2025-05-06
 
 ### Added

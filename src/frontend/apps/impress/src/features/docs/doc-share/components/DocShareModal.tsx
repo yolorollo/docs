@@ -15,8 +15,9 @@ import { User } from '@/features/auth';
 import { useResponsiveStore } from '@/stores';
 import { isValidEmail } from '@/utils';
 
-import { KEY_LIST_USER, useUsers } from '../api';
+import { KEY_LIST_USER, useDocAccesses, useUsers } from '../api';
 
+import { DocInheritedShareContent } from './DocInheritedShareContent';
 import {
   ButtonAccessRequest,
   QuickSearchGroupAccessRequest,
@@ -69,6 +70,10 @@ export const DocShareModal = ({ doc, onClose }: Props) => {
     setInputValue('');
   };
 
+  const { data: membersQuery } = useDocAccesses({
+    docId: doc.id,
+  });
+
   const searchUsersQuery = useUsers(
     { query: userQuery, docId: doc.id },
     {
@@ -102,6 +107,17 @@ export const DocShareModal = ({ doc, onClose }: Props) => {
 
     setListHeight(height);
   };
+
+  const inheritedAccesses = useMemo(() => {
+    return (
+      membersQuery?.filter((access) => access.document.id !== doc.id) ?? []
+    );
+  }, [membersQuery, doc.id]);
+
+  const isRootDoc = false;
+
+  const showInheritedShareContent =
+    inheritedAccesses.length > 0 && showMemberSection && !isRootDoc;
 
   return (
     <>
@@ -188,6 +204,15 @@ export const DocShareModal = ({ doc, onClose }: Props) => {
                   loading={searchUsersQuery.isLoading}
                   placeholder={t('Type a name or email')}
                 >
+                  {showInheritedShareContent && (
+                    <DocInheritedShareContent
+                      rawAccesses={
+                        membersQuery?.filter(
+                          (access) => access.document.id !== doc.id,
+                        ) ?? []
+                      }
+                    />
+                  )}
                   {showMemberSection ? (
                     <>
                       <QuickSearchGroupAccessRequest doc={doc} />
@@ -257,10 +282,15 @@ const QuickSearchInviteInputSection = ({
   }, [onSelect, searchUsersRawData, t, userQuery]);
 
   return (
-    <QuickSearchGroup
-      group={searchUserData}
-      onSelect={onSelect}
-      renderElement={(user) => <DocShareModalInviteUserRow user={user} />}
-    />
+    <Box
+      aria-label={t('List search user result card')}
+      $padding={{ horizontal: 'base', bottom: '3xs' }}
+    >
+      <QuickSearchGroup
+        group={searchUserData}
+        onSelect={onSelect}
+        renderElement={(user) => <DocShareModalInviteUserRow user={user} />}
+      />
+    </Box>
   );
 };

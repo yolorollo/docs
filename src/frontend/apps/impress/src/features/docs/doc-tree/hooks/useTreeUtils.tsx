@@ -9,5 +9,11 @@ export const useTreeUtils = (doc: Doc) => {
     isParent: doc.nb_accesses_ancestors <= 1, // it is a parent
     isChild: doc.nb_accesses_ancestors > 1, // it is a child
     isCurrentParent: treeContext?.root?.id === doc.id || doc.depth === 1, // it can be a child but not for the current user
+    isDesyncronized: !!(
+      doc.ancestors_link_reach &&
+      doc.ancestors_link_role &&
+      (doc.computed_link_reach !== doc.ancestors_link_reach ||
+        doc.computed_link_role !== doc.ancestors_link_role)
+    ),
   } as const;
 };

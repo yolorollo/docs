@@ -128,8 +128,22 @@ export const DocTree = ({ initialTargetId }: DocTreeProps) => {
   }
 
   return (
-    <Box data-testid="doc-tree" $height="100%">
-      <Box $padding={{ horizontal: 'sm', top: 'sm', bottom: '-1px' }}>
+    <Box
+      data-testid="doc-tree"
+      $height="100%"
+      $css={css`
+        .c__tree-view--container {
+          z-index: 1;
+          margin-top: -10px;
+        }
+      `}
+    >
+      <Box
+        $padding={{ horizontal: 'sm', top: 'sm', bottom: '4px' }}
+        $css={css`
+          z-index: 2;
+        `}
+      >
         <Box
           $css={css`
             padding: ${spacingsTokens['2xs']};

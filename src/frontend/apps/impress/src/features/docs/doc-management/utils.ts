@@ -30,15 +30,3 @@ export const getDocLinkReach = (doc: Doc): LinkReach => {
 export const getDocLinkRole = (doc: Doc): LinkRole => {
   return doc.computed_link_role ?? doc.link_role;
 };
-
-export const docLinkIsDesync = (doc: Doc) => {
-  // If the document has no ancestors
-  if (!doc.ancestors_link_reach) {
-    return false;
-  }
-
-  return (
-    doc.computed_link_reach !== doc.ancestors_link_reach ||
-    doc.computed_link_role !== doc.ancestors_link_role
-  );
-};

@@ -109,11 +109,6 @@ test.describe('Doc Header', () => {
         versions_list: true,
         versions_retrieve: true,
         update: true,
-        link_select_options: {
-          public: ['reader', 'editor'],
-          authenticated: ['reader', 'editor'],
-          restricted: null,
-        },
         partial_update: true,
         retrieve: true,
       },

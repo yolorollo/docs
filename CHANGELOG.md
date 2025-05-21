@@ -8,8 +8,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-## Added
+### Added
 
+- ✨(back) add endpoint checking media status
 - ✨(backend) allow setting session cookie age via env var #977
 - ✨(backend) allow theme customnization using a configuration file #948
 - ✨ Add a custom callout block to the editor #892
@@ -18,7 +19,7 @@ and this project adheres to
 - 🩺(CI) add lint spell mistakes #954
 - 🛂(frontend) block edition to not connected users #945
 
-## Changed
+### Changed
 
 - 📝(frontend) Update documentation
 - ✅(frontend) Improve tests coverage

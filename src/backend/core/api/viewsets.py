@@ -1279,7 +1279,10 @@ class DocumentViewSet(
         # Check if the attachment is ready
         s3_client = default_storage.connection.meta.client
         bucket_name = default_storage.bucket_name
-        head_resp = s3_client.head_object(Bucket=bucket_name, Key=key)
+        try:
+            head_resp = s3_client.head_object(Bucket=bucket_name, Key=key)
+        except ClientError as err:
+            raise drf.exceptions.PermissionDenied() from err
         metadata = head_resp.get("Metadata", {})
         # In order to be compatible with existing upload without `status` metadata,
         # we consider them as ready.
@@ -1293,6 +1296,50 @@ class DocumentViewSet(
         request = utils.generate_s3_authorization_headers(key)
 
         return drf.response.Response("authorized", headers=request.headers, status=200)
+
+    @drf.decorators.action(detail=True, methods=["get"], url_path="media-check")
+    def media_check(self, request, *args, **kwargs):
+        """
+        Check if the media is ready to be served.
+        """
+        document = self.get_object()
+
+        key = request.query_params.get("key")
+        if not key:
+            return drf.response.Response(
+                {"detail": "Missing 'key' query parameter"},
+                status=drf.status.HTTP_400_BAD_REQUEST,
+            )
+
+        if key not in document.attachments:
+            return drf.response.Response(
+                {"detail": "Attachment missing"},
+                status=drf.status.HTTP_404_NOT_FOUND,
+            )
+
+        # Check if the attachment is ready
+        s3_client = default_storage.connection.meta.client
+        bucket_name = default_storage.bucket_name
+        try:
+            head_resp = s3_client.head_object(Bucket=bucket_name, Key=key)
+        except ClientError as err:
+            logger.error("Client Error fetching file %s metadata: %s", key, err)
+            return drf.response.Response(
+                {"detail": "Media not found"},
+                status=drf.status.HTTP_404_NOT_FOUND,
+            )
+        metadata = head_resp.get("Metadata", {})
+
+        body = {
+            "status": metadata.get("status", enums.DocumentAttachmentStatus.PROCESSING),
+        }
+        if metadata.get("status") == enums.DocumentAttachmentStatus.READY:
+            body = {
+                "status": enums.DocumentAttachmentStatus.READY,
+                "file": f"{settings.MEDIA_URL:s}{key:s}",
+            }
+
+        return drf.response.Response(body, status=drf.status.HTTP_200_OK)
 
     @drf.decorators.action(
         detail=True,

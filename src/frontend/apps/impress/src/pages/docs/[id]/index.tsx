@@ -14,7 +14,7 @@ import {
   useDoc,
   useDocStore,
 } from '@/docs/doc-management/';
-import { KEY_AUTH, setAuthUrl } from '@/features/auth';
+import { KEY_AUTH } from '@/features/auth';
 import { MainLayout } from '@/layouts';
 import { useBroadcastStore } from '@/stores';
 import { NextPageWithLayout } from '@/types/next';
@@ -115,8 +115,9 @@ const DocPage = ({ id }: DocProps) => {
       void queryClient.resetQueries({
         queryKey: [KEY_AUTH],
       });
-      setAuthUrl();
-      void replace(`/401`);
+      void replace(
+        `/401?returnTo=${encodeURIComponent(window.location.pathname)}`,
+      );
       return null;
     }
 

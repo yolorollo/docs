@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 import { useCunninghamTheme } from '@/cunningham';
-import { Auth, KEY_AUTH, setAuthUrl } from '@/features/auth';
+import { Auth, KEY_AUTH } from '@/features/auth';
 import { useResponsiveStore } from '@/stores/';
 
 import { ConfigProvider } from './config/';
@@ -53,8 +53,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             void queryClient.resetQueries({
               queryKey: [KEY_AUTH],
             });
-            setAuthUrl();
-            void replace(`/401`);
+            void replace(
+              `/401?returnTo=${encodeURIComponent(window.location.pathname)}`,
+            );
           }
         },
       },

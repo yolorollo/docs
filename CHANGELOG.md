@@ -21,6 +21,7 @@ and this project adheres to
 - 🧑‍💻(docker) add .next to .dockerignore #1055
 - 🧑‍💻(docker) handle frontend development images with docker compose #1033
 - 🧑‍💻(docker) add y-provider config to development environment #1057
+- ⚡️(frontend) optimize document fetch error handling #1089
 
 ### Fixed
 

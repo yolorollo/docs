@@ -4,7 +4,7 @@
 import json
 import logging
 import uuid
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote, urlencode, urlparse
 
 from django.conf import settings
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -18,6 +18,7 @@ from django.db import models as db
 from django.db.models.expressions import RawSQL
 from django.db.models.functions import Left, Length
 from django.http import Http404, StreamingHttpResponse
+from django.urls import reverse
 from django.utils.text import capfirst, slugify
 from django.utils.translation import gettext_lazy as _
 
@@ -1193,8 +1194,16 @@ class DocumentViewSet(
 
         malware_detection.analyse_file(key, document_id=document.id)
 
+        url = reverse(
+            "documents-media-check",
+            kwargs={"pk": document.id},
+        )
+        parameters = urlencode({"key": key})
+
         return drf.response.Response(
-            {"file": f"{settings.MEDIA_URL:s}{key:s}"},
+            {
+                "file": f"{url:s}?{parameters:s}",
+            },
             status=drf.status.HTTP_201_CREATED,
         )
 

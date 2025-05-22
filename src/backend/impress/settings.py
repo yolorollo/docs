@@ -679,6 +679,15 @@ class Base(Configuration):
                 ),
                 "propagate": False,
             },
+            "docs.security": {
+                "handlers": ["console"],
+                "level": values.Value(
+                    "INFO",
+                    environ_name="LOGGING_LEVEL_LOGGERS_SECURITY",
+                    environ_prefix=None,
+                ),
+                "propagate": False,
+            },
         },
     }
 

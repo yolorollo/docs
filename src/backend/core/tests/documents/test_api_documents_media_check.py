@@ -56,7 +56,7 @@ def test_api_documents_media_check_key_parameter_not_related_to_document():
         {"key": f"{document.id!s}/attachments/unknown.jpg"},
     )
     assert response.status_code == 404
-    assert response.json() == {"detail": "Media not found"}
+    assert response.json() == {"detail": "Attachment missing"}
 
 
 def test_api_documents_media_check_anonymous_public_document():
@@ -179,7 +179,7 @@ def test_api_documents_media_check_connected_document_media_not_related():
         f"/api/v1.0/documents/{document.id!s}/media-check/", {"key": key}
     )
     assert response.status_code == 404
-    assert response.json() == {"detail": "Media not found"}
+    assert response.json() == {"detail": "Attachment missing"}
 
 
 def test_api_documents_media_check_media_missing_on_storage():

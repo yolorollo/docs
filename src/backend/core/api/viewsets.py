@@ -1322,7 +1322,7 @@ class DocumentViewSet(
 
         if key not in document.attachments:
             return drf.response.Response(
-                {"detail": "Media not found"},
+                {"detail": "Attachment missing"},
                 status=drf.status.HTTP_404_NOT_FOUND,
             )
 

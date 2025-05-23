@@ -516,6 +516,7 @@ test.describe('Doc Editor', () => {
           json: {
             ...CONFIG,
             COLLABORATION_WS_URL: 'ws://localhost:5555/collaboration/ws/',
+            COLLABORATION_WS_NOT_CONNECTED_READY_ONLY: true,
           },
         });
       } else {

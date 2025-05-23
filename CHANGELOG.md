@@ -21,6 +21,7 @@ and this project adheres to
 - ✨(frontend) create generic theme #792
 - 🛂(frontend) block edition to not connected users #945
 - 🚸 Let loader during upload analyze #984
+- 🚩(frontend) feature flag on blocking edition #997
 
 ### Changed
 

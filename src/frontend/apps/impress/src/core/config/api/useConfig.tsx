@@ -12,6 +12,7 @@ interface ThemeCustomization {
 interface ConfigResponse {
   AI_FEATURE_ENABLED?: boolean;
   COLLABORATION_WS_URL?: string;
+  COLLABORATION_WS_NOT_CONNECTED_READY_ONLY?: boolean;
   CRISP_WEBSITE_ID?: string;
   ENVIRONMENT: string;
   FRONTEND_CSS_URL?: string;

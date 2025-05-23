@@ -1785,6 +1785,7 @@ class ConfigView(drf.views.APIView):
         array_settings = [
             "AI_FEATURE_ENABLED",
             "COLLABORATION_WS_URL",
+            "COLLABORATION_WS_NOT_CONNECTED_READY_ONLY",
             "CRISP_WEBSITE_ID",
             "ENVIRONMENT",
             "FRONTEND_CSS_URL",

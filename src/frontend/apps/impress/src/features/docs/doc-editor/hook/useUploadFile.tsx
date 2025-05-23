@@ -5,8 +5,7 @@ import { backendUrl } from '@/api';
 import { useMediaUrl } from '@/core/config';
 import { sleep } from '@/utils';
 
-import { useCreateDocAttachment } from '../api';
-import { checkDocMediaStatus } from '../api/checkDocMediaStatus';
+import { checkDocMediaStatus, useCreateDocAttachment } from '../api';
 import Loader from '../assets/loader.svg?url';
 import Warning from '../assets/warning.svg?url';
 import { DocsBlockNoteEditor } from '../types';
@@ -147,7 +146,10 @@ export const useUploadStatus = (editor: DocsBlockNoteEditor) => {
 
             replaceUploadContent(
               blockId,
-              informationStatus(Warning.src, t('The analyze failed...')),
+              informationStatus(
+                Warning.src,
+                t('The antivirus has detected an anomaly in your file.'),
+              ),
             );
           });
       }, 250);

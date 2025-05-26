@@ -18,7 +18,8 @@ and this project adheres to
 
 ### Fixed
 
-🐛(frontend) table of content disappearing #982
+-🐛(frontend) table of content disappearing #982
+-🐛(frontend) fix multiple EmojiPicker #1012
 
 
 ## [3.3.0] - 2025-05-06

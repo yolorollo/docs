@@ -21,6 +21,7 @@ and this project adheres to
 -🐛(frontend) table of content disappearing #982
 -🐛(frontend) fix multiple EmojiPicker #1012
 -🐛(frontend) fix meta title #1017
+-🔧(git) set LF line endings for all text files #1032
 
 
 ## [3.3.0] - 2025-05-06

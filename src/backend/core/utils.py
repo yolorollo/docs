@@ -66,6 +66,116 @@ def base64_yjs_to_text(base64_string):
     soup = BeautifulSoup(blocknote_structure, "lxml-xml")
     return soup.get_text(separator=" ", strip=True)
 
+def base64_yjs_to_markdown(base64_string: str) -> str:
+    xml_content = base64_yjs_to_xml(base64_string)
+    soup = BeautifulSoup(xml_content, "lxml-xml")
+
+    md_lines: list[str] = []
+
+    def walk(node) -> None:
+        if not getattr(node, "name", None):
+            return
+
+        # Treat the synthetic “[document]” tag exactly like a wrapper
+        if node.name in {"[document]", "blockGroup", "blockContainer"}:
+            for child in node.find_all(recursive=False):
+                walk(child)
+            if node.name == "blockContainer":
+                md_lines.append("")        # paragraph break
+            return
+
+        # ----------- content nodes -------------
+        if node.name == "heading":
+            level = int(node.get("level", 1))
+            md_lines.extend([("#" * level) + " " + process_inline_formatting(node), ""])
+
+        elif node.name == "paragraph":
+            md_lines.extend([process_inline_formatting(node), ""])
+
+        elif node.name == "bulletListItem":
+            md_lines.append("- " + process_inline_formatting(node))
+
+        elif node.name == "numberedListItem":
+            idx = node.get("index", "1")
+            md_lines.append(f"{idx}. " + process_inline_formatting(node))
+
+        elif node.name == "checkListItem":
+            checked = "x" if node.get("checked") == "true" else " "
+            md_lines.append(f"- [{checked}] " + process_inline_formatting(node))
+
+        elif node.name == "codeBlock":
+            lang = node.get("language", "")
+            code = node.get_text("", strip=False)
+            md_lines.extend([f"```{lang}", code, "```", ""])
+
+        elif node.name in {"quote", "blockquote"}:
+            quote = process_inline_formatting(node)
+            for line in quote.splitlines() or [""]:
+                md_lines.append("> " + line)
+            md_lines.append("")
+
+        elif node.name == "divider":
+            md_lines.extend(["---", ""])
+
+        elif node.name == "callout":
+            emoji = node.get("emoji", "💡")
+            md_lines.extend([f"> {emoji} {process_inline_formatting(node)}", ""])
+
+        elif node.name == "img":
+            src = node.get("src", "")
+            alt = node.get("alt", "")
+            md_lines.extend([f"![{alt}]({src})", ""])
+
+        # unknown tags are ignored
+
+    # kick-off: start at the synthetic root
+    walk(soup)
+
+    # collapse accidental multiple blank lines
+    cleaned: list[str] = []
+    for line in md_lines:
+        if line == "" and (not cleaned or cleaned[-1] == ""):
+            continue
+        cleaned.append(line)
+
+    return "\n".join(cleaned).rstrip() + "\n"
+
+def process_inline_formatting(element):
+    """
+    Process inline formatting elements like bold, italic, underline, etc.
+    and convert them to markdown syntax.
+    """
+    result = ""
+    
+    # If it's just a text node, return the text
+    if isinstance(element, str):
+        return element
+        
+    # Process children elements
+    for child in element.contents:
+        if isinstance(child, str):
+            result += child
+        elif hasattr(child, 'name'):
+            if child.name == "bold":
+                result += "**" + process_inline_formatting(child) + "**"
+            elif child.name == "italic":
+                result += "*" + process_inline_formatting(child) + "*"
+            elif child.name == "underline":
+                result += "__" + process_inline_formatting(child) + "__"
+            elif child.name == "strike":
+                result += "~~" + process_inline_formatting(child) + "~~"
+            elif child.name == "code":
+                result += "`" + process_inline_formatting(child) + "`"
+            elif child.name == "link":
+                href = child.get("href", "")
+                text = process_inline_formatting(child)
+                result += f"[{text}]({href})"
+            else:
+                # For other elements, just process their contents
+                result += process_inline_formatting(child)
+    
+    return result
+
 
 def extract_attachments(content):
     """Helper method to extract media paths from a document's content."""

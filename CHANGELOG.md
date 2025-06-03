@@ -14,8 +14,9 @@ and this project adheres to
 
 ### Changed
 
-- 🧑‍💻(docker): add .next to .dockerignore #1055
+- 🧑‍💻(docker) add .next to .dockerignore #1055
 - 🧑‍💻(docker) handle frontend development images with docker compose #1033
+- 🧑‍💻(docker) add y-provider config to development environment #1057
 
 ### Fixed
 

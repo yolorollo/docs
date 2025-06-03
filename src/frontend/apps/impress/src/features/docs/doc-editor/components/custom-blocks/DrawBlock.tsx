@@ -36,7 +36,7 @@ export const DrawBlock = createReactBlockSpec(
     content: 'inline',
   },
   {
-    render: ({ block, editorBN }: ReactRendererProps<'draw'>) => {
+    render: ({ block, editor: editorBN }) => {
       const [editor, setEditor] = useState<Editor>();
 
       const setAppToState = useCallback((editor: Editor) => {
@@ -52,6 +52,7 @@ export const DrawBlock = createReactBlockSpec(
 
         function logChangeEvent(eventName: string) {
           console.log(eventName);
+          editorBN.updateBlock(block, { props: {} });
           setStoreEvents((events) => [...events, eventName]);
         }
 

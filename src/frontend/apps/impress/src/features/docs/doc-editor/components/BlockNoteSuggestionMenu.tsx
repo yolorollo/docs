@@ -15,6 +15,7 @@ import {
   getCalloutReactSlashMenuItems,
   getDividerReactSlashMenuItems,
 } from './custom-blocks';
+import { getDrawReactSlashMenuItems } from './custom-blocks/DrawBlock';
 
 export const BlockNoteSuggestionMenu = () => {
   const editor = useBlockNoteEditor<DocsBlockSchema>();
@@ -30,6 +31,7 @@ export const BlockNoteSuggestionMenu = () => {
             getPageBreakReactSlashMenuItems(editor),
             getCalloutReactSlashMenuItems(editor, t, basicBlocksName),
             getDividerReactSlashMenuItems(editor, t, basicBlocksName),
+            getDrawReactSlashMenuItems(editor, t, basicBlocksName),
           ),
           query,
         ),

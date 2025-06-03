@@ -33,7 +33,7 @@ from rest_framework import response as drf_response
 from rest_framework.permissions import AllowAny
 from rest_framework.throttling import UserRateThrottle
 
-from core import authentication, enums, models
+from core import authentication, enums, models, utils as core_utils
 from core.services.ai_services import AIService
 from core.services.collaboration_services import CollaborationService
 from core.utils import extract_attachments, filter_descendants
@@ -1351,6 +1351,25 @@ class DocumentViewSet(
                 "status": enums.DocumentAttachmentStatus.READY,
                 "file": f"{settings.MEDIA_URL:s}{key:s}",
             }
+
+        return drf.response.Response(body, status=drf.status.HTTP_200_OK)
+    
+    @drf.decorators.action(detail=True, methods=["get"], url_path="content")
+    def content(self, request, *args, **kwargs):
+        """
+        Get the content of a document
+        """
+        
+        document = self.get_object()
+
+        # content_type = response.headers.get("Content-Type", "")
+
+        base64_yjs_content = document.content
+        content = core_utils.base64_yjs_to_markdown(base64_yjs_content)
+
+        body = {
+            "content": content,
+        }
 
         return drf.response.Response(body, status=drf.status.HTTP_200_OK)
 

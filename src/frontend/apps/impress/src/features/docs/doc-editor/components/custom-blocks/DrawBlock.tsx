@@ -6,32 +6,25 @@ import {
 } from '@blocknote/core';
 import { BlockTypeSelectItem, createReactBlockSpec } from '@blocknote/react';
 import { TFunction } from 'i18next';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  DefaultColorStyle,
-  Editor as TLDEditor,
-  TLGeoShape,
-  TLShapePartial,
-  Tldraw,
-  createShapeId,
-  toRichText,
-  useEditor,
-} from 'tldraw';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Editor, TLEventMapHandler, TLStore, Tldraw } from 'tldraw';
 import 'tldraw/tldraw.css';
 
 import { Box, Icon } from '@/components';
-import { useProviderStore } from '@/features/docs/doc-management/stores/useProviderStore';
 
 import { DocsBlockNoteEditor } from '../../types';
 
+import _ from 'lodash';
+
 /**
- * Collaborative Draw block spec.
+ * ----------------------------------------------------------------------------------
+ * Collaborative **Draw** block – backed by a Y‑js document synced through
+ * `@hocuspocus/provider` (see `useProviderStore`).
+ * ----------------------------------------------------------------------------------
  *
- * We leverage BlockNote's `propSchema` to persist two key props:
- * - `roomId`: A stable identifier so all participants load the same provider / yjs room.
- * - `drawingData`: A frozen TLDraw snapshot when the provider is *not* connected (e.g. offline) or for history replay.
- *
- * TLDraw's multiplayer features are provided by our own `useProviderStore`, which memo‑izes a y‑websocket provider for every `roomId`.
+ * Each Draw block owns its own Y‑Doc, identified by `roomId` (persisted in `propSchema`).
+ * The block serialises a base‑64‑encoded Y‑js update (`drawingData`) so newcomers see
+ * the latest snapshot _immediately_, without waiting for the websocket connection.
  */
 export const DrawBlock = createReactBlockSpec(
   {
@@ -39,79 +32,100 @@ export const DrawBlock = createReactBlockSpec(
     propSchema: {
       textAlignment: defaultProps.textAlignment,
       backgroundColor: defaultProps.backgroundColor,
-      /**
-       * Persisted TLDraw snapshot – serialised via the built‑in `store.getSnapshot()`.
-       * When a new collaborator first loads the document we hydrate the store from here
-       * before connecting to the yjs provider so local history is preserved.
-       */
-      drawingData: {
-        default: null as ReturnType<TLDEditor['store']['getSnapshot']> | null,
-      },
-      /**
-       * A stable identifier for the collaborative room. We automatically generate one
-       * when the block is first inserted (see the slash‑menu helper).
-       */
-      roomId: {
-        default: '',
-      },
     },
     content: 'inline',
   },
   {
-    render: ({ block, editor }: ReactRendererProps<'draw'>) => {
-      const { roomId, drawingData } = block.props;
+    render: ({ block, editorBN }: ReactRendererProps<'draw'>) => {
+      const [editor, setEditor] = useState<Editor>();
 
-      /**
-       * Pull (or create) a provider & TLStore for this `roomId`. Internally this wires up
-       * a y‑websocket provider and binds it to TLDraw's store for real‑time sync.
-       */
-      const { store, isSynced } = useProviderStore((state) =>
-        state.getOrCreateTLDrawStore(roomId),
-      );
+      const setAppToState = useCallback((editor: Editor) => {
+        setEditor(editor);
+      }, []);
 
-      // Hold a local reference so we can access the editor instance inside callbacks.
-      const tldrawEditorRef = useRef<TLDEditor | null>(null);
-      const [isHydrated, setIsHydrated] = useState(false);
+      const [storeEvents, setStoreEvents] = useState<string[]>([]);
 
-      /**
-       * When TLDraw mounts we hydrate the store *once* with any persisted snapshot. This means
-       * a fresh collaborator immediately sees the last known state even before the provider
-       * finishes syncing.
-       */
-      const handleMount = useCallback(
-        (tldrEditor: TLDEditor) => {
-          tldrawEditorRef.current = tldrEditor;
+      useEffect(() => {
+        if (!editor) {
+          return;
+        }
 
-          if (!isHydrated && drawingData) {
-            // Load the snapshot into the store. We intentionally do this before provider sync.
-            tldrEditor.store.loadSnapshot(drawingData);
-            setIsHydrated(true);
+        function logChangeEvent(eventName: string) {
+          console.log(eventName);
+          setStoreEvents((events) => [...events, eventName]);
+        }
+
+        //[1]
+        const handleChangeEvent: TLEventMapHandler<'change'> = (change) => {
+          // Added
+          for (const record of Object.values(change.changes.added)) {
+            if (record.typeName === 'shape') {
+              logChangeEvent(`created shape (${record.type})\n`);
+            }
           }
 
-          // Observe local changes and push them back into the BlockNote block props so they are
-          // versioned inside the doc history ("undo" across different block types still works!)
-          const dispose = tldrEditor.store.listen(() => {
-            const snapshot = tldrEditor.store.getSnapshot();
-            editor.updateBlock(block.id, {
-              props: {
-                ...block.props,
-                drawingData: snapshot,
-              },
-            });
-          });
+          // Updated
+          for (const [from, to] of Object.values(change.changes.updated)) {
+            if (
+              from.typeName === 'instance' &&
+              to.typeName === 'instance' &&
+              from.currentPageId !== to.currentPageId
+            ) {
+              logChangeEvent(
+                `changed page (${from.currentPageId}, ${to.currentPageId})`,
+              );
+            } else if (
+              from.id.startsWith('shape') &&
+              to.id.startsWith('shape')
+            ) {
+              let diff = _.reduce(
+                from,
+                (result: any[], value, key: string) =>
+                  _.isEqual(value, to[key])
+                    ? result
+                    : result.concat([key, to[key]]),
+                [],
+              );
+              if (diff?.[0] === 'props') {
+                diff = _.reduce(
+                  from.props,
+                  (result: any[], value, key) =>
+                    _.isEqual(value, to.props[key])
+                      ? result
+                      : result.concat([key, to.props[key]]),
+                  [],
+                );
+              }
+              logChangeEvent(`updated shape (${JSON.stringify(diff)})\n`);
+            }
+          }
 
-          return () => dispose();
-        },
-        [block.id, block.props, drawingData, editor, isHydrated],
-      );
+          // Removed
+          for (const record of Object.values(change.changes.removed)) {
+            if (record.typeName === 'shape') {
+              logChangeEvent(`deleted shape (${record.type})\n`);
+            }
+          }
+        };
+
+        // [2]
+        const cleanupFunction = editor.store.listen(handleChangeEvent, {
+          source: 'user',
+          scope: 'all',
+        });
+
+        return () => {
+          cleanupFunction();
+        };
+      }, [editor]);
 
       return (
         <Box style={{ width: '100%', height: 300 }}>
-          <Tldraw
-            store={store}
-            onMount={handleMount}
-            // We intentionally don’t pass the snapshot here; hydration is handled in `onMount`.
-          />
+          {/*
+           * We deliberately pass the TL‑store directly. TLDraw will observe the
+           * changes – including those coming over the wire – and re‑render.
+           */}
+          <Tldraw onMount={setAppToState} />
         </Box>
       );
     },

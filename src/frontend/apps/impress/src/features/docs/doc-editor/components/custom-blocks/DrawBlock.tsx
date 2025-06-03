@@ -54,11 +54,28 @@ export const DrawBlock = createReactBlockSpec(
           return;
         }
 
+        // Load saved drawing data if available
+        if (block.props.drawingData) {
+          try {
+            console.log('Attempting to load saved drawing data');
+            const drawingData = JSON.parse(block.props.drawingData);
+            editor.store.loadSnapshot(drawingData);
+            console.log('Successfully loaded drawing data');
+          } catch (error) {
+            console.error('Failed to load drawing data:', error);
+          }
+        }
+
         function logChangeEvent(eventInfo: string, changeData: any = null) {
           console.log(eventInfo);
 
+          // Get current properties
+          const currentProps = { ...block.props };
+
           // Get current changeHistory or initialize empty array
-          const currentHistory = block.props.changeHistory || [];
+          const currentHistory = Array.isArray(currentProps.changeHistory)
+            ? currentProps.changeHistory
+            : [];
 
           // Create a change record with timestamp
           const changeRecord = {
@@ -67,17 +84,21 @@ export const DrawBlock = createReactBlockSpec(
             data: changeData,
           };
 
-          // Update the block with the new change information
-          editorBN.updateBlock(block, {
-            props: {
-              changeHistory: [...currentHistory, changeRecord],
-              lastChange: changeRecord,
-              // Store drawing data if available
-              ...(changeData?.drawingData && {
-                drawingData: changeData.drawingData,
-              }),
-            },
-          });
+          // Create new props object with all updated values
+          const updatedProps = {
+            ...currentProps,
+            changeHistory: [...currentHistory, changeRecord],
+            lastChange: changeRecord,
+          };
+
+          // Add drawingData if available
+          if (changeData?.drawingData) {
+            updatedProps.drawingData = changeData.drawingData;
+          }
+
+          // Update the block with the new props
+          console.log('Updating block with props:', updatedProps);
+          editorBN.updateBlock(block, { props: updatedProps });
 
           setStoreEvents((events) => [...events, eventInfo]);
         }
@@ -170,10 +191,19 @@ export const DrawBlock = createReactBlockSpec(
             // Capture the current drawing state if available
             if (editor.store) {
               try {
-                const snapshot = editor.store.getSnapshot();
-                logChangeEvent('drawing updated', {
-                  drawingData: snapshot,
+                // Get a serializable snapshot of the drawing
+                const snapshot = JSON.stringify(editor.store.getSnapshot());
+
+                // Only update drawingData property to avoid multiple updates
+                const currentProps = { ...block.props };
+                editorBN.updateBlock(block, {
+                  props: {
+                    ...currentProps,
+                    drawingData: snapshot,
+                  },
                 });
+
+                console.log('Drawing snapshot updated');
               } catch (error) {
                 console.error('Failed to capture drawing snapshot:', error);
               }

@@ -32,6 +32,10 @@ export const DrawBlock = createReactBlockSpec(
     propSchema: {
       textAlignment: defaultProps.textAlignment,
       backgroundColor: defaultProps.backgroundColor,
+      roomId: { default: `drawing-${Date.now()}` },
+      drawingData: { default: null },
+      changeHistory: { default: [] },
+      lastChange: { default: null },
     },
     content: 'inline',
   },
@@ -50,10 +54,32 @@ export const DrawBlock = createReactBlockSpec(
           return;
         }
 
-        function logChangeEvent(eventName: string) {
-          console.log(eventName);
-          editorBN.updateBlock(block, { props: {} });
-          setStoreEvents((events) => [...events, eventName]);
+        function logChangeEvent(eventInfo: string, changeData: any = null) {
+          console.log(eventInfo);
+
+          // Get current changeHistory or initialize empty array
+          const currentHistory = block.props.changeHistory || [];
+
+          // Create a change record with timestamp
+          const changeRecord = {
+            timestamp: new Date().toISOString(),
+            event: eventInfo,
+            data: changeData,
+          };
+
+          // Update the block with the new change information
+          editorBN.updateBlock(block, {
+            props: {
+              changeHistory: [...currentHistory, changeRecord],
+              lastChange: changeRecord,
+              // Store drawing data if available
+              ...(changeData?.drawingData && {
+                drawingData: changeData.drawingData,
+              }),
+            },
+          });
+
+          setStoreEvents((events) => [...events, eventInfo]);
         }
 
         //[1]
@@ -61,7 +87,11 @@ export const DrawBlock = createReactBlockSpec(
           // Added
           for (const record of Object.values(change.changes.added)) {
             if (record.typeName === 'shape') {
-              logChangeEvent(`created shape (${record.type})\n`);
+              logChangeEvent(`created shape (${record.type})`, {
+                action: 'created',
+                shapeType: record.type,
+                shape: record,
+              });
             }
           }
 
@@ -74,6 +104,11 @@ export const DrawBlock = createReactBlockSpec(
             ) {
               logChangeEvent(
                 `changed page (${from.currentPageId}, ${to.currentPageId})`,
+                {
+                  action: 'changedPage',
+                  fromPageId: from.currentPageId,
+                  toPageId: to.currentPageId,
+                },
               );
             } else if (
               from.id.startsWith('shape') &&
@@ -87,6 +122,8 @@ export const DrawBlock = createReactBlockSpec(
                     : result.concat([key, to[key]]),
                 [],
               );
+              const diffObj = {};
+
               if (diff?.[0] === 'props') {
                 diff = _.reduce(
                   from.props,
@@ -96,15 +133,50 @@ export const DrawBlock = createReactBlockSpec(
                       : result.concat([key, to.props[key]]),
                   [],
                 );
+
+                // Convert diff array to object for better storage
+                for (let i = 0; i < diff.length; i += 2) {
+                  diffObj[diff[i]] = diff[i + 1];
+                }
               }
-              logChangeEvent(`updated shape (${JSON.stringify(diff)})\n`);
+
+              logChangeEvent(`updated shape (${JSON.stringify(diff)})`, {
+                action: 'updated',
+                shapeId: from.id,
+                changes: diffObj,
+                from: from,
+                to: to,
+              });
             }
           }
 
           // Removed
           for (const record of Object.values(change.changes.removed)) {
             if (record.typeName === 'shape') {
-              logChangeEvent(`deleted shape (${record.type})\n`);
+              logChangeEvent(`deleted shape (${record.type})`, {
+                action: 'deleted',
+                shapeType: record.type,
+                shape: record,
+              });
+            }
+          }
+
+          // Store the entire drawing state periodically when changes occur
+          if (
+            Object.keys(change.changes.added).length > 0 ||
+            Object.keys(change.changes.updated).length > 0 ||
+            Object.keys(change.changes.removed).length > 0
+          ) {
+            // Capture the current drawing state if available
+            if (editor.store) {
+              try {
+                const snapshot = editor.store.getSnapshot();
+                logChangeEvent('drawing updated', {
+                  drawingData: snapshot,
+                });
+              } catch (error) {
+                console.error('Failed to capture drawing snapshot:', error);
+              }
             }
           }
         };
@@ -118,7 +190,7 @@ export const DrawBlock = createReactBlockSpec(
         return () => {
           cleanupFunction();
         };
-      }, [editor]);
+      }, [block, editor, editorBN]);
 
       return (
         <Box style={{ width: '100%', height: 300 }}>
@@ -149,6 +221,8 @@ export const getDrawReactSlashMenuItems = (
         props: {
           roomId: `drawing-${Date.now()}`,
           drawingData: null,
+          changeHistory: [],
+          lastChange: null,
         },
       });
     },

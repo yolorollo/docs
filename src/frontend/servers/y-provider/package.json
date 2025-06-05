@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "dependencies": {
     "@blocknote/server-util": "0.31.1",

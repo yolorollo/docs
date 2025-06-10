@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import * as Y from 'yjs';
 
 import { Box, TextErrors } from '@/components';
+import { useConfig } from '@/core';
 import { Doc, useIsCollaborativeEditable } from '@/docs/doc-management';
 import { useAuth } from '@/features/auth';
 
@@ -62,7 +63,9 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
   const lang = i18n.resolvedLanguage;
 
   const { uploadFile, errorAttachment } = useUploadFile(doc.id);
-  const aiExtension = useAI?.(doc.id);
+  const conf = useConfig().data;
+  const aiAllowed = !!(conf?.AI_FEATURE_ENABLED && doc.abilities?.ai_proxy);
+  const aiExtension = useAI?.(doc.id, aiAllowed);
 
   const collabName = readOnly
     ? 'Reader'
@@ -173,11 +176,11 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
         editable={!readOnly}
         theme="light"
       >
-        {aiExtension && AIMenuController && AIMenu && (
+        {aiAllowed && AIMenuController && AIMenu && (
           <AIMenuController aiMenu={AIMenu} />
         )}
-        <BlockNoteSuggestionMenu />
-        <BlockNoteToolbar />
+        <BlockNoteSuggestionMenu aiAllowed={aiAllowed} />
+        <BlockNoteToolbar aiAllowed={aiAllowed} />
       </BlockNoteView>
     </Box>
   );

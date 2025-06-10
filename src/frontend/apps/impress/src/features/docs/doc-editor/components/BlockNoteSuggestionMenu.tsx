@@ -6,7 +6,6 @@ import {
   useBlockNoteEditor,
   useDictionary,
 } from '@blocknote/react';
-import { getAISlashMenuItems } from '@blocknote/xl-ai';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,10 +13,13 @@ import { useConfig } from '@/core';
 
 import { DocsBlockSchema } from '../types';
 
+import BlockNoteAI from './AI';
 import {
   getCalloutReactSlashMenuItems,
   getDividerReactSlashMenuItems,
 } from './custom-blocks';
+
+const getAISlashMenuItems = BlockNoteAI?.getAISlashMenuItems;
 
 export const BlockNoteSuggestionMenu = () => {
   const editor = useBlockNoteEditor<DocsBlockSchema>();
@@ -34,7 +36,9 @@ export const BlockNoteSuggestionMenu = () => {
             getPageBreakReactSlashMenuItems(editor),
             getCalloutReactSlashMenuItems(editor, t, basicBlocksName),
             getDividerReactSlashMenuItems(editor, t, basicBlocksName),
-            conf?.AI_FEATURE_ENABLED ? getAISlashMenuItems(editor) : [],
+            conf?.AI_FEATURE_ENABLED && getAISlashMenuItems
+              ? getAISlashMenuItems(editor)
+              : [],
           ),
           query,
         ),

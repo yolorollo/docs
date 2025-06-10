@@ -9,9 +9,6 @@ import * as locales from '@blocknote/core/locales';
 import { BlockNoteView } from '@blocknote/mantine';
 import '@blocknote/mantine/style.css';
 import { useCreateBlockNote } from '@blocknote/react';
-import { AIMenuController } from '@blocknote/xl-ai';
-import { en as aiEn } from '@blocknote/xl-ai/locales';
-import '@blocknote/xl-ai/style.css';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,10 +25,15 @@ import { cssEditor } from '../styles';
 import { DocsBlockNoteEditor } from '../types';
 import { randomColor } from '../utils';
 
-import { AIMenu, useAI } from './AI';
+import BlockNoteAI from './AI';
 import { BlockNoteSuggestionMenu } from './BlockNoteSuggestionMenu';
 import { BlockNoteToolbar } from './BlockNoteToolBar/BlockNoteToolbar';
 import { CalloutBlock, DividerBlock } from './custom-blocks';
+
+const AIMenu = BlockNoteAI?.AIMenu;
+const AIMenuController = BlockNoteAI?.AIMenuController;
+const useAI = BlockNoteAI?.useAI;
+const localesAI = BlockNoteAI?.localesAI;
 
 export const blockNoteSchema = withPageBreak(
   BlockNoteSchema.create({
@@ -51,17 +53,16 @@ interface BlockNoteEditorProps {
 export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
   const { user } = useAuth();
   const { setEditor } = useEditorStore();
-  const { t } = useTranslation();
 
   const { isEditable, isLoading } = useIsCollaborativeEditable(doc);
   const readOnly = !doc.abilities.partial_update || !isEditable || isLoading;
 
   useSaveDoc(doc.id, provider.document, !readOnly);
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const lang = i18n.resolvedLanguage;
 
   const { uploadFile, errorAttachment } = useUploadFile(doc.id);
-  const aiExtension = useAI(doc.id);
+  const aiExtension = useAI?.(doc.id);
 
   const collabName = readOnly
     ? 'Reader'
@@ -120,7 +121,10 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
         },
         showCursorLabels: showCursorLabels as 'always' | 'activity',
       },
-      dictionary: { ...locales[lang as keyof typeof locales], ai: aiEn },
+      dictionary: {
+        ...locales[lang as keyof typeof locales],
+        ai: localesAI?.[lang as keyof typeof localesAI],
+      },
       extensions: aiExtension ? [aiExtension] : [],
       tables: {
         splitCells: true,
@@ -131,7 +135,7 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
       uploadFile,
       schema: blockNoteSchema,
     },
-    [collabName, lang, provider, uploadFile],
+    [aiExtension, collabName, lang, provider, uploadFile],
   );
 
   useHeadings(editor);
@@ -169,7 +173,9 @@ export const BlockNoteEditor = ({ doc, provider }: BlockNoteEditorProps) => {
         editable={!readOnly}
         theme="light"
       >
-        {aiExtension && <AIMenuController aiMenu={AIMenu} />}
+        {aiExtension && AIMenuController && AIMenu && (
+          <AIMenuController aiMenu={AIMenu} />
+        )}
         <BlockNoteSuggestionMenu />
         <BlockNoteToolbar />
       </BlockNoteView>

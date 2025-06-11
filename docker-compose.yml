@@ -153,12 +153,17 @@ services:
     build: 
       context: .
       dockerfile: ./src/frontend/servers/y-provider/Dockerfile
-      target: y-provider
+      target: y-provider-development
+    image: impress:y-provider-development
     restart: unless-stopped
     env_file:
       - env.d/development/common
     ports:
       - "4444:4444"
+    volumes:
+      - ./src/frontend/:/home/frontend
+      - /home/frontend/node_modules
+      - /home/frontend/servers/y-provider/node_modules
 
   kc_postgresql:
     image: postgres:14.3

@@ -5,6 +5,7 @@ export const cssEditor = (readonly: boolean) => css`
   & > .bn-container,
   & .ProseMirror {
     height: 100%;
+    padding-bottom: 2rem;
 
     img.bn-visual-media[src*='-unsafe'] {
       pointer-events: none;

@@ -15,6 +15,7 @@ and this project adheres to
 ### Changed
 
 - 🧑‍💻(docker): add .next to .dockerignore #1055
+- 🧑‍💻(docker) handle frontend development images with docker compose #1033
 
 ### Fixed
 

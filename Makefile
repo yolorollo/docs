@@ -75,39 +75,39 @@ create-env-files: \
 	env.d/development/kc_postgresql
 .PHONY: create-env-files
 
-base-bootstrap:
-base-bootstrap: \
+pre-bootstrap: \
 	data/media \
 	data/static \
 	create-env-files
-.PHONY: base-bootstrap
+.PHONY: pre-bootstrap
 
-bootstrap: ## Prepare Docker images for the project
-bootstrap: \
-	base-bootstrap \
-	build \
+post-bootstrap: \
 	migrate \
 	demo \
 	back-i18n-compile \
 	mails-install \
-	mails-build \
+	mails-build
+.PHONY: post-bootstrap
+
+
+bootstrap: ## Prepare Docker developmentimages for the project
+bootstrap: \
+	pre-bootstrap \
+	build \
+	post-bootstrap \
 	run
 .PHONY: bootstrap
 
 bootstrap-e2e: ## Prepare Docker production images to be used for e2e tests
 bootstrap-e2e: \
-	base-bootstrap \
+	pre-bootstrap \
 	build-e2e \
-	migrate \
-	demo \
-	back-i18n-compile \
-	mails-install \
-	mails-build \
+	post-bootstrap \
 	run-e2e
 .PHONY: bootstrap-e2e
 
 # -- Docker/compose
-build: cache ?= --no-cache
+build: cache ?=
 build: ## build the project containers
 	@$(MAKE) build-backend cache=$(cache)
 	@$(MAKE) build-yjs-provider cache=$(cache)
@@ -129,10 +129,11 @@ build-frontend: ## build the frontend container
 	@$(COMPOSE) build frontend-development $(cache)
 .PHONY: build-frontend
 
+build-e2e: cache ?=
 build-e2e: ## build the e2e container
-	@$(MAKE) build-backend
-	@$(COMPOSE_E2E) build frontend
-	@$(COMPOSE_E2E) build y-provider
+	@$(MAKE) build-backend cache=$(cache)
+	@$(COMPOSE_E2E) build frontend $(cache)
+	@$(COMPOSE_E2E) build y-provider $(cache)
 .PHONY: build-e2e
 
 down: ## stop and remove containers, networks, images, and volumes

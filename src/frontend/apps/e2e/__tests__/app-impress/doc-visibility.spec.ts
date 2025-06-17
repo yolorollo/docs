@@ -151,7 +151,7 @@ test.describe('Doc Visibility: Restricted', () => {
     });
 
     const otherBrowser = browsersName.find((b) => b !== browserName);
-    const username = `user@${otherBrowser}.e2e`;
+    const username = `user@${otherBrowser}.test`;
     await inputSearch.fill(username);
     await page.getByRole('option', { name: username }).click();
 

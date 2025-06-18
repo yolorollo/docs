@@ -2,17 +2,11 @@ import { VariantType, useToastProvider } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Box,
-  DropdownMenu,
-  DropdownMenuOption,
-  IconOptions,
-} from '@/components';
+import { Box } from '@/components';
 import { useCunninghamTheme } from '@/cunningham';
 import { Access, Doc, KEY_SUB_PAGE, Role } from '@/docs/doc-management/';
-import { useResponsiveStore } from '@/stores';
 
-import { useDeleteDocAccess, useUpdateDocAccess } from '../api';
+import { useUpdateDocAccess } from '../api';
 import { useWhoAmI } from '../hooks/';
 
 import { DocRoleDropdown } from './DocRoleDropdown';
@@ -33,7 +27,6 @@ export const DocShareMemberItem = ({
   const { isLastOwner } = useWhoAmI(access);
   const { toast } = useToastProvider();
 
-  const { isDesktop } = useResponsiveStore();
   const { spacingsTokens } = useCunninghamTheme();
 
   const message = isLastOwner
@@ -58,22 +51,6 @@ export const DocShareMemberItem = ({
     },
   });
 
-  const { mutate: removeDocAccess } = useDeleteDocAccess({
-    onSuccess: () => {
-      if (!doc) {
-        return;
-      }
-      void queryClient.invalidateQueries({
-        queryKey: [KEY_SUB_PAGE, { id: doc.id }],
-      });
-    },
-    onError: () => {
-      toast(t('Error while deleting invitation'), VariantType.ERROR, {
-        duration: 4000,
-      });
-    },
-  });
-
   const onUpdate = (newRole: Role) => {
     if (!doc) {
       return;
@@ -84,22 +61,6 @@ export const DocShareMemberItem = ({
       accessId: access.id,
     });
   };
-
-  const onRemove = () => {
-    if (!doc) {
-      return;
-    }
-    removeDocAccess({ accessId: access.id, docId: doc.id });
-  };
-
-  const moreActions: DropdownMenuOption[] = [
-    {
-      label: t('Delete'),
-      icon: 'delete',
-      callback: onRemove,
-      disabled: !access.abilities.destroy,
-    },
-  ];
 
   const canUpdate = isInherited
     ? false
@@ -122,17 +83,9 @@ export const DocShareMemberItem = ({
               canUpdate={canUpdate}
               message={message}
               rolesAllowed={access.abilities.set_role_to}
+              access={access}
+              doc={doc}
             />
-
-            {isDesktop && canUpdate && (
-              <DropdownMenu options={moreActions}>
-                <IconOptions
-                  isHorizontal
-                  data-testid="doc-share-member-more-actions"
-                  $variation="600"
-                />
-              </DropdownMenu>
-            )}
           </Box>
         }
       />

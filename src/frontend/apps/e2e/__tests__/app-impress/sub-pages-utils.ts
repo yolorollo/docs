@@ -8,7 +8,7 @@ export const createRootSubPage = async (
   docName: string,
 ) => {
   // Get add button
-  const addButton = page.getByRole('button', { name: 'New page' });
+  const addButton = page.getByRole('button', { name: 'New doc' });
 
   // Get response
   const responsePromise = getWaitForCreateDoc(page);

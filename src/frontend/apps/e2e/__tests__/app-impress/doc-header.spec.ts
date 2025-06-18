@@ -98,7 +98,7 @@ test.describe('Doc Header', () => {
 
     await expect(
       page.getByText(
-        `Are you sure you want to delete the document "${randomDoc}"?`,
+        `This document will be permanently deleted. This action is irreversible.`,
       ),
     ).toBeVisible();
 
@@ -160,8 +160,6 @@ test.describe('Doc Header', () => {
     const shareModal = page.getByLabel('Share modal');
     await expect(shareModal).toBeVisible();
     await expect(page.getByText('Share the document')).toBeVisible();
-
-    // await expect(page.getByPlaceholder('Type a name or email')).toBeVisible();
 
     const invitationCard = shareModal.getByLabel('List invitation card');
     await expect(invitationCard).toBeVisible();

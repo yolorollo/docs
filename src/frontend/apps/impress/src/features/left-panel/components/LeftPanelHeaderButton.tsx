@@ -67,7 +67,7 @@ export const LeftPanelHeaderDocButton = () => {
       onClick={onCreateDoc}
       disabled={currentDoc && !isOwnerOrAdmin(currentDoc)}
     >
-      {t('New page')}
+      {t('New doc')}
     </Button>
   );
 };

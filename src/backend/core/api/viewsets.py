@@ -36,6 +36,7 @@ from rest_framework.throttling import UserRateThrottle
 from core import authentication, enums, models
 from core.services.ai_services import AIService
 from core.services.collaboration_services import CollaborationService
+from core.tasks.mail import send_ask_for_access_mail
 from core.utils import extract_attachments, filter_descendants
 
 from . import permissions, serializers, utils
@@ -1829,11 +1830,13 @@ class DocumentAskForAccessViewSet(
                 status=drf.status.HTTP_400_BAD_REQUEST,
             )
 
-        models.DocumentAskForAccess.objects.create(
+        ask_for_access = models.DocumentAskForAccess.objects.create(
             document=document,
             user=request.user,
             role=serializer.validated_data["role"],
         )
+
+        send_ask_for_access_mail.delay(ask_for_access.id)
 
         return drf.response.Response(status=drf.status.HTTP_201_CREATED)
 

@@ -2,6 +2,8 @@
 
 import uuid
 
+from django.core import mail
+
 import pytest
 from rest_framework.test import APIClient
 
@@ -40,12 +42,25 @@ def test_api_documents_ask_for_access_create_invalid_document_id():
 
 
 def test_api_documents_ask_for_access_create_authenticated():
-    """Authenticated users should be able to create a document ask for access."""
-    document = DocumentFactory()
+    """
+    Authenticated users should be able to create a document ask for access.
+    An email should be sent to document owners and admins to notify them.
+    """
+    owner_user = UserFactory(language="en-us")
+    admin_user = UserFactory(language="fr-fr")
+    document = DocumentFactory(
+        users=[
+            (owner_user, RoleChoices.OWNER),
+            (admin_user, RoleChoices.ADMIN),
+        ]
+    )
+
     user = UserFactory()
 
     client = APIClient()
     client.force_login(user)
+
+    assert len(mail.outbox) == 0
 
     response = client.post(f"/api/v1.0/documents/{document.id}/ask-for-access/")
     assert response.status_code == 201
@@ -55,6 +70,30 @@ def test_api_documents_ask_for_access_create_authenticated():
         user=user,
         role=RoleChoices.READER,
     ).exists()
+
+    # Verify emails were sent to both owner and admin
+    assert len(mail.outbox) == 2
+
+    # Check that emails were sent to the right recipients
+    email_recipients = [email.to[0] for email in mail.outbox]
+    assert owner_user.email in email_recipients
+    assert admin_user.email in email_recipients
+
+    # Check email content for both users
+    for email in mail.outbox:
+        email_content = " ".join(email.body.split())
+        email_subject = " ".join(email.subject.split())
+
+        # Check that the requesting user's name is in the email
+        user_name = user.full_name or user.email
+        assert user_name.lower() in email_content.lower()
+
+        # Check that the subject mentions access request
+        assert "access" in email_subject.lower()
+
+        # Check that the document title is mentioned if it exists
+        if document.title:
+            assert document.title.lower() in email_subject.lower()
 
 
 def test_api_documents_ask_for_access_create_authenticated_specific_role():

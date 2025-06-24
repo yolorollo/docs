@@ -1,4 +1,5 @@
-import { COLLABORATION_LOGGING } from './env';
+import { COLLABORATION_LOGGING, REDIS_URL } from './env';
+import { createClient } from 'redis';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function logger(...args: any[]) {
@@ -11,3 +12,16 @@ export function logger(...args: any[]) {
 export const toBase64 = function (str: Uint8Array) {
   return Buffer.from(str).toString('base64');
 };
+
+
+const redisClient = createClient({
+  url: REDIS_URL,
+});
+
+export const getRedisClient = async () => {
+  if (!redisClient.isOpen) {
+    await redisClient.connect();
+  }
+
+  return redisClient;
+}

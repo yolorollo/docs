@@ -2,7 +2,7 @@
 
 from unittest import mock
 
-from django.core.cache import cache
+from django.core.cache import caches
 
 import pytest
 
@@ -14,7 +14,8 @@ VIA = [USER, TEAM]
 @pytest.fixture(autouse=True)
 def clear_cache():
     """Fixture to clear the cache before each test."""
-    cache.clear()
+    for cache in caches.all():
+        cache.clear()
 
 
 @pytest.fixture

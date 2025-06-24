@@ -22,6 +22,11 @@ MEDIA_STORAGE_URL_EXTRACT = re.compile(
     f"{settings.MEDIA_URL:s}({UUID_REGEX}/{ATTACHMENTS_FOLDER}/{UUID_REGEX}{FILE_EXT_REGEX})"
 )
 
+DEFAULT_DOCS_STATE = {
+    "httpUser": None,
+    "wsUsers": [],
+}
+
 
 # In Django's code base, `LANGUAGES` is set by default with all supported languages.
 # We can use it for the choice of languages which should not be limited to the few languages

@@ -10,3 +10,5 @@ export const PORT = Number(process.env.PORT || 4444);
 export const SENTRY_DSN = process.env.SENTRY_DSN || '';
 export const COLLABORATION_BACKEND_BASE_URL =
   process.env.COLLABORATION_BACKEND_BASE_URL || 'http://app-dev:8000';
+export const REDIS_URL = process.env.REDIS_URL || 'redis://redis:6379/0';
+export const CACHES_KEY_PREFIX = process.env.CACHES_KEY_PREFIX || 'docs';

@@ -17,7 +17,7 @@ enum LinkRole {
 
 type Base64 = string;
 
-interface Doc {
+export interface Doc {
   id: string;
   title?: string;
   content: Base64;

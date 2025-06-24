@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.search import TrigramSimilarity
-from django.core.cache import cache
+from django.core.cache import cache, caches
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.db import connection, transaction
@@ -630,6 +630,33 @@ class DocumentViewSet(
     def perform_destroy(self, instance):
         """Override to implement a soft delete instead of dumping the record in database."""
         instance.soft_delete()
+
+    def perform_update(self, serializer):
+        """Check rules about collaboration."""
+
+        shared_cache = caches["shared"]
+        cache_key = f"docs:state:{serializer.instance.id}"
+        doc_state = shared_cache.get(cache_key, enums.DEFAULT_DOCS_STATE.copy())
+
+        session_key = self.request.session.session_key
+
+        if doc_state["wsUsers"] and not session_key in doc_state["wsUsers"]:
+            raise drf.exceptions.PermissionDenied(
+                "You are not allowed to edit this document."
+            )
+
+        if doc_state["httpUser"] and doc_state["httpUser"] != session_key:
+            raise drf.exceptions.PermissionDenied(
+                "You are not allowed to edit this document."
+            )
+
+        if doc_state["httpUser"] is None:
+            doc_state["httpUser"] = session_key
+            shared_cache.set(cache_key, doc_state)
+
+        shared_cache.touch(cache_key)
+
+        return super().perform_update(serializer)
 
     @drf.decorators.action(
         detail=False,

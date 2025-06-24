@@ -1,9 +1,9 @@
 import { Server } from '@hocuspocus/server';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 
-import { fetchDocument } from '@/api/getDoc';
+import { fetchDocument, Doc } from '@/api/getDoc';
 import { getMe } from '@/api/getMe';
-import { logger } from '@/utils';
+import { logger, getRedisClient } from '@/utils';
 
 export const hocusPocusServer = Server.configure({
   name: 'docs-collaboration',
@@ -38,9 +38,10 @@ export const hocusPocusServer = Server.configure({
     }
 
     let can_edit = false;
+    let document: Doc;
 
     try {
-      const document = await fetchDocument(documentName, requestHeaders);
+      document = await fetchDocument(documentName, requestHeaders);
 
       if (!document.abilities.retrieve) {
         logger(
@@ -61,6 +62,34 @@ export const hocusPocusServer = Server.configure({
 
     connection.readOnly = !can_edit;
 
+    const session = requestHeaders['cookie']?.split('; ').find(cookie => cookie.startsWith('docs_sessionid='));
+    if (session) {
+      const sessionKey = session.split('=')[1];
+      const redis = await getRedisClient();
+      const redisKey = `docs:state:${document.id}`;
+
+      const rawDocsState = await redis.get(redisKey);
+
+      const docsState = rawDocsState ? JSON.parse(rawDocsState): {
+        httpUser: null,
+        wsUsers: []
+      };
+      context.sessionKey = sessionKey;
+      if (!docsState.wsUsers.includes(sessionKey)) {
+        await redis.set(redisKey, JSON.stringify({
+          httpUser: null,
+          wsUsers: [
+            ...(docsState?.wsUsers || []),
+              sessionKey
+            ],
+          }),
+          {
+            EX: 120, // 2 minutes
+          }
+        );
+      }
+    }
+
     /*
      * Unauthenticated users can be allowed to connect
      * so we flag only authenticated users
@@ -79,4 +108,31 @@ export const hocusPocusServer = Server.configure({
     );
     return Promise.resolve();
   },
+  async onDisconnect({
+    documentName,
+    context,
+  }) {
+    const sessionKey = context.sessionKey;
+    if (sessionKey) {
+      const redis = await getRedisClient();
+      const redisKey = `docs:state:${documentName}`;
+
+      const rawDocsState = await redis.get(redisKey);
+
+      const docsState = rawDocsState ? JSON.parse(rawDocsState): {
+        httpUser: null,
+        wsUsers: []
+      };
+
+      if (docsState.wsUsers.includes(sessionKey)) {
+        const index = docsState.wsUsers.indexOf(sessionKey);
+        docsState.wsUsers.splice(index, 1);
+        await redis.set(redisKey, JSON.stringify(docsState),
+          {
+            EX: 120, // 2 minutes
+          }
+        );
+      }
+    }
+  }
 });

@@ -16,6 +16,7 @@ and this project adheres to
 - 🔧(front) configure x-frame-options to DENY in nginx conf #1084
 -  (doc) add documentation to install with compose #855
 - ✨(backend) allow to disable checking unsafe mimetype on attachment upload
+- ✨Ask for access #1081
 
 ### Changed
 
@@ -33,7 +34,7 @@ and this project adheres to
 - 🔧(git) set LF line endings for all text files #1032
 - 📝(docs) minor fixes to docs/env.md
 
-## Removed
+### Removed
 
 - 🔥(frontend) remove Beta from logo #1095
 

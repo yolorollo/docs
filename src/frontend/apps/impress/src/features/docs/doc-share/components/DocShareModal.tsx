@@ -17,6 +17,7 @@ import { isValidEmail } from '@/utils';
 
 import { KEY_LIST_USER, useUsers } from '../api';
 
+import { QuickSearchGroupAccessRequest } from './DocShareAccessRequest';
 import { DocShareAddMemberList } from './DocShareAddMemberList';
 import {
   DocShareModalInviteUserRow,
@@ -26,6 +27,9 @@ import { QuickSearchGroupMember } from './DocShareMember';
 import { DocShareModalFooter } from './DocShareModalFooter';
 
 const ShareModalStyle = createGlobalStyle`
+  .--docs--doc-share-modal [cmdk-item] {
+    cursor: auto;
+  }
   .c__modal__title {
     padding-bottom: 0 !important;
   }
@@ -173,6 +177,7 @@ export const DocShareModal = ({ doc, onClose }: Props) => {
                 >
                   {showMemberSection ? (
                     <>
+                      <QuickSearchGroupAccessRequest doc={doc} />
                       <QuickSearchGroupInvitation doc={doc} />
                       <QuickSearchGroupMember doc={doc} />
                     </>

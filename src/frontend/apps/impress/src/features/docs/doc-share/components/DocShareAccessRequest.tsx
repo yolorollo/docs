@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonProps,
   VariantType,
   useToastProvider,
 } from '@openfun/cunningham-react';
@@ -11,10 +12,13 @@ import { Box, BoxButton, Icon, LoadMoreText } from '@/components';
 import { QuickSearchData, QuickSearchGroup } from '@/components/quick-search';
 import { useCunninghamTheme } from '@/cunningham';
 import { AccessRequest, Doc } from '@/docs/doc-management/';
+import { useAuth } from '@/features/auth';
 
 import {
   useAcceptDocAccessRequest,
+  useCreateDocAccessRequest,
   useDeleteDocAccessRequest,
+  useDocAccessRequests,
   useDocAccessRequestsInfinite,
 } from '../api/useDocAccessRequest';
 
@@ -145,5 +149,47 @@ export const QuickSearchGroupAccessRequest = ({
         )}
       />
     </Box>
+  );
+};
+
+type ButtonAccessRequestProps = {
+  docId: Doc['id'];
+} & ButtonProps;
+
+export const ButtonAccessRequest = ({
+  docId,
+  ...buttonProps
+}: ButtonAccessRequestProps) => {
+  const { authenticated } = useAuth();
+  const { data: requests } = useDocAccessRequests({
+    docId,
+    page: 1,
+  });
+  const { t } = useTranslation();
+  const { toast } = useToastProvider();
+  const { mutate: createRequest } = useCreateDocAccessRequest({
+    onSuccess: () => {
+      toast(t('Access request sent successfully.'), VariantType.SUCCESS, {
+        duration: 3000,
+      });
+    },
+  });
+
+  const hasRequested = !!(
+    requests && requests?.results.find((request) => request.document === docId)
+  );
+
+  if (!authenticated) {
+    return null;
+  }
+
+  return (
+    <Button
+      onClick={() => createRequest({ docId })}
+      disabled={hasRequested}
+      {...buttonProps}
+    >
+      {buttonProps.children || t('Request access')}
+    </Button>
   );
 };

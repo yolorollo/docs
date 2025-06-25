@@ -60,6 +60,14 @@ export const hocuspocusServer = Server.configure({
 
     connection.readOnly = !canEdit;
 
+    const session = requestHeaders['cookie']
+      ?.split('; ')
+      .find((cookie) => cookie.startsWith('docs_sessionid='));
+    if (session) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      context.sessionKey = session.split('=')[1];
+    }
+
     /*
      * Unauthenticated users can be allowed to connect
      * so we flag only authenticated users

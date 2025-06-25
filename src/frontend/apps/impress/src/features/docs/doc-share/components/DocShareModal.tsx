@@ -17,7 +17,10 @@ import { isValidEmail } from '@/utils';
 
 import { KEY_LIST_USER, useUsers } from '../api';
 
-import { QuickSearchGroupAccessRequest } from './DocShareAccessRequest';
+import {
+  ButtonAccessRequest,
+  QuickSearchGroupAccessRequest,
+} from './DocShareAccessRequest';
 import { DocShareAddMemberList } from './DocShareAddMemberList';
 import {
   DocShareModalInviteUserRow,
@@ -151,7 +154,12 @@ export const DocShareModal = ({ doc, onClose }: Props) => {
 
             <Box data-testid="doc-share-quick-search">
               {!canViewAccesses && (
-                <Box $height={listHeight} $align="center" $justify="center">
+                <Box
+                  $height={listHeight}
+                  $align="center"
+                  $justify="center"
+                  $gap="1rem"
+                >
                   <Text
                     $maxWidth="320px"
                     $textAlign="center"
@@ -162,6 +170,11 @@ export const DocShareModal = ({ doc, onClose }: Props) => {
                       'You do not have permission to view users sharing this document or modify link settings.',
                     )}
                   </Text>
+                  <ButtonAccessRequest
+                    docId={doc.id}
+                    color="tertiary"
+                    size="small"
+                  />
                 </Box>
               )}
               {canViewAccesses && (

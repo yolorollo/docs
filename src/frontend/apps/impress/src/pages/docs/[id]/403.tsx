@@ -1,8 +1,4 @@
-import {
-  Button,
-  VariantType,
-  useToastProvider,
-} from '@openfun/cunningham-react';
+import { Button } from '@openfun/cunningham-react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -13,10 +9,8 @@ import img403 from '@/assets/icons/icon-403.png';
 import { Box, Icon, Loading, StyledLink, Text } from '@/components';
 import { DEFAULT_QUERY_RETRY } from '@/core';
 import { KEY_DOC, useDoc } from '@/features/docs';
-import {
-  useCreateDocAccessRequest,
-  useDocAccessRequests,
-} from '@/features/docs/doc-share/api/useDocAccessRequest';
+import { ButtonAccessRequest } from '@/features/docs/doc-share';
+import { useDocAccessRequests } from '@/features/docs/doc-share/api/useDocAccessRequest';
 import { MainLayout } from '@/layouts';
 import { NextPageWithLayout } from '@/types/next';
 
@@ -54,16 +48,9 @@ const DocPage403 = ({ id }: DocProps) => {
   const { t } = useTranslation();
   const { data: requests, isLoading: isLoadingRequest } = useDocAccessRequests({
     docId: id,
+    page: 1,
   });
   const { replace } = useRouter();
-  const { toast } = useToastProvider();
-  const { mutate: createRequest } = useCreateDocAccessRequest({
-    onSuccess: () => {
-      toast(t('Access request sent successfully.'), VariantType.SUCCESS, {
-        duration: 3000,
-      });
-    },
-  });
 
   const hasRequested = !!requests?.results.find(
     (request) => request.document === id,
@@ -84,7 +71,7 @@ const DocPage403 = ({ id }: DocProps) => {
     },
   );
 
-  if (error?.status !== 403) {
+  if (!isLoadingDoc && error?.status !== 403) {
     void replace(`/docs/${id}`);
     return <Loading />;
   }
@@ -137,12 +124,7 @@ const DocPage403 = ({ id }: DocProps) => {
                 {t('Home')}
               </StyledButton>
             </StyledLink>
-            <Button
-              onClick={() => createRequest({ docId: id })}
-              disabled={hasRequested}
-            >
-              {t('Request access')}
-            </Button>
+            <ButtonAccessRequest docId={id} />
           </Box>
         </Box>
       </Box>

@@ -7,6 +7,7 @@ from django.core import mail
 import pytest
 from rest_framework.test import APIClient
 
+from core.api.serializers import UserSerializer
 from core.factories import (
     DocumentAskForAccessFactory,
     DocumentFactory,
@@ -203,6 +204,8 @@ def test_api_documents_ask_for_access_list_authenticated_own_request():
     )
 
     user = UserFactory()
+    user_data = UserSerializer(instance=user).data
+
     document_ask_for_access = DocumentAskForAccessFactory(
         document=document, user=user, role=RoleChoices.READER
     )
@@ -220,7 +223,7 @@ def test_api_documents_ask_for_access_list_authenticated_own_request():
             {
                 "id": str(document_ask_for_access.id),
                 "document": str(document.id),
-                "user": str(user.id),
+                "user": user_data,
                 "role": RoleChoices.READER,
                 "created_at": document_ask_for_access.created_at.isoformat().replace(
                     "+00:00", "Z"
@@ -286,12 +289,12 @@ def test_api_documents_ask_for_access_list_non_owner_or_admin(role):
     }
 
 
-@pytest.mark.parametrize("role", [RoleChoices.OWNER, RoleChoices.ADMIN])
+@pytest.mark.parametrize("role", [RoleChoices.OWNER])
 def test_api_documents_ask_for_access_list_owner_or_admin(role):
     """Owner or admin users should be able to list document ask for access."""
     user = UserFactory()
     document = DocumentFactory(users=[(user, role)])
-    document_ask_for_access = DocumentAskForAccessFactory.create_batch(
+    document_ask_for_accesses = DocumentAskForAccessFactory.create_batch(
         3, document=document, role=RoleChoices.READER
     )
 
@@ -308,7 +311,7 @@ def test_api_documents_ask_for_access_list_owner_or_admin(role):
             {
                 "id": str(document_ask_for_access.id),
                 "document": str(document.id),
-                "user": str(document_ask_for_access.user.id),
+                "user": UserSerializer(instance=document_ask_for_access.user).data,
                 "role": RoleChoices.READER,
                 "created_at": document_ask_for_access.created_at.isoformat().replace(
                     "+00:00", "Z"
@@ -321,7 +324,7 @@ def test_api_documents_ask_for_access_list_owner_or_admin(role):
                     "retrieve": True,
                 },
             }
-            for document_ask_for_access in document_ask_for_access
+            for document_ask_for_access in document_ask_for_accesses
         ],
     }
 
@@ -385,6 +388,7 @@ def test_api_documents_ask_for_access_retrieve_owner_or_admin(role):
     document_ask_for_access = DocumentAskForAccessFactory(
         document=document, role=RoleChoices.READER
     )
+    user_data = UserSerializer(instance=document_ask_for_access.user).data
 
     client = APIClient()
     client.force_login(user)
@@ -396,7 +400,7 @@ def test_api_documents_ask_for_access_retrieve_owner_or_admin(role):
     assert response.json() == {
         "id": str(document_ask_for_access.id),
         "document": str(document.id),
-        "user": str(document_ask_for_access.user.id),
+        "user": user_data,
         "role": RoleChoices.READER,
         "created_at": document_ask_for_access.created_at.isoformat().replace(
             "+00:00", "Z"

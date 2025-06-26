@@ -686,13 +686,6 @@ class DocumentAskForAccessSerializer(serializers.ModelSerializer):
     """Serializer for document ask for access model"""
 
     abilities = serializers.SerializerMethodField(read_only=True)
-    user_id = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.all(),
-        write_only=True,
-        source="user",
-        required=False,
-        allow_null=True,
-    )
     user = UserSerializer(read_only=True)
 
     class Meta:
@@ -701,7 +694,6 @@ class DocumentAskForAccessSerializer(serializers.ModelSerializer):
             "id",
             "document",
             "user",
-            "user_id",
             "role",
             "created_at",
             "abilities",

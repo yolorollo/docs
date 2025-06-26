@@ -1808,7 +1808,6 @@ class DocumentAskForAccessViewSet(
 
         roles = set(document.get_roles(self.request.user))
         is_owner_or_admin = bool(roles.intersection(set(models.PRIVILEGED_ROLES)))
-        # self.is_current_user_owner_or_admin = is_owner_or_admin
         if not is_owner_or_admin:
             queryset = queryset.filter(user=self.request.user)
 

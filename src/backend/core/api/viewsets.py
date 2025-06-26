@@ -664,7 +664,8 @@ class DocumentViewSet(
                         settings.NO_WEBSOCKET_CACHE_TIMEOUT,
                     )
                 return True
-            elif current_editor != self.request.session.session_key:
+
+            if current_editor != self.request.session.session_key:
                 return False
 
             if set_cache:
@@ -700,6 +701,7 @@ class DocumentViewSet(
         url_path="can-edit",
     )
     def can_edit(self, request, *args, **kwargs):
+        """Check if the current user can edit the document."""
         document = self.get_object()
 
         return drf.response.Response(

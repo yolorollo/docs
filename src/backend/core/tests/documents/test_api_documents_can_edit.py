@@ -11,6 +11,13 @@ from core import factories
 pytestmark = pytest.mark.django_db
 
 
+def test_api_documents_can_edit_anonymous():
+    """Anonymous users can not edit documents."""
+    document = factories.DocumentFactory()
+    client = APIClient()
+    response = client.get(f"/api/v1.0/documents/{document.id!s}/can-edit/")
+    assert response.status_code == 401
+
 @responses.activate
 def test_api_documents_can_edit_authenticated_no_websocket(settings):
     """

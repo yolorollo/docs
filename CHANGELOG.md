@@ -27,11 +27,16 @@ and this project adheres to
 
 ### Fixed
 
--🐛(frontend) table of content disappearing #982
--🐛(frontend) fix multiple EmojiPicker #1012
--🐛(frontend) fix meta title #1017
--🔧(git) set LF line endings for all text files #1032
--📝(docs) minor fixes to docs/env.md
+- 🐛(frontend) table of content disappearing #982
+- 🐛(frontend) fix multiple EmojiPicker #1012
+- 🐛(frontend) fix meta title #1017
+- 🔧(git) set LF line endings for all text files #1032
+- 📝(docs) minor fixes to docs/env.md
+
+## Removed
+
+- 🔥(frontend) remove Beta from logo #1095
+
 
 ## [3.3.0] - 2025-05-06
 

@@ -365,7 +365,6 @@ export const tokens = {
         },
         'la-gaufre': false,
         'home-proconnect': false,
-        beta: false,
         'image-system-filter': '',
         favicon: {
           ico: '/assets/favicon-light.ico',
@@ -439,7 +438,6 @@ export const tokens = {
       components: {
         'la-gaufre': true,
         'home-proconnect': true,
-        beta: true,
         favicon: {
           ico: '/assets/favicon-dsfr.ico',
           'png-light': '/assets/favicon-dsfr.png',

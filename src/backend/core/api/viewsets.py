@@ -34,6 +34,7 @@ from rest_framework.throttling import UserRateThrottle
 from core import authentication, enums, models
 from core.services.ai_services import AIService
 from core.services.collaboration_services import CollaborationService
+from core.tasks.mail import send_ask_for_access_mail
 from core.utils import extract_attachments, filter_descendants
 
 from . import permissions, serializers, utils
@@ -1834,18 +1835,7 @@ class DocumentAskForAccessViewSet(
             role=serializer.validated_data["role"],
         )
 
-        # Send email to document owners/admins
-        owner_admin_accesses = models.DocumentAccess.objects.filter(
-            document=document, role__in=models.PRIVILEGED_ROLES
-        ).select_related("user")
-
-        for access in owner_admin_accesses:
-            if access.user and access.user.email:
-                ask_for_access.send_ask_for_access_email(
-                    access.user.email,
-                    request.user,
-                    access.user.language or settings.LANGUAGE_CODE,
-                )
+        send_ask_for_access_mail.delay(ask_for_access.id)
 
         return drf.response.Response(status=drf.status.HTTP_201_CREATED)
 

@@ -1221,12 +1221,13 @@ class DocumentAskForAccess(BaseModel):
         )
         self.delete()
 
-    def send_ask_for_access_email(self, email, sender, language=None):
+    def send_ask_for_access_email(self, email, language=None):
         """
         Method allowing a user to send an email notification when asking for access to a document.
         """
 
         language = language or get_language()
+        sender = self.user
         sender_name = sender.full_name or sender.email
         sender_name_email = (
             f"{sender.full_name:s} ({sender.email})"

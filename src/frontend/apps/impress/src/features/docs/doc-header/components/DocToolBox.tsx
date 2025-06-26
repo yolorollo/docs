@@ -1,4 +1,9 @@
-import { Button, useModal } from '@openfun/cunningham-react';
+import {
+  Button,
+  VariantType,
+  useModal,
+  useToastProvider,
+} from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +26,7 @@ import {
   useCopyDocLink,
   useCreateFavoriteDoc,
   useDeleteFavoriteDoc,
+  useDuplicateDoc,
 } from '@/docs/doc-management';
 import { DocShareModal } from '@/docs/doc-share';
 import {
@@ -42,6 +48,7 @@ export const DocToolBox = ({ doc }: DocToolBoxProps) => {
   const { t } = useTranslation();
   const hasAccesses = doc.nb_accesses_direct > 1 && doc.abilities.accesses_view;
   const queryClient = useQueryClient();
+  const { toast } = useToastProvider();
 
   const { spacingsTokens, colorsTokens } = useCunninghamTheme();
 
@@ -52,6 +59,18 @@ export const DocToolBox = ({ doc }: DocToolBoxProps) => {
 
   const { isSmallMobile, isDesktop } = useResponsiveStore();
   const copyDocLink = useCopyDocLink(doc.id);
+  const { mutate: duplicateDoc } = useDuplicateDoc({
+    onSuccess: () => {
+      toast(t('Document duplicated successfully!'), VariantType.SUCCESS, {
+        duration: 3000,
+      });
+    },
+    onError: () => {
+      toast(t('Failed to duplicate the document...'), VariantType.ERROR, {
+        duration: 3000,
+      });
+    },
+  });
   const { isFeatureFlagActivated } = useAnalytics();
   const removeFavoriteDoc = useDeleteFavoriteDoc({
     listInvalideQueries: [KEY_LIST_DOC, KEY_DOC],
@@ -114,7 +133,6 @@ export const DocToolBox = ({ doc }: DocToolBoxProps) => {
       },
       show: isDesktop,
     },
-
     {
       label: t('Copy as {{format}}', { format: 'Markdown' }),
       icon: 'content_copy',
@@ -129,6 +147,18 @@ export const DocToolBox = ({ doc }: DocToolBoxProps) => {
         void copyCurrentEditorToClipboard('html');
       },
       show: isFeatureFlagActivated('CopyAsHTML'),
+    },
+    {
+      label: t('Duplicate'),
+      icon: 'call_split',
+      disabled: !doc.abilities.duplicate,
+      callback: () => {
+        duplicateDoc({
+          docId: doc.id,
+          with_accesses: false,
+          canSave: doc.abilities.partial_update,
+        });
+      },
     },
     {
       label: t('Delete document'),

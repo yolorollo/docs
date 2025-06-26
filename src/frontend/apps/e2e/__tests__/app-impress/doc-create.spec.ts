@@ -39,6 +39,7 @@ test.describe('Doc Create: Not logged', () => {
     browserName,
     request,
   }) => {
+    const SERVER_TO_SERVER_API_TOKENS = 'server-api-token';
     const markdown = `This is a normal text\n\n# And this is a large heading`;
     const [title] = randomName('My server way doc create', browserName, 1);
     const data = {
@@ -53,7 +54,7 @@ test.describe('Doc Create: Not logged', () => {
       {
         data,
         headers: {
-          Authorization: 'Bearer test-e2e',
+          Authorization: `Bearer ${SERVER_TO_SERVER_API_TOKENS}`,
           format: 'json',
         },
       },

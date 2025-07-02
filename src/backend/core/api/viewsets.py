@@ -954,6 +954,8 @@ class DocumentViewSet(
         )
         serializer.is_valid(raise_exception=True)
         with_accesses = serializer.validated_data.get("with_accesses", False)
+        roles = set(document.get_roles(request.user))
+        is_owner_or_admin = bool(roles.intersection(set(models.PRIVILEGED_ROLES)))
 
         base64_yjs_content = document.content
 
@@ -985,7 +987,7 @@ class DocumentViewSet(
         ]
 
         # If accesses should be duplicated, add other users' accesses as per original document
-        if with_accesses:
+        if with_accesses and is_owner_or_admin:
             original_accesses = models.DocumentAccess.objects.filter(
                 document=document
             ).exclude(user=request.user)

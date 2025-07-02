@@ -60,7 +60,7 @@ def test_api_documents_duplicate_forbidden():
 def test_api_documents_duplicate_anonymous():
     """Anonymous users should not be able to duplicate documents even with read access."""
 
-    document = factories.DocumentFactory(link_reach="public")
+    document = factories.DocumentFactory(link_reach="public", link_role="reader")
 
     response = APIClient().post(f"/api/v1.0/documents/{document.id!s}/duplicate/")
 

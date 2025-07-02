@@ -842,7 +842,7 @@ class Document(MP_Node, BaseModel):
             "cors_proxy": can_get,
             "descendants": can_get,
             "destroy": is_owner,
-            "duplicate": can_get,
+            "duplicate": can_get and user.is_authenticated,
             "favorite": can_get and user.is_authenticated,
             "link_configuration": is_owner_or_admin,
             "invite_owner": is_owner,

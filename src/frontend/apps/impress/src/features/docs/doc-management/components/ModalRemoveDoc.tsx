@@ -5,14 +5,13 @@ import {
   VariantType,
   useToastProvider,
 } from '@openfun/cunningham-react';
-import { t } from 'i18next';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { Box, Text, TextErrors } from '@/components';
 
 import { useRemoveDoc } from '../api/useRemoveDoc';
-import { useTrans } from '../hooks';
 import { Doc } from '../types';
 
 interface ModalRemoveDocProps {
@@ -27,10 +26,9 @@ export const ModalRemoveDoc = ({
   afterDelete,
 }: ModalRemoveDocProps) => {
   const { toast } = useToastProvider();
+  const { t } = useTranslation();
   const { push } = useRouter();
   const pathname = usePathname();
-  const { untitledDocument } = useTrans();
-
   const {
     mutate: removeDoc,
     isError,
@@ -82,7 +80,7 @@ export const ModalRemoveDoc = ({
           </Button>
         </>
       }
-      size={ModalSize.SMALL}
+      size={ModalSize.MEDIUM}
       title={
         <Text
           $size="h6"
@@ -100,11 +98,14 @@ export const ModalRemoveDoc = ({
         className="--docs--modal-remove-doc"
       >
         {!isError && (
-          <Text $size="sm" $variation="600">
-            {t('Are you sure you want to delete the document "{{title}}"?', {
-              title: doc.title ?? untitledDocument,
-            })}
-          </Text>
+          <>
+            <Text $size="sm" $variation="600" $display="inline-block">
+              <Trans t={t} i18nKey="modal-remove-doc">
+                This document and <strong>any sub-documents</strong> will be
+                permanently deleted. This action is irreversible.
+              </Trans>
+            </Text>
+          </>
         )}
 
         {isError && <TextErrors causes={error.cause} />}

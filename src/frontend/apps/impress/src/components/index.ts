@@ -1,3 +1,4 @@
+export * from './AlertModal';
 export * from './Box';
 export * from './BoxButton';
 export * from './Card';

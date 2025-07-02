@@ -1,15 +1,22 @@
 import { DndContext, DragOverlay, Modifier } from '@dnd-kit/core';
 import { getEventCoordinates } from '@dnd-kit/utilities';
 import { TreeViewMoveModeEnum } from '@gouvfr-lasuite/ui-kit';
+import { useModal } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Box, Text } from '@/components';
+import { AlertModal, Box, Text } from '@/components';
 import { Doc, KEY_LIST_DOC } from '@/docs/doc-management';
+import {
+  getDocAccesses,
+  getDocInvitations,
+  useDeleteDocAccess,
+  useDeleteDocInvitation,
+} from '@/docs/doc-share';
 import { useMoveDoc } from '@/docs/doc-tree';
 
-import { useDragAndDrop } from '../hooks/useDragAndDrop';
+import { DocDragEndData, useDragAndDrop } from '../hooks/useDragAndDrop';
 
 import { DocsGridItem } from './DocsGridItem';
 import { Draggable } from './Draggable';
@@ -45,23 +52,75 @@ type DocGridContentListProps = {
 };
 
 export const DocGridContentList = ({ docs }: DocGridContentListProps) => {
-  const { mutate: handleMove, isError } = useMoveDoc();
+  const { mutateAsync: handleMove, isError } = useMoveDoc();
   const queryClient = useQueryClient();
-  const onDrag = (sourceDocumentId: string, targetDocumentId: string) =>
-    handleMove(
-      {
+  const modalConfirmation = useModal();
+  const { mutate: handleDeleteInvitation } = useDeleteDocInvitation();
+  const { mutate: handleDeleteAccess } = useDeleteDocAccess();
+  const onDragData = useRef<DocDragEndData | null>(null);
+
+  const handleMoveDoc = async () => {
+    if (!onDragData.current) {
+      return;
+    }
+
+    const { sourceDocumentId, targetDocumentId } = onDragData.current;
+    modalConfirmation.onClose();
+    if (!sourceDocumentId || !targetDocumentId) {
+      onDragData.current = null;
+
+      return;
+    }
+
+    try {
+      await handleMove({
         sourceDocumentId,
         targetDocumentId,
         position: TreeViewMoveModeEnum.FIRST_CHILD,
-      },
-      {
-        onSuccess: () => {
-          void queryClient.invalidateQueries({
-            queryKey: [KEY_LIST_DOC],
-          });
-        },
-      },
-    );
+      });
+
+      void queryClient.invalidateQueries({
+        queryKey: [KEY_LIST_DOC],
+      });
+      const accesses = await getDocAccesses({
+        docId: sourceDocumentId,
+      });
+
+      const invitationsResponse = await getDocInvitations({
+        docId: sourceDocumentId,
+        page: 1,
+      });
+
+      const invitations = invitationsResponse.results;
+
+      await Promise.all([
+        ...invitations.map((invitation) =>
+          handleDeleteInvitation({
+            docId: sourceDocumentId,
+            invitationId: invitation.id,
+          }),
+        ),
+        ...accesses.map((access) =>
+          handleDeleteAccess({
+            docId: sourceDocumentId,
+            accessId: access.id,
+          }),
+        ),
+      ]);
+    } finally {
+      onDragData.current = null;
+    }
+  };
+
+  const onDrag = (data: DocDragEndData) => {
+    onDragData.current = data;
+    if (data.source.nb_accesses_direct <= 1) {
+      void handleMoveDoc();
+      return;
+    }
+
+    modalConfirmation.open();
+  };
 
   const {
     selectedDoc,
@@ -105,37 +164,62 @@ export const DocGridContentList = ({ docs }: DocGridContentListProps) => {
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      modifiers={[snapToTopLeft]}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      {docs.map((doc) => (
-        <DraggableDocGridItem
-          key={doc.id}
-          doc={doc}
-          dragMode={!!selectedDoc}
-          canDrag={!!canDrag}
-          updateCanDrop={updateCanDrop}
+    <>
+      <DndContext
+        sensors={sensors}
+        modifiers={[snapToTopLeft]}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        {docs.map((doc) => (
+          <DraggableDocGridItem
+            key={doc.id}
+            doc={doc}
+            dragMode={!!selectedDoc}
+            canDrag={!!canDrag}
+            updateCanDrop={updateCanDrop}
+          />
+        ))}
+        <DragOverlay dropAnimation={null}>
+          <Box
+            $width="fit-content"
+            $padding={{ horizontal: 'xs', vertical: '3xs' }}
+            $radius="12px"
+            $background={overlayBgColor}
+            data-testid="drag-doc-overlay"
+            $height="auto"
+            role="alert"
+          >
+            <Text $size="xs" $variation="000" $weight="500">
+              {overlayText}
+            </Text>
+          </Box>
+        </DragOverlay>
+      </DndContext>
+      {modalConfirmation.isOpen && (
+        <AlertModal
+          {...modalConfirmation}
+          title={t('Move document')}
+          description={
+            <span
+              dangerouslySetInnerHTML={{
+                __html: t(
+                  'By moving this document to <strong>{{targetDocumentTitle}}</strong>, it will lose its current access rights and inherit the permissions of that document. <strong>This access change cannot be undone.</strong>',
+                  {
+                    targetDocumentTitle:
+                      onDragData.current?.target.title ?? t('Unnamed document'),
+                  },
+                ),
+              }}
+            />
+          }
+          confirmLabel={t('Move')}
+          onConfirm={() => {
+            void handleMoveDoc();
+          }}
         />
-      ))}
-      <DragOverlay dropAnimation={null}>
-        <Box
-          $width="fit-content"
-          $padding={{ horizontal: 'xs', vertical: '3xs' }}
-          $radius="12px"
-          $background={overlayBgColor}
-          data-testid="drag-doc-overlay"
-          $height="auto"
-          role="alert"
-        >
-          <Text $size="xs" $variation="000" $weight="500">
-            {overlayText}
-          </Text>
-        </Box>
-      </DragOverlay>
-    </DndContext>
+      )}
+    </>
   );
 };
 

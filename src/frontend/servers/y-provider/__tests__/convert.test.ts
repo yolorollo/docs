@@ -18,10 +18,49 @@ import {
   COLLABORATION_SERVER_ORIGIN as origin,
 } from '../src/env';
 
+const expectedBlocks = [
+  {
+    children: [],
+    content: [
+      {
+        styles: {},
+        text: 'Example document',
+        type: 'text',
+      },
+    ],
+    id: expect.any(String),
+    props: {
+      backgroundColor: 'default',
+      isToggleable: false,
+      level: 1,
+      textAlignment: 'left',
+      textColor: 'default',
+    },
+    type: 'heading',
+  },
+  {
+    children: [],
+    content: [
+      {
+        styles: {},
+        text: 'Lorem ipsum dolor sit amet.',
+        type: 'text',
+      },
+    ],
+    id: expect.any(String),
+    props: {
+      backgroundColor: 'default',
+      textAlignment: 'left',
+      textColor: 'default',
+    },
+    type: 'paragraph',
+  },
+];
+
 console.error = vi.fn();
 
 describe('Server Tests', () => {
-  test('POST /api/convert with incorrect API key should responds with 401', async () => {
+  test('POST /api/convert with incorrect API key responds with 401', async () => {
     const app = initApp();
 
     const response = await request(app)
@@ -32,11 +71,11 @@ describe('Server Tests', () => {
 
     expect(response.status).toBe(401);
     expect(response.body).toStrictEqual({
-      error: 'Forbidden: Invalid API Key',
+      error: 'Unauthorized: Invalid API Key',
     });
   });
 
-  test('POST /api/convert with a Bearer token', async () => {
+  test('POST /api/convert with incorrect Bearer token responds with 401', async () => {
     const app = initApp();
 
     const response = await request(app)
@@ -45,10 +84,9 @@ describe('Server Tests', () => {
       .set('authorization', 'Bearer test-secret-api-key')
       .set('content-type', 'application/json');
 
-    // Warning: Changing the authorization header to Bearer token format will break backend compatibility with this microservice.
     expect(response.status).toBe(401);
     expect(response.body).toStrictEqual({
-      error: 'Forbidden: Invalid API Key',
+      error: 'Unauthorized: Invalid API Key',
     });
   });
 
@@ -83,68 +121,33 @@ describe('Server Tests', () => {
     });
   });
 
-  test('POST /api/convert with correct content', async () => {
-    const app = initApp();
+  test.each([[apiKey], [`Bearer ${apiKey}`]])(
+    'POST /api/convert with correct content with Authorization: %s',
+    async (authHeader) => {
+      const app = initApp();
 
-    const document = [
-      '# Example document',
-      '',
-      'Lorem ipsum dolor sit amet.',
-      '',
-    ].join('\n');
+      const document = [
+        '# Example document',
+        '',
+        'Lorem ipsum dolor sit amet.',
+        '',
+      ].join('\n');
 
-    const response = await request(app)
-      .post('/api/convert')
-      .set('origin', origin)
-      .set('authorization', apiKey)
-      .set('content-type', 'application/json')
-      .send(document);
+      const response = await request(app)
+        .post('/api/convert')
+        .set('Origin', origin)
+        .set('Authorization', authHeader)
+        .send(document);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toBeInstanceOf(Buffer);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Buffer);
 
-    const editor = ServerBlockNoteEditor.create();
-    const doc = new Y.Doc();
-    Y.applyUpdate(doc, response.body);
-    const blocks = editor.yDocToBlocks(doc, 'document-store');
+      const editor = ServerBlockNoteEditor.create();
+      const doc = new Y.Doc();
+      Y.applyUpdate(doc, response.body);
+      const blocks = editor.yDocToBlocks(doc, 'document-store');
 
-    expect(blocks).toStrictEqual([
-      {
-        children: [],
-        content: [
-          {
-            styles: {},
-            text: 'Example document',
-            type: 'text',
-          },
-        ],
-        id: expect.any(String),
-        props: {
-          backgroundColor: 'default',
-          isToggleable: false,
-          level: 1,
-          textAlignment: 'left',
-          textColor: 'default',
-        },
-        type: 'heading',
-      },
-      {
-        children: [],
-        content: [
-          {
-            styles: {},
-            text: 'Lorem ipsum dolor sit amet.',
-            type: 'text',
-          },
-        ],
-        id: expect.any(String),
-        props: {
-          backgroundColor: 'default',
-          textAlignment: 'left',
-          textColor: 'default',
-        },
-        type: 'paragraph',
-      },
-    ]);
-  });
+      expect(blocks).toStrictEqual(expectedBlocks);
+    },
+  );
 });

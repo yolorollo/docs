@@ -26,7 +26,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "boto3==1.38.46",
+    "boto3==1.39.3",
     "Brotli==1.1.0",
     "celery[redis]==5.5.3",
     "django-configurations==2.5.1",
@@ -39,7 +39,7 @@ dependencies = [
     "django-redis==6.0.0",
     "django-storages[s3]==1.14.6",
     "django-timezone-field>=5.1",
-    "django==5.2.3",
+    "django==5.2.4",
     "django-treebeard==4.7.1",
     "djangorestframework==3.16.0",
     "drf_spectacular==0.28.0",
@@ -73,10 +73,10 @@ dependencies = [
 dev = [
     "django-extensions==4.1",
     "django-test-migrations==1.5.0",
-    "drf-spectacular-sidecar==2025.6.1",
+    "drf-spectacular-sidecar==2025.7.1",
     "freezegun==1.5.2",
     "ipdb==0.13.13",
-    "ipython==9.3.0",
+    "ipython==9.4.0",
     "pyfakefs==5.9.1",
     "pylint-django==2.6.1",
     "pylint==3.3.7",
@@ -84,9 +84,9 @@ dev = [
     "pytest-django==4.11.1",
     "pytest==8.4.1",
     "pytest-icdiff==0.9",
-    "pytest-xdist==3.7.0",
+    "pytest-xdist==3.8.0",
     "responses==0.25.7",
-    "ruff==0.12.1",
+    "ruff==0.12.2",
     "types-requests==2.32.4.20250611",
 ]
 

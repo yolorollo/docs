@@ -46,7 +46,11 @@ interface DocProps {
 
 const DocPage403 = ({ id }: DocProps) => {
   const { t } = useTranslation();
-  const { data: requests, isLoading: isLoadingRequest } = useDocAccessRequests({
+  const {
+    data: requests,
+    isLoading: isLoadingRequest,
+    error: docAccessError,
+  } = useDocAccessRequests({
     docId: id,
     page: 1,
   });
@@ -56,7 +60,7 @@ const DocPage403 = ({ id }: DocProps) => {
     (request) => request.document === id,
   );
 
-  const { error, isLoading: isLoadingDoc } = useDoc(
+  const { error: docError, isLoading: isLoadingDoc } = useDoc(
     { id },
     {
       staleTime: 0,
@@ -71,7 +75,7 @@ const DocPage403 = ({ id }: DocProps) => {
     },
   );
 
-  if (!isLoadingDoc && error?.status !== 403) {
+  if (!isLoadingDoc && docError?.status !== 403) {
     void replace(`/docs/${id}`);
     return <Loading />;
   }
@@ -115,6 +119,21 @@ const DocPage403 = ({ id }: DocProps) => {
               : t('Insufficient access rights to view the document.')}
           </Text>
 
+          {docAccessError?.status === 404 && (
+            <Text
+              as="p"
+              $maxWidth="320px"
+              $textAlign="center"
+              $variation="600"
+              $size="sm"
+              $margin={{ top: '0' }}
+            >
+              {t(
+                "You're currently viewing a sub-document. To gain access, please request permission from the main document.",
+              )}
+            </Text>
+          )}
+
           <Box $direction="row" $gap="0.7rem">
             <StyledLink href="/">
               <StyledButton
@@ -124,7 +143,9 @@ const DocPage403 = ({ id }: DocProps) => {
                 {t('Home')}
               </StyledButton>
             </StyledLink>
-            <ButtonAccessRequest docId={id} />
+            {docAccessError?.status !== 404 && (
+              <ButtonAccessRequest docId={id} />
+            )}
           </Box>
         </Box>
       </Box>

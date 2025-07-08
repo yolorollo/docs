@@ -7,6 +7,7 @@ import {
   keyCloakSignIn,
   verifyDocName,
 } from './common';
+import { createRootSubPage } from './sub-pages-utils';
 
 test.describe('Doc Visibility', () => {
   test.beforeEach(async ({ page }) => {
@@ -271,7 +272,7 @@ test.describe('Doc Visibility: Public', () => {
     await page.getByRole('button', { name: 'Share' }).click();
     await expect(
       page.getByText(
-        'You do not have permission to view users sharing this document or modify link settings.',
+        'You can view this document but need additional access to see its members or modify settings.',
       ),
     ).toBeVisible();
 
@@ -398,6 +399,8 @@ test.describe('Doc Visibility: Authenticated', () => {
     page,
     browserName,
   }) => {
+    test.slow();
+
     await page.goto('/');
     await keyCloakSignIn(page, browserName);
 
@@ -435,6 +438,14 @@ test.describe('Doc Visibility: Authenticated', () => {
 
     const urlDoc = page.url();
 
+    const { name: childTitle } = await createRootSubPage(
+      page,
+      browserName,
+      'Authenticated read onlyc - child',
+    );
+
+    const urlChildDoc = page.url();
+
     await page
       .getByRole('button', {
         name: 'Logout',
@@ -446,7 +457,9 @@ test.describe('Doc Visibility: Authenticated', () => {
 
     await expect(
       page.getByRole('link', { name: 'Docs Logo Docs' }),
-    ).toBeVisible();
+    ).toBeVisible({
+      timeout: 10000,
+    });
 
     await page.goto(urlDoc);
 
@@ -457,7 +470,7 @@ test.describe('Doc Visibility: Authenticated', () => {
 
     await expect(
       page.getByText(
-        'You do not have permission to view users sharing this document or modify link settings.',
+        'You can view this document but need additional access to see its members or modify settings.',
       ),
     ).toBeVisible();
 
@@ -466,6 +479,22 @@ test.describe('Doc Visibility: Authenticated', () => {
     await expect(
       page.getByRole('button', { name: 'Request access' }),
     ).toBeDisabled();
+
+    await page.goto(urlChildDoc);
+
+    await expect(page.locator('h2').getByText(childTitle)).toBeVisible();
+
+    await page.getByRole('button', { name: 'Share' }).click();
+
+    await expect(
+      page.getByText(
+        'As this is a sub-document, please request access to the parent document to enable these features.',
+      ),
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole('button', { name: 'Request access' }),
+    ).toBeHidden();
   });
 
   test('It checks a authenticated doc in editable mode', async ({

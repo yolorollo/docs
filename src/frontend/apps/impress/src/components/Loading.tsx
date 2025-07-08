@@ -1,7 +1,7 @@
 import { Loader } from '@openfun/cunningham-react';
 import { useTranslation } from 'react-i18next';
 
-import { Box } from './Box';
+import { Box, BoxProps } from './Box';
 import { Icon } from './Icon';
 import { Text } from './Text';
 
@@ -36,8 +36,8 @@ export const LoadMoreText = ({
   );
 };
 
-export const Loading = () => (
-  <Box $align="center" $justify="center" $height="100%">
+export const Loading = (props: BoxProps) => (
+  <Box $align="center" $justify="center" $height="100%" {...props}>
     <Loader />
   </Box>
 );

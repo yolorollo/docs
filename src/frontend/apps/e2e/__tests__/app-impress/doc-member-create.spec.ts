@@ -7,6 +7,7 @@ import {
   randomName,
   verifyDocName,
 } from './common';
+import { createRootSubPage } from './sub-pages-utils';
 
 test.describe('Document create member', () => {
   test.beforeEach(async ({ page }) => {
@@ -272,7 +273,9 @@ test.describe('Document create member: Multiple login', () => {
 
     await expect(
       page.getByRole('link', { name: 'Docs Logo Docs' }),
-    ).toBeVisible();
+    ).toBeVisible({
+      timeout: 10000,
+    });
 
     await page.goto(urlDoc);
 
@@ -293,5 +296,62 @@ test.describe('Document create member: Multiple login', () => {
     await expect(page.getByText('Access Requests')).toBeHidden();
     await expect(page.getByText('Share with 2 users')).toBeVisible();
     await expect(page.getByText(`E2E ${otherBrowser}`)).toBeVisible();
+  });
+
+  test('It cannot request member access on child doc on a 403 page', async ({
+    page,
+    browserName,
+  }) => {
+    test.slow();
+
+    await page.goto('/');
+    await keyCloakSignIn(page, browserName);
+
+    const [docParent] = await createDoc(
+      page,
+      'Block Member access request on child doc - parent',
+      browserName,
+      1,
+    );
+
+    await verifyDocName(page, docParent);
+
+    await createRootSubPage(
+      page,
+      browserName,
+      'Block Member access request on child doc - child',
+    );
+
+    const urlDoc = page.url();
+
+    await page
+      .getByRole('button', {
+        name: 'Logout',
+      })
+      .click();
+
+    const otherBrowser = BROWSERS.find((b) => b !== browserName);
+
+    await keyCloakSignIn(page, otherBrowser!);
+
+    await expect(
+      page.getByRole('link', { name: 'Docs Logo Docs' }),
+    ).toBeVisible({
+      timeout: 10000,
+    });
+
+    await page.goto(urlDoc);
+
+    await expect(
+      page.getByText(
+        "You're currently viewing a sub-document. To gain access, please request permission from the main document.",
+      ),
+    ).toBeVisible({
+      timeout: 10000,
+    });
+
+    await expect(
+      page.getByRole('button', { name: 'Request access' }),
+    ).toBeHidden();
   });
 });

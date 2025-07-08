@@ -179,7 +179,7 @@ export const DocShareModal = ({ doc, onClose, isRootDoc = true }: Props) => {
                     $size="sm"
                   >
                     {t(
-                      'You do not have permission to view users sharing this document or modify link settings.',
+                      'You can view this document but need additional access to see its members or modify settings.',
                     )}
                   </Text>
                   <ButtonAccessRequest

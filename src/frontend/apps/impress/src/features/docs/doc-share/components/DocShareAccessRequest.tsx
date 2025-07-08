@@ -8,7 +8,14 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createGlobalStyle } from 'styled-components';
 
-import { Box, BoxButton, Icon, LoadMoreText } from '@/components';
+import {
+  Box,
+  BoxButton,
+  Icon,
+  LoadMoreText,
+  Loading,
+  Text,
+} from '@/components';
 import { QuickSearchData, QuickSearchGroup } from '@/components/quick-search';
 import { useCunninghamTheme } from '@/cunningham';
 import { AccessRequest, Doc } from '@/docs/doc-management/';
@@ -161,7 +168,11 @@ export const ButtonAccessRequest = ({
   ...buttonProps
 }: ButtonAccessRequestProps) => {
   const { authenticated } = useAuth();
-  const { data: requests } = useDocAccessRequests({
+  const {
+    data: requests,
+    error: docAccessError,
+    isLoading,
+  } = useDocAccessRequests({
     docId,
     page: 1,
   });
@@ -175,13 +186,27 @@ export const ButtonAccessRequest = ({
     },
   });
 
-  const hasRequested = !!(
-    requests && requests?.results.find((request) => request.document === docId)
-  );
-
   if (!authenticated) {
     return null;
   }
+
+  if (docAccessError?.status === 404) {
+    return (
+      <Text $maxWidth="320px" $textAlign="center" $variation="600" $size="sm">
+        {t(
+          'As this is a sub-document, please request access to the parent document to enable these features.',
+        )}
+      </Text>
+    );
+  }
+
+  if (isLoading) {
+    return <Loading $height="auto" />;
+  }
+
+  const hasRequested = !!(
+    requests && requests?.results.find((request) => request.document === docId)
+  );
 
   return (
     <Button

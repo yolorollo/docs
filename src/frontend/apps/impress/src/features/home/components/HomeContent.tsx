@@ -221,7 +221,7 @@ export function HomeContent() {
               }
               title={t('A new way to organize knowledge.')}
               tag={t('Organize')}
-              availableSoon={true}
+              availableSoon={false}
               description={t(
                 'Docs transforms your documents into knowledge bases thanks to subpages, powerful search and the ability to pin your important documents.',
               )}

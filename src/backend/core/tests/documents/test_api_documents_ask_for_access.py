@@ -97,6 +97,23 @@ def test_api_documents_ask_for_access_create_authenticated():
             assert document.title.lower() in email_subject.lower()
 
 
+def test_api_documents_ask_for_access_create_authenticated_non_root_document():
+    """
+    Authenticated users should not be able to create a document ask for access on a non-root
+    document.
+    """
+    parent = DocumentFactory()
+    child = DocumentFactory(parent=parent)
+
+    user = UserFactory()
+
+    client = APIClient()
+    client.force_login(user)
+
+    response = client.post(f"/api/v1.0/documents/{child.id}/ask-for-access/")
+    assert response.status_code == 404
+
+
 def test_api_documents_ask_for_access_create_authenticated_specific_role():
     """
     Authenticated users should be able to create a document ask for access with a specific role.
@@ -196,6 +213,20 @@ def test_api_documents_ask_for_access_list_authenticated():
     }
 
 
+def test_api_documents_ask_for_access_list_authenticated_non_root_document():
+    """
+    Authenticated users should not be able to list document ask for access on a non-root document.
+    """
+    parent = DocumentFactory()
+    child = DocumentFactory(parent=parent)
+
+    client = APIClient()
+    client.force_login(UserFactory())
+
+    response = client.get(f"/api/v1.0/documents/{child.id}/ask-for-access/")
+    assert response.status_code == 404
+
+
 def test_api_documents_ask_for_access_list_authenticated_own_request():
     """Authenticated users should be able to list their own document ask for access."""
     document = DocumentFactory()
@@ -289,7 +320,7 @@ def test_api_documents_ask_for_access_list_non_owner_or_admin(role):
     }
 
 
-@pytest.mark.parametrize("role", [RoleChoices.OWNER])
+@pytest.mark.parametrize("role", [RoleChoices.OWNER, RoleChoices.ADMIN])
 def test_api_documents_ask_for_access_list_owner_or_admin(role):
     """Owner or admin users should be able to list document ask for access."""
     user = UserFactory()
@@ -327,6 +358,23 @@ def test_api_documents_ask_for_access_list_owner_or_admin(role):
             for document_ask_for_access in document_ask_for_accesses
         ],
     }
+
+
+@pytest.mark.parametrize("role", [RoleChoices.OWNER, RoleChoices.ADMIN])
+def test_api_documents_ask_for_access_list_admin_non_root_document(role):
+    """
+    Authenticated users should not be able to list document ask for access on a non-root document.
+    """
+    user = UserFactory()
+    parent = DocumentFactory(users=[(user, role)])
+    child = DocumentFactory(parent=parent, users=[(user, role)])
+    DocumentAskForAccessFactory.create_batch(3, document=child, role=RoleChoices.READER)
+
+    client = APIClient()
+    client.force_login(user)
+
+    response = client.get(f"/api/v1.0/documents/{child.id}/ask-for-access/")
+    assert response.status_code == 404
 
 
 ## Retrieve
@@ -415,6 +463,28 @@ def test_api_documents_ask_for_access_retrieve_owner_or_admin(role):
     }
 
 
+@pytest.mark.parametrize("role", [RoleChoices.OWNER, RoleChoices.ADMIN])
+def test_api_documents_ask_for_access_retrieve_authenticated_non_root_document(role):
+    """
+    Authenticated users should not be able to retrieve document ask for access on a non-root
+    document.
+    """
+    user = UserFactory()
+    parent = DocumentFactory(users=[(user, role)])
+    child = DocumentFactory(parent=parent, users=[(user, role)])
+    document_ask_for_access = DocumentAskForAccessFactory(
+        document=child, role=RoleChoices.READER
+    )
+
+    client = APIClient()
+    client.force_login(user)
+
+    response = client.get(
+        f"/api/v1.0/documents/{child.id}/ask-for-access/{document_ask_for_access.id}/"
+    )
+    assert response.status_code == 404
+
+
 ## Delete
 
 
@@ -485,6 +555,28 @@ def test_api_documents_ask_for_access_delete_owner_or_admin(role):
     assert not DocumentAskForAccess.objects.filter(
         id=document_ask_for_access.id
     ).exists()
+
+
+@pytest.mark.parametrize("role", [RoleChoices.OWNER, RoleChoices.ADMIN])
+def test_api_documents_ask_for_access_delete_authenticated_non_root_document(role):
+    """
+    Authenticated users should not be able to delete document ask for access on a non-root
+    document.
+    """
+    user = UserFactory()
+    parent = DocumentFactory(users=[(user, role)])
+    child = DocumentFactory(parent=parent, users=[(user, role)])
+    document_ask_for_access = DocumentAskForAccessFactory(
+        document=child, role=RoleChoices.READER
+    )
+
+    client = APIClient()
+    client.force_login(user)
+
+    response = client.delete(
+        f"/api/v1.0/documents/{child.id}/ask-for-access/{document_ask_for_access.id}/"
+    )
+    assert response.status_code == 404
 
 
 ## Accept
@@ -654,3 +746,25 @@ def test_api_documents_ask_for_access_accept_authenticated_owner_or_admin_update
     ).exists()
     document_access.refresh_from_db()
     assert document_access.role == RoleChoices.ADMIN
+
+
+@pytest.mark.parametrize("role", [RoleChoices.OWNER, RoleChoices.ADMIN])
+def test_api_documents_ask_for_access_accept_authenticated_non_root_document(role):
+    """
+    Authenticated users should not be able to accept document ask for access on a non-root
+    document.
+    """
+    user = UserFactory()
+    parent = DocumentFactory(users=[(user, role)])
+    child = DocumentFactory(parent=parent, users=[(user, role)])
+    document_ask_for_access = DocumentAskForAccessFactory(
+        document=child, role=RoleChoices.READER
+    )
+
+    client = APIClient()
+    client.force_login(user)
+
+    response = client.post(
+        f"/api/v1.0/documents/{child.id}/ask-for-access/{document_ask_for_access.id}/accept/"
+    )
+    assert response.status_code == 404

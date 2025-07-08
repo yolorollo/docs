@@ -1910,7 +1910,8 @@ class DocumentAskForAccessViewSet(
         if self._document is None:
             try:
                 self._document = models.Document.objects.get(
-                    pk=self.kwargs["resource_id"]
+                    pk=self.kwargs["resource_id"],
+                    depth=1,
                 )
             except models.Document.DoesNotExist as e:
                 raise drf.exceptions.NotFound("Document not found.") from e

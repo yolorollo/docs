@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useConfig } from '@/core';
 import { useIsOffline } from '@/features/service-worker';
@@ -20,7 +20,7 @@ export const useIsCollaborativeEditable = (doc: Doc) => {
   const _isEditable = isUserReader || isConnected || !isShared || isOffline;
   const [isEditable, setIsEditable] = useState(true);
   const [isLoading, setIsLoading] = useState(!_isEditable);
-
+  const timeout = useRef<NodeJS.Timeout | null>(null);
   const {
     data: { can_edit } = { can_edit: _isEditable },
     isLoading: isLoadingCanEdit,
@@ -35,9 +35,31 @@ export const useIsCollaborativeEditable = (doc: Doc) => {
       return;
     }
 
-    setIsEditable(can_edit);
-    setIsLoading(false);
+    // Connection to the WebSocket can take some time, so we set a timeout to ensure the loading state is cleared after a reasonable time.
+    timeout.current = setTimeout(() => {
+      setIsEditable(can_edit);
+      setIsLoading(false);
+    }, 1500);
+
+    return () => {
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+    };
   }, [can_edit, isLoadingCanEdit]);
+
+  useEffect(() => {
+    if (!_isEditable) {
+      return;
+    }
+
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+
+    setIsEditable(true);
+    setIsLoading(false);
+  }, [_isEditable, isLoading]);
 
   if (!conf?.COLLABORATION_WS_NOT_CONNECTED_READY_ONLY) {
     return {

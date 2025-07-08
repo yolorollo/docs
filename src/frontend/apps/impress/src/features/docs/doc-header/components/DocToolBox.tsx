@@ -164,7 +164,7 @@ export const DocToolBox = ({ doc }: DocToolBoxProps) => {
     },
     {
       label: t('Duplicate'),
-      icon: 'call_split',
+      icon: 'content_copy',
       disabled: !doc.abilities.duplicate,
       callback: () => {
         duplicateDoc({

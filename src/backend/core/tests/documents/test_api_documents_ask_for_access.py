@@ -48,7 +48,7 @@ def test_api_documents_ask_for_access_create_authenticated():
     An email should be sent to document owners and admins to notify them.
     """
     owner_user = UserFactory(language="en-us")
-    admin_user = UserFactory(language="fr-fr")
+    admin_user = UserFactory(language="en-us")
     document = DocumentFactory(
         users=[
             (owner_user, RoleChoices.OWNER),

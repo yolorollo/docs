@@ -276,7 +276,6 @@ export const mockedDocument = async (page: Page, data: object) => {
           ancestors_link_role: null,
           created_at: '2021-09-01T09:00:00Z',
           user_role: 'owner',
-          user_roles: ['owner'],
           ...doc,
         },
       });

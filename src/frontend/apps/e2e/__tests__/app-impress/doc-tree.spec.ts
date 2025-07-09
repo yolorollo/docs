@@ -2,6 +2,7 @@
 import { expect, test } from '@playwright/test';
 
 import {
+  addNewMember,
   createDoc,
   expectLoginPage,
   keyCloakSignIn,
@@ -12,8 +13,11 @@ import {
 import { clickOnAddRootSubPage, createRootSubPage } from './sub-pages-utils';
 
 test.describe('Doc Tree', () => {
-  test('create new sub pages', async ({ page, browserName }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/');
+  });
+
+  test('create new sub pages', async ({ page, browserName }) => {
     const [titleParent] = await createDoc(
       page,
       'doc-tree-content',
@@ -58,7 +62,6 @@ test.describe('Doc Tree', () => {
   });
 
   test('check the reorder of sub pages', async ({ page, browserName }) => {
-    await page.goto('/');
     await createDoc(page, 'doc-tree-content', browserName, 1);
     const addButton = page.getByRole('button', { name: 'New doc' });
     await expect(addButton).toBeVisible();
@@ -165,7 +168,6 @@ test.describe('Doc Tree', () => {
   });
 
   test('it detaches a document', async ({ page, browserName }) => {
-    await page.goto('/');
     const [docParent] = await createDoc(
       page,
       'doc-tree-detach',
@@ -201,6 +203,55 @@ test.describe('Doc Tree', () => {
     const header = page.locator('header').first();
     await header.locator('h2').getByText('Docs').click();
     await expect(page.getByText(docChild)).toBeVisible();
+  });
+
+  test('Only owner can detaches a document', async ({ page, browserName }) => {
+    const [docParent] = await createDoc(
+      page,
+      'doc-tree-detach',
+      browserName,
+      1,
+    );
+
+    await verifyDocName(page, docParent);
+
+    await page.getByRole('button', { name: 'Share' }).click();
+
+    await addNewMember(page, 0, 'Owner', 'impress');
+
+    const list = page.getByTestId('doc-share-quick-search');
+    const currentUser = list.getByTestId(
+      `doc-share-member-row-user@${browserName}.test`,
+    );
+    const currentUserRole = currentUser.getByLabel('doc-role-dropdown');
+    await currentUserRole.click();
+    await page.getByLabel('Administrator').click();
+    await list.click();
+
+    await page.getByRole('button', { name: 'Ok' }).click();
+
+    const { name: docChild } = await createRootSubPage(
+      page,
+      browserName,
+      'doc-tree-detach-child',
+    );
+
+    const docTree = page.getByTestId('doc-tree');
+    await expect(docTree.getByText(docChild)).toBeVisible();
+    await docTree.click();
+    const child = docTree
+      .getByRole('treeitem')
+      .locator('.--docs-sub-page-item')
+      .filter({
+        hasText: docChild,
+      });
+    await child.hover();
+    const menu = child.getByText(`more_horiz`);
+    await menu.click();
+
+    await expect(
+      page.getByRole('menuitem', { name: 'Move to my docs' }),
+    ).toHaveAttribute('aria-disabled', 'true');
   });
 });
 

@@ -1,3 +1,4 @@
+import { TreeProvider } from '@gouvfr-lasuite/ui-kit';
 import { Tooltip, useModal } from '@openfun/cunningham-react';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
@@ -143,7 +144,9 @@ export const DocsGridItem = ({ doc, dragMode = false }: DocsGridItemProps) => {
         </Box>
       </Box>
       {shareModal.isOpen && (
-        <DocShareModal doc={doc} onClose={shareModal.close} />
+        <TreeProvider initialNodeId={doc.id}>
+          <DocShareModal doc={doc} onClose={shareModal.close} />
+        </TreeProvider>
       )}
     </>
   );

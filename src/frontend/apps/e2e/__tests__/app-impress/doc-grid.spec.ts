@@ -91,6 +91,22 @@ test.describe('Document grid item options', () => {
     await page.goto('/');
   });
 
+  test('it checks the share modal', async ({ page, browserName }) => {
+    const [docTitle] = await createDoc(page, `check share modal`, browserName);
+
+    await page.goto('/');
+
+    await expect(page.getByText(docTitle)).toBeVisible();
+    const row = await getGridRow(page, docTitle);
+    await row.getByText(`more_horiz`).click();
+
+    await page.getByRole('menuitem', { name: 'Share' }).click();
+
+    await expect(
+      page.getByRole('dialog').getByText('Share the document'),
+    ).toBeVisible();
+  });
+
   test('it pins a document', async ({ page, browserName }) => {
     const [docTitle] = await createDoc(page, `Favorite doc`, browserName);
 

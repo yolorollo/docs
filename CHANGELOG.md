@@ -10,6 +10,7 @@ and this project adheres to
 
 ### Changed
 
+- ♻️(frontend) redirect to doc after duplicate #1175
 - 🔧(project) change env.d system by using local files #1200
 
 ### Fixed

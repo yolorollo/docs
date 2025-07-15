@@ -442,9 +442,10 @@ test.describe('Doc Header', () => {
       page.getByText('Document duplicated successfully!'),
     ).toBeVisible();
 
-    await page.goto('/');
-
     const duplicateTitle = 'Copy of ' + docTitle;
+    await verifyDocName(page, duplicateTitle);
+
+    await page.goto('/');
 
     const row = await getGridRow(page, duplicateTitle);
 
@@ -477,9 +478,12 @@ test.describe('Doc Header', () => {
       page.getByText('Document duplicated successfully!'),
     ).toBeVisible();
 
-    const duplicateDuplicateTitle = 'Copy of ' + childTitle;
+    const duplicateTitle = 'Copy of ' + childTitle;
+
+    await verifyDocName(page, duplicateTitle);
+
     await expect(
-      page.getByTestId('doc-tree').getByText(duplicateDuplicateTitle),
+      page.getByTestId('doc-tree').getByText(duplicateTitle),
     ).toBeVisible();
   });
 });

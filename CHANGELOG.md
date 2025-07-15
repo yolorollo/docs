@@ -8,10 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [3.4.1] - 2025-07-15
+
 ### Fixed
 
 - 🌐(frontend) keep simple tag during export #1154
-- 🐛(back) manage can-edit endpoint without created room in the ws
+- 🐛(back) manage can-edit endpoint without created room 
+  in the ws #1152
 - 🐛(frontend) fix action buttons not clickable #1162
 - 🐛(frontend) fix crash share modal on grid options #1174
 
@@ -643,7 +646,8 @@ and this project adheres to
 - ✨(frontend) Coming Soon page (#67)
 - 🚀 Impress, project to manage your documents easily and collaboratively.
 
-[unreleased]: https://github.com/numerique-gouv/impress/compare/v3.4.0...main
+[unreleased]: https://github.com/numerique-gouv/impress/compare/v3.4.1...main
+[v3.4.1]: https://github.com/numerique-gouv/impress/releases/v3.4.1
 [v3.4.0]: https://github.com/numerique-gouv/impress/releases/v3.4.0
 [v3.3.0]: https://github.com/numerique-gouv/impress/releases/v3.3.0
 [v3.2.1]: https://github.com/numerique-gouv/impress/releases/v3.2.1

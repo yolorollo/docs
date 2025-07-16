@@ -12,6 +12,11 @@ and this project adheres to
 
 - ⚡️(docker) Optimize Dockerfile to use apk with --no-cache #743
 
+### Fixed
+
+- 🐛(backend) improve prompt to not use code blocks delimiter #1188
+
+
 ## [3.4.1] - 2025-07-15
 
 ### Fixed
@@ -31,7 +36,7 @@ and this project adheres to
 - ✨Ask for access #1081
 - ✨(frontend) add customization for translations #857
 - ✨(backend) add ancestors links definitions to document abilities #846
-- ✨(backend) include ancestors accesses on document accesses list view # 846
+- ✨(backend) include ancestors accesses on document accesses list view #846
 - ✨(backend) add ancestors links reach and role to document API #846
 - 📝(project) add troubleshoot doc #1066
 - 📝(project) add system-requirement doc #1066

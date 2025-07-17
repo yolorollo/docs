@@ -8,8 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
-## Fixed
+### Changed
 
+- 🔧(project) change env.d system by using local files #1200
+
+### Fixed
+
+- 🐛(service-worker) Fix useOffline Maximum update depth exceeded #1196
 - 🐛(helm) charts generate invalid YAML for collaboration API / WS #890
 
 ## [3.4.2] - 2025-07-18
@@ -17,7 +22,6 @@ and this project adheres to
 ### Changed
 
 - ⚡️(docker) Optimize Dockerfile to use apk with --no-cache #743
-- 🔧(project) change env.d system by using local files #1200
 
 ### Fixed
 

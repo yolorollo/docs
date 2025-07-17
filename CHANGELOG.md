@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - ✨(backend) allow masking documents from the list view #1171
+- ✨(frontend) subdocs can manage link reach #1190
 - ✨(frontend) add duplicate action to doc tree #1175
 
 ### Changed

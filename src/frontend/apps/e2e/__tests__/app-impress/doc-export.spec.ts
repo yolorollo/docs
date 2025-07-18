@@ -5,6 +5,7 @@ import cs from 'convert-stream';
 import pdf from 'pdf-parse';
 
 import { createDoc, verifyDocName } from './utils-common';
+import { createRootSubPage } from './utils-sub-pages';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -410,5 +411,73 @@ test.describe('Doc Export', () => {
     expect(pdfData.text).toContain('Column 1');
     expect(pdfData.text).toContain('Column 2');
     expect(pdfData.text).toContain('Column 3');
+  });
+
+  test('it exports the doc with interlinking', async ({
+    page,
+    browserName,
+  }) => {
+    const [randomDoc] = await createDoc(
+      page,
+      'export-interlinking',
+      browserName,
+      1,
+    );
+
+    await verifyDocName(page, randomDoc);
+
+    const { name: docChild } = await createRootSubPage(
+      page,
+      browserName,
+      'export-interlink-child',
+    );
+
+    await verifyDocName(page, docChild);
+
+    await page.locator('.bn-block-outer').last().fill('/');
+    await page.getByText('Link a doc').first().click();
+
+    await page
+      .locator(
+        "span[data-inline-content-type='interlinkingSearchInline'] input",
+      )
+      .fill('interlink-child');
+
+    await page
+      .locator('.quick-search-container')
+      .getByText('interlink-child')
+      .click();
+
+    const interlink = page.getByRole('link', {
+      name: 'interlink-child',
+    });
+
+    await expect(interlink).toBeVisible();
+
+    const downloadPromise = page.waitForEvent('download', (download) => {
+      return download.suggestedFilename().includes(`${docChild}.pdf`);
+    });
+
+    await page
+      .getByRole('button', {
+        name: 'download',
+        exact: true,
+      })
+      .click();
+
+    void page
+      .getByRole('button', {
+        name: 'Download',
+        exact: true,
+      })
+      .click();
+
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe(`${docChild}.pdf`);
+
+    const pdfBuffer = await cs.toBuffer(await download.createReadStream());
+    const pdfData = await pdf(pdfBuffer);
+
+    expect(pdfData.text).toContain('interlink-child'); // This is the pdf text
   });
 });

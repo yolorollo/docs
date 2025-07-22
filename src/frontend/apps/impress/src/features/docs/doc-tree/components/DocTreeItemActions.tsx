@@ -20,29 +20,28 @@ import {
 import { useCreateChildrenDoc } from '../api/useCreateChildren';
 import { useDetachDoc } from '../api/useDetach';
 import MoveDocIcon from '../assets/doc-extract-bold.svg';
-import { useTreeUtils } from '../hooks';
 
 type DocTreeItemActionsProps = {
   doc: Doc;
   isOpen?: boolean;
-  parentId?: string | null;
+  isRoot?: boolean;
   onCreateSuccess?: (newDoc: Doc) => void;
   onOpenChange?: (isOpen: boolean) => void;
+  parentId?: string | null;
 };
 
 export const DocTreeItemActions = ({
   doc,
-  parentId,
-  onCreateSuccess,
   isOpen,
+  isRoot = false,
+  onCreateSuccess,
   onOpenChange,
+  parentId,
 }: DocTreeItemActionsProps) => {
   const router = useRouter();
   const { t } = useTranslation();
   const deleteModal = useModal();
-
   const copyLink = useCopyDocLink(doc.id);
-  const { isCurrentParent } = useTreeUtils(doc);
   const { mutate: detachDoc } = useDetachDoc();
   const treeContext = useTreeContext<Doc | null>();
   const { mutate: duplicateDoc } = useDuplicateDoc({
@@ -81,7 +80,7 @@ export const DocTreeItemActions = ({
       icon: <Icon iconName="link" $size="24px" />,
       callback: copyLink,
     },
-    ...(!isCurrentParent
+    ...(!isRoot
       ? [
           {
             label: t('Move to my docs'),

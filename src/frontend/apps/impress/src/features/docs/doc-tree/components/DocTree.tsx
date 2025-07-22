@@ -223,6 +223,7 @@ export const DocTree = ({ currentDoc }: DocTreeProps) => {
                   treeContext?.treeData.addChild(null, newDoc);
                 }}
                 isOpen={rootActionsOpen}
+                isRoot={true}
                 onOpenChange={setRootActionsOpen}
               />
             </Box>

@@ -5,7 +5,6 @@ import {
 } from '@gouvfr-lasuite/ui-kit';
 import { useModal } from '@openfun/cunningham-react';
 import { useRouter } from 'next/router';
-import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { css } from 'styled-components';
 
@@ -25,9 +24,9 @@ import { useTreeUtils } from '../hooks';
 
 type DocTreeItemActionsProps = {
   doc: Doc;
+  isOpen?: boolean;
   parentId?: string | null;
   onCreateSuccess?: (newDoc: Doc) => void;
-  isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
 };
 
@@ -45,10 +44,12 @@ export const DocTreeItemActions = ({
   const copyLink = useCopyDocLink(doc.id);
   const { isCurrentParent } = useTreeUtils(doc);
   const { mutate: detachDoc } = useDetachDoc();
-  const treeContext = useTreeContext<Doc>();
+  const treeContext = useTreeContext<Doc | null>();
   const { mutate: duplicateDoc } = useDuplicateDoc({
-    onSuccess: (data) => {
-      void router.push(`/docs/${data.id}`);
+    onSuccess: (duplicatedDoc) => {
+      // Reset the tree context root will reset the full tree view.
+      treeContext?.setRoot(null);
+      void router.push(`/docs/${duplicatedDoc.id}`);
     },
   });
 
@@ -61,10 +62,13 @@ export const DocTreeItemActions = ({
       { documentId: doc.id, rootId: treeContext.root.id },
       {
         onSuccess: () => {
-          treeContext.treeData.deleteNode(doc.id);
           if (treeContext.root) {
             treeContext.treeData.setSelectedNode(treeContext.root);
-            void router.push(`/docs/${treeContext.root.id}`);
+            void router.push(`/docs/${treeContext.root.id}`).then(() => {
+              setTimeout(() => {
+                treeContext?.treeData.deleteNode(doc.id);
+              }, 100);
+            });
           }
         },
       },
@@ -124,18 +128,24 @@ export const DocTreeItemActions = ({
 
   const afterDelete = () => {
     if (parentId) {
-      treeContext?.treeData.deleteNode(doc.id);
-      void router.push(`/docs/${parentId}`);
+      void router.push(`/docs/${parentId}`).then(() => {
+        setTimeout(() => {
+          treeContext?.treeData.deleteNode(doc.id);
+        }, 100);
+      });
     } else if (doc.id === treeContext?.root?.id && !parentId) {
       void router.push(`/docs/`);
     } else if (treeContext && treeContext.root) {
-      treeContext?.treeData.deleteNode(doc.id);
-      void router.push(`/docs/${treeContext.root.id}`);
+      void router.push(`/docs/${treeContext.root.id}`).then(() => {
+        setTimeout(() => {
+          treeContext?.treeData.deleteNode(doc.id);
+        }, 100);
+      });
     }
   };
 
   return (
-    <Fragment>
+    <Box className="doc-tree-root-item-actions">
       <Box
         $direction="row"
         $align="center"
@@ -187,6 +197,6 @@ export const DocTreeItemActions = ({
           afterDelete={afterDelete}
         />
       )}
-    </Fragment>
+    </Box>
   );
 };

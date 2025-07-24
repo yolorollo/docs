@@ -149,7 +149,11 @@ test.describe('Document list members', () => {
       `You are the sole owner of this group, make another member the group owner before you can change your own role or be removed from your document.`,
     );
     await expect(soloOwner).toBeVisible();
-    await list.click();
+
+    await list.click({
+      // eslint-disable-next-line playwright/no-force-option
+      force: true, // Force click to close the dropdown
+    });
     const newUserEmail = await addNewMember(page, 0, 'Owner');
     const newUser = list.getByTestId(`doc-share-member-row-${newUserEmail}`);
     const newUserRoles = newUser.getByLabel('doc-role-dropdown');
@@ -158,10 +162,16 @@ test.describe('Document list members', () => {
 
     await currentUserRole.click();
     await expect(soloOwner).toBeHidden();
-    await list.click();
+    await list.click({
+      // eslint-disable-next-line playwright/no-force-option
+      force: true, // Force click to close the dropdown
+    });
 
     await newUserRoles.click();
-    await list.click();
+    await list.click({
+      // eslint-disable-next-line playwright/no-force-option
+      force: true, // Force click to close the dropdown
+    });
 
     await currentUserRole.click();
     await page.getByLabel('Administrator').click();

@@ -23,6 +23,7 @@ and this project adheres to
 
 - 🐛(service-worker) Fix useOffline Maximum update depth exceeded #1196
 - 🐛(helm) charts generate invalid YAML for collaboration API / WS #890
+- 🐛(frontend) 401 redirection overridden #1214
 
 ## [3.4.2] - 2025-07-18
 

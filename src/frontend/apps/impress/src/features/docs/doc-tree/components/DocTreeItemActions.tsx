@@ -125,7 +125,7 @@ export const DocTreeItemActions = ({
     },
   });
 
-  const afterDelete = () => {
+  const onSuccessDelete = () => {
     if (parentId) {
       void router.push(`/docs/${parentId}`).then(() => {
         setTimeout(() => {
@@ -133,7 +133,7 @@ export const DocTreeItemActions = ({
         }, 100);
       });
     } else if (doc.id === treeContext?.root?.id && !parentId) {
-      void router.push(`/docs/`);
+      void router.push(`/`);
     } else if (treeContext && treeContext.root) {
       void router.push(`/docs/${treeContext.root.id}`).then(() => {
         setTimeout(() => {
@@ -193,7 +193,7 @@ export const DocTreeItemActions = ({
         <ModalRemoveDoc
           onClose={deleteModal.onClose}
           doc={doc}
-          afterDelete={afterDelete}
+          onSuccess={onSuccessDelete}
         />
       )}
     </Box>

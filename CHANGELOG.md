@@ -23,6 +23,7 @@ and this project adheres to
 ### Fixed
 
 - 🐛(service-worker) Fix useOffline Maximum update depth exceeded #1196
+- 🐛(frontend) fix empty left panel after deleting root doc #1197
 - 🐛(helm) charts generate invalid YAML for collaboration API / WS #890
 - 🐛(frontend) 401 redirection overridden #1214
 

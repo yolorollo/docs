@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import { PropsWithChildren, useCallback, useState } from 'react';
 
 import { Box, Icon, SeparatedSection } from '@/components';
-import { DocSearchModal, DocSearchTarget } from '@/docs/doc-search/';
+import { useDocStore } from '@/docs/doc-management';
+import { DocSearchModal } from '@/docs/doc-search/';
 import { useAuth } from '@/features/auth';
 import { useCmdK } from '@/hook/useCmdK';
 
@@ -12,10 +13,9 @@ import { useLeftPanelStore } from '../stores';
 import { LeftPanelHeaderButton } from './LeftPanelHeaderButton';
 
 export const LeftPanelHeader = ({ children }: PropsWithChildren) => {
+  const { currentDoc } = useDocStore();
   const router = useRouter();
   const { authenticated } = useAuth();
-  const isDoc = router.pathname === '/docs/[id]';
-
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   const openSearchModal = useCallback(() => {
@@ -81,10 +81,7 @@ export const LeftPanelHeader = ({ children }: PropsWithChildren) => {
         <DocSearchModal
           onClose={closeSearchModal}
           isOpen={isSearchModalOpen}
-          showFilters={isDoc}
-          defaultFilters={{
-            target: isDoc ? DocSearchTarget.CURRENT : undefined,
-          }}
+          doc={currentDoc}
         />
       )}
     </>

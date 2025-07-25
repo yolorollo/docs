@@ -16,6 +16,7 @@ and this project adheres to
 
 ### Changed
 
+- ♻️(frontend) search on all docs if no children #1184
 - ♻️(frontend) redirect to doc after duplicate #1175
 - 🔧(project) change env.d system by using local files #1200
 - ⚡️(frontend) improve tree stability #1207

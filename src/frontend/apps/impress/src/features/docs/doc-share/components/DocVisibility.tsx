@@ -17,9 +17,9 @@ import {
   LinkReach,
   LinkRole,
   getDocLinkReach,
+  useDocUtils,
   useUpdateDocLink,
 } from '@/docs/doc-management';
-import { useTreeUtils } from '@/docs/doc-tree';
 import { useResponsiveStore } from '@/stores';
 
 import { useTranslatedShareSettings } from '../hooks/';
@@ -37,7 +37,7 @@ export const DocVisibility = ({ doc }: DocVisibilityProps) => {
   const canManage = doc.abilities.accesses_manage;
   const docLinkReach = getDocLinkReach(doc);
   const docLinkRole = doc.computed_link_role ?? LinkRole.READER;
-  const { isDesynchronized } = useTreeUtils(doc);
+  const { isDesynchronized } = useDocUtils(doc);
   const { linkModeTranslations, linkReachChoices, linkReachTranslations } =
     useTranslatedShareSettings();
 

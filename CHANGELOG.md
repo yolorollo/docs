@@ -22,6 +22,7 @@ and this project adheres to
 - ♻️(frontend) redirect to doc after duplicate #1175
 - 🔧(project) change env.d system by using local files #1200
 - ⚡️(frontend) improve tree stability #1207
+- ⚡️(frontend) improve accessibility #1232
 
 ### Fixed
 
@@ -45,7 +46,7 @@ and this project adheres to
 ### Fixed
 
 - 🌐(frontend) keep simple tag during export #1154
-- 🐛(back) manage can-edit endpoint without created room 
+- 🐛(back) manage can-edit endpoint without created room
   in the ws #1152
 - 🐛(frontend) fix action buttons not clickable #1162
 - 🐛(frontend) fix crash share modal on grid options #1174
@@ -65,11 +66,11 @@ and this project adheres to
 - 📝(project) add troubleshoot doc #1066
 - 📝(project) add system-requirement doc #1066
 - 🔧(frontend) configure x-frame-options to DENY in nginx conf #1084
-- ✨(backend) allow to disable checking unsafe mimetype on 
+- ✨(backend) allow to disable checking unsafe mimetype on
   attachment upload #1099
 - ✨(doc) add documentation to install with compose #855
-- ✨ Give priority to users connected to collaboration server 
-  (aka no websocket feature) #1093 
+- ✨ Give priority to users connected to collaboration server
+  (aka no websocket feature) #1093
 
 ### Changed
 
@@ -94,7 +95,6 @@ and this project adheres to
 ### Removed
 
 - 🔥(frontend) remove Beta from logo #1095
-
 
 ## [3.3.0] - 2025-05-06
 
@@ -121,12 +121,12 @@ and this project adheres to
 - ⬆️(docker) upgrade node images to alpine 3.21 #973
 
 ### Fixed
+
 - 🐛(y-provider) increase JSON size limits for transcription conversion #989
 
 ### Removed
 
 - 🔥(back) remove footer endpoint #948
-
 
 ## [3.2.1] - 2025-05-06
 
@@ -134,7 +134,6 @@ and this project adheres to
 
 - 🐛(frontend) fix list copy paste #943
 - 📝(doc) update contributing policy (commit signatures are now mandatory) #895
-
 
 ## [3.2.0] - 2025-05-05
 
@@ -146,7 +145,7 @@ and this project adheres to
 - ✨(settings) Allow configuring PKCE for the SSO #886
 - 🌐(i18n) activate chinese and spanish languages #884
 - 🔧(backend) allow overwriting the data directory #893
-- ➕(backend) add  `django-lasuite` dependency #839
+- ➕(backend) add `django-lasuite` dependency #839
 - ✨(frontend) advanced table features #908
 
 ## Changed
@@ -197,7 +196,6 @@ and this project adheres to
 - 🐛(backend) compute ancestor_links in get_abilities if needed #725
 - 🔒️(back) restrict access to document accesses #801
 
-
 ## [2.6.0] - 2025-03-21
 
 ## Added
@@ -215,7 +213,6 @@ and this project adheres to
 - 🔒️(backend) require at least 5 characters to search for users #636
 - 🔒️(back) throttle user list endpoint #636
 - 🔒️(back) remove pagination and limit to 5 for user list endpoint #636
-
 
 ## [2.5.0] - 2025-03-18
 
@@ -239,14 +236,13 @@ and this project adheres to
 ## Fixed
 
 - 🐛(frontend) SVG export #706
-- 🐛(frontend) remove scroll listener table content  #688
+- 🐛(frontend) remove scroll listener table content #688
 - 🔒️(back) restrict access to favorite_list endpoint #690
-- 🐛(backend) refactor to fix filtering on children 
-    and descendants views #695
+- 🐛(backend) refactor to fix filtering on children
+  and descendants views #695
 - 🐛(action) fix notify-argocd workflow #713
 - 🚨(helm) fix helmfile lint #736
 - 🚚(frontend) redirect to 401 page when 401 error #759
-
 
 ## [2.4.0] - 2025-03-06
 
@@ -261,7 +257,6 @@ and this project adheres to
 ## Fixed
 
 - 🐛(frontend) fix collaboration error #684
-
 
 ## [2.3.0] - 2025-03-03
 

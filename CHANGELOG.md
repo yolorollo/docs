@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- ⚡️(frontend) improve accessibility:
+  - #1248
+  - #1235
+
 ## [3.5.0] - 2025-07-31
 
 ### Added
@@ -25,9 +31,7 @@ and this project adheres to
 - ♻️(frontend) redirect to doc after duplicate #1175
 - 🔧(project) change env.d system by using local files #1200
 - ⚡️(frontend) improve tree stability #1207
-- ⚡️(frontend) improve accessibility
-  - #1232
-  - #1248
+- ⚡️(frontend) improve accessibility #1232
 - 🛂(frontend) block drag n drop when not desktop #1239
 
 ### Fixed

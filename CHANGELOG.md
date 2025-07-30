@@ -31,6 +31,7 @@ and this project adheres to
 - 🐛(frontend) fix empty left panel after deleting root doc #1197
 - 🐛(helm) charts generate invalid YAML for collaboration API / WS #890
 - 🐛(frontend) 401 redirection overridden #1214
+- 🐛(frontend) include root parent in search #1243
 
 ## [3.4.2] - 2025-07-18
 

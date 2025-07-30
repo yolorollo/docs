@@ -45,6 +45,16 @@ export const DocSearchSubPageContent = ({
   const docsData: QuickSearchData<Doc> = useMemo(() => {
     const subDocs = subDocsData?.pages.flatMap((page) => page.results) || [];
 
+    if (treeContext?.root) {
+      const isRootTitleIncludeSearch = treeContext.root?.title
+        ?.toLowerCase()
+        .includes(search.toLowerCase());
+
+      if (isRootTitleIncludeSearch) {
+        subDocs.unshift(treeContext.root);
+      }
+    }
+
     return {
       groupName: subDocs.length > 0 ? t('Select a page') : '',
       elements: search ? subDocs : [],
@@ -57,7 +67,13 @@ export const DocSearchSubPageContent = ({
           ]
         : [],
     };
-  }, [search, subDocsData, subDocsFetchNextPage, subDocsHasNextPage]);
+  }, [
+    search,
+    subDocsData?.pages,
+    subDocsFetchNextPage,
+    subDocsHasNextPage,
+    treeContext?.root,
+  ]);
 
   useEffect(() => {
     onLoadingChange?.(loading);

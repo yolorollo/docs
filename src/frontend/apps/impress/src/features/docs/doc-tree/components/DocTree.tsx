@@ -2,6 +2,7 @@ import {
   OpenMap,
   TreeView,
   TreeViewMoveResult,
+  useResponsive,
   useTreeContext,
 } from '@gouvfr-lasuite/ui-kit';
 import { useRouter } from 'next/navigation';
@@ -29,6 +30,7 @@ export const DocTree = ({ currentDoc }: DocTreeProps) => {
   const [rootActionsOpen, setRootActionsOpen] = useState(false);
   const treeContext = useTreeContext<Doc | null>();
   const router = useRouter();
+  const { isDesktop } = useResponsive();
 
   const [initialOpenState, setInitialOpenState] = useState<OpenMap | undefined>(
     undefined,
@@ -243,13 +245,13 @@ export const DocTree = ({ currentDoc }: DocTreeProps) => {
           canDrop={({ parentNode }) => {
             const parentDoc = parentNode?.data.value as Doc;
             if (!parentDoc) {
-              return currentDoc.abilities.move;
+              return currentDoc.abilities.move && isDesktop;
             }
-            return parentDoc.abilities.move;
+            return parentDoc.abilities.move && isDesktop;
           }}
           canDrag={(node) => {
             const doc = node.value as Doc;
-            return doc.abilities.move;
+            return doc.abilities.move && isDesktop;
           }}
           rootNodeId={treeContext.root.id}
           renderNode={DocSubPageItem}

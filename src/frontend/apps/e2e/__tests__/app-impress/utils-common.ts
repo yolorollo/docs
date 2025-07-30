@@ -79,13 +79,21 @@ export const createDoc = async (
   browserName: string,
   length: number = 1,
   isChild: boolean = false,
+  isMobile: boolean = false,
 ) => {
   const randomDocs = randomName(docName, browserName, length);
 
   for (let i = 0; i < randomDocs.length; i++) {
-    if (!isChild) {
+    if (!isChild && !isMobile) {
       const header = page.locator('header').first();
       await header.locator('h2').getByText('Docs').click();
+    }
+
+    if (isMobile) {
+      await page
+        .getByRole('button', { name: 'Open the header menu' })
+        .getByText('menu')
+        .click();
     }
 
     await page

@@ -55,6 +55,7 @@ const LinkSelected = ({ url, title }: LinkSelectedProps) => {
   return (
     <StyledLink
       href={url}
+      draggable="false"
       $css={css`
         display: inline;
         padding: 0.1rem 0.4rem;

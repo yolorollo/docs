@@ -429,7 +429,7 @@ test.describe('Doc Export', () => {
     await page.waitForLoadState('domcontentloaded');
 
     const header = page.locator('header').first();
-    await header.locator('h2').getByText('Docs').click();
+    await header.locator('h1').getByText('Docs').click();
 
     const randomDocFrench = randomName(
       'doc-language-export-french',

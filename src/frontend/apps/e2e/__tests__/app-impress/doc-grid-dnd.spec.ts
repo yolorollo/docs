@@ -8,9 +8,9 @@ test.describe('Doc grid dnd', () => {
     await page.goto('/');
     const header = page.locator('header').first();
     await createDoc(page, 'Draggable doc', browserName, 1);
-    await header.locator('h2').getByText('Docs').click();
+    await header.locator('h1').getByText('Docs').click();
     await createDoc(page, 'Droppable doc', browserName, 1);
-    await header.locator('h2').getByText('Docs').click();
+    await header.locator('h1').getByText('Docs').click();
 
     const response = await page.waitForResponse(
       (response) =>

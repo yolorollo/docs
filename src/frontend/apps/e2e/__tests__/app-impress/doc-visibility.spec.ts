@@ -122,9 +122,7 @@ test.describe('Doc Visibility: Restricted', () => {
 
     await keyCloakSignIn(page, otherBrowser!);
 
-    await expect(
-      page.getByRole('link', { name: 'Docs Logo Docs' }),
-    ).toBeVisible({
+    await expect(page.getByTestId('header-logo-link')).toBeVisible({
       timeout: 10000,
     });
 
@@ -178,9 +176,7 @@ test.describe('Doc Visibility: Restricted', () => {
 
     await keyCloakSignIn(page, otherBrowser!);
 
-    await expect(
-      page.getByRole('link', { name: 'Docs Logo Docs' }),
-    ).toBeVisible();
+    await expect(page.getByTestId('header-logo-link')).toBeVisible();
 
     await page.goto(urlDoc);
 
@@ -455,9 +451,7 @@ test.describe('Doc Visibility: Authenticated', () => {
     const otherBrowser = BROWSERS.find((b) => b !== browserName);
     await keyCloakSignIn(page, otherBrowser!);
 
-    await expect(
-      page.getByRole('link', { name: 'Docs Logo Docs' }),
-    ).toBeVisible({
+    await expect(page.getByTestId('header-logo-link')).toBeVisible({
       timeout: 10000,
     });
 
@@ -545,9 +539,7 @@ test.describe('Doc Visibility: Authenticated', () => {
     const otherBrowser = BROWSERS.find((b) => b !== browserName);
     await keyCloakSignIn(page, otherBrowser!);
 
-    await expect(
-      page.getByRole('link', { name: 'Docs Logo Docs' }),
-    ).toBeVisible();
+    await expect(page.getByTestId('header-logo-link')).toBeVisible();
 
     await page.goto(urlDoc);
 

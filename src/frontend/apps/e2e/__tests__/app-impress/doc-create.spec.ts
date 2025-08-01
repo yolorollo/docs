@@ -22,7 +22,7 @@ test.describe('Doc Create', () => {
     );
 
     const header = page.locator('header').first();
-    await header.locator('h2').getByText('Docs').click();
+    await header.locator('h1').getByText('Docs').click();
 
     const docsGrid = page.getByTestId('docs-grid');
     await expect(docsGrid).toBeVisible();

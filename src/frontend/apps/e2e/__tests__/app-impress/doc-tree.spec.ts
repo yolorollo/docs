@@ -25,7 +25,7 @@ test.describe('Doc Tree', () => {
       1,
     );
     await verifyDocName(page, titleParent);
-    const addButton = page.getByRole('button', { name: 'New doc' });
+    const addButton = page.getByTestId('new-doc-button');
     const docTree = page.getByTestId('doc-tree');
 
     await expect(addButton).toBeVisible();
@@ -63,7 +63,7 @@ test.describe('Doc Tree', () => {
 
   test('check the reorder of sub pages', async ({ page, browserName }) => {
     await createDoc(page, 'doc-tree-content', browserName, 1);
-    const addButton = page.getByRole('button', { name: 'New doc' });
+    const addButton = page.getByTestId('new-doc-button');
     await expect(addButton).toBeVisible();
 
     const docTree = page.getByTestId('doc-tree');
@@ -201,7 +201,7 @@ test.describe('Doc Tree', () => {
     ).not.toHaveText(docChild);
 
     const header = page.locator('header').first();
-    await header.locator('h2').getByText('Docs').click();
+    await header.locator('h1').getByText('Docs').click();
     await expect(page.getByText(docChild)).toBeVisible();
   });
 

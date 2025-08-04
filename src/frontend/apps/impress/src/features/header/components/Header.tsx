@@ -49,6 +49,7 @@ export const Header = () => {
           $margin={{ top: 'auto' }}
         >
           <IconDocs
+            data-testid="header-icon-docs"
             aria-label={t('Back to homepage')}
             width={32}
             color={colorsTokens['primary-text']}

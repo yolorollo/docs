@@ -242,8 +242,8 @@ test.describe('Doc Visibility: Public', () => {
       cardContainer.getByText('Public document', { exact: true }),
     ).toBeVisible();
 
-    await expect(page.getByRole('button', { name: 'search' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'New doc' })).toBeVisible();
+    await expect(page.getByTestId('search-docs-button')).toBeVisible();
+    await expect(page.getByTestId('new-doc-button')).toBeVisible();
 
     const urlDoc = page.url();
 
@@ -258,8 +258,8 @@ test.describe('Doc Visibility: Public', () => {
     await page.goto(urlDoc);
 
     await expect(page.locator('h2').getByText(docTitle)).toBeVisible();
-    await expect(page.getByRole('button', { name: 'search' })).toBeHidden();
-    await expect(page.getByRole('button', { name: 'New doc' })).toBeHidden();
+    await expect(page.getByTestId('search-docs-button')).toBeHidden();
+    await expect(page.getByTestId('new-doc-button')).toBeHidden();
     await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
     const card = page.getByLabel('It is the card information');
     await expect(card).toBeVisible();

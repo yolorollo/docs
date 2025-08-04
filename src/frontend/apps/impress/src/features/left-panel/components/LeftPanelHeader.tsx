@@ -54,6 +54,7 @@ export const LeftPanelHeader = ({ children }: PropsWithChildren) => {
           >
             <Box $direction="row" $gap="2px">
               <Button
+                data-testid="home-button"
                 onClick={goToHome}
                 aria-label={t('Back to homepage')}
                 size="medium"
@@ -69,6 +70,7 @@ export const LeftPanelHeader = ({ children }: PropsWithChildren) => {
               />
               {authenticated && (
                 <Button
+                  data-testid="search-docs-button"
                   onClick={openSearchModal}
                   size="medium"
                   color="tertiary-text"

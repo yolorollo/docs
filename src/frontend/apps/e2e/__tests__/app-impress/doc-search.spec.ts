@@ -26,10 +26,7 @@ test.describe('Document search', () => {
     );
     await verifyDocName(page, doc2Title);
     await page.goto('/');
-    await page
-      .getByTestId('left-panel-desktop')
-      .getByRole('button', { name: 'search' })
-      .click();
+    await page.getByTestId('search-docs-button').click();
 
     await expect(
       page.getByRole('img', { name: 'No active search' }),
@@ -104,9 +101,7 @@ test.describe('Document search', () => {
     browserName,
   }) => {
     // Doc grid filters are not visible
-    const searchButton = page
-      .getByTestId('left-panel-desktop')
-      .getByRole('button', { name: 'search', exact: true });
+    const searchButton = page.getByTestId('search-docs-button');
 
     const filters = page.getByTestId('doc-search-filters');
 
@@ -170,9 +165,7 @@ test.describe('Document search', () => {
       1,
     );
 
-    const searchButton = page
-      .getByTestId('left-panel-desktop')
-      .getByRole('button', { name: 'search' });
+    const searchButton = page.getByTestId('search-docs-button');
 
     await searchButton.click();
     await page.getByRole('combobox', { name: 'Quick search input' }).click();

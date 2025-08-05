@@ -1,26 +1,10 @@
-import { Page, expect, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import { TestLanguage, createDoc, waitForLanguageSwitch } from './utils-common';
 
-test.describe.serial('Language', () => {
-  let page: Page;
-
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage();
-  });
-
-  test.afterAll(async () => {
-    await page.close();
-  });
-
+test.describe('Language', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await waitForLanguageSwitch(page, TestLanguage.English);
-  });
-
-  test.afterEach(async ({ page }) => {
-    // Switch back to English - important for other tests to run as expected
-    await waitForLanguageSwitch(page, TestLanguage.English);
   });
 
   test('checks language switching', async ({ page }) => {

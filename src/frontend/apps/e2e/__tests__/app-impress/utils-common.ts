@@ -296,6 +296,18 @@ export async function waitForLanguageSwitch(
   page: Page,
   lang: TestLanguageValue,
 ) {
+  await page.route('**/api/v1.0/users/**', async (route, request) => {
+    if (request.method().includes('PATCH')) {
+      await route.fulfill({
+        json: {
+          language: lang.expectedLocale[0],
+        },
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
   const header = page.locator('header').first();
   const languagePicker = header.locator('.--docs--language-picker-text');
   const isAlreadyTargetLanguage = await languagePicker
@@ -307,15 +319,6 @@ export async function waitForLanguageSwitch(
   }
 
   await languagePicker.click();
-  const responsePromise = page.waitForResponse(
-    (resp) =>
-      resp.url().includes('/user') && resp.request().method() === 'PATCH',
-  );
-  await page.getByLabel(lang.label).click();
-  const resolvedResponsePromise = await responsePromise;
-  const responseData = (await resolvedResponsePromise.json()) as {
-    language: string;
-  };
 
-  expect(lang.expectedLocale).toContain(responseData.language);
+  await page.getByLabel(lang.label).click();
 }

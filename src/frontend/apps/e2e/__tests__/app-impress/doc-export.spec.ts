@@ -484,8 +484,6 @@ test.describe('Doc Export', () => {
     const pdfString = pdfBuffer.toString('latin1');
 
     expect(pdfString).toContain('/Lang (fr)');
-
-    await waitForLanguageSwitch(page, TestLanguage.English);
   });
 
   test('it exports the doc with interlinking', async ({

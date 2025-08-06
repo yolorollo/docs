@@ -39,7 +39,11 @@ export const Header = () => {
       className="--docs--header"
     >
       {!isDesktop && <ButtonTogglePanel />}
-      <StyledLink href="/" data-testid="header-logo-link">
+      <StyledLink
+        href="/"
+        data-testid="header-logo-link"
+        aria-label={t('Back to homepage')}
+      >
         <Box
           $align="center"
           $gap={spacingsTokens['3xs']}
@@ -50,11 +54,11 @@ export const Header = () => {
         >
           <IconDocs
             data-testid="header-icon-docs"
-            aria-label={t('Back to homepage')}
             width={32}
             color={colorsTokens['primary-text']}
+            aria-hidden="true"
           />
-          <Title headingLevel="h1" />
+          <Title headingLevel="h1" aria-hidden="true" />
         </Box>
       </StyledLink>
       {!isDesktop ? (

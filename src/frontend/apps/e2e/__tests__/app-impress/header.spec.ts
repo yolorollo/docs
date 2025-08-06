@@ -12,7 +12,7 @@ test.describe('Header', () => {
 
     const header = page.locator('header').first();
 
-    await expect(header.getByLabel('Back to homepage')).toBeVisible();
+    await expect(header.getByTestId('header-logo-link')).toBeVisible();
     await expect(header.locator('h1').getByText('Docs')).toHaveCSS(
       'font-family',
       /Roboto/i,

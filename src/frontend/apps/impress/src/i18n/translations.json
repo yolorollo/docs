@@ -370,6 +370,7 @@
   },
   "en": {
     "translation": {
+      "Back to homepage": "Back to Docs homepage",
       "Search docs": "Search docs",
       "More options": "More options",
       "Pinned documents": "Pinned documents",
@@ -623,7 +624,7 @@
       "Doc visibility card": "Carte de visibilité du doc",
       "Docs": "Docs",
       "Docs Logo": "Logo Docs",
-      "Back to homepage": "Retour page d'accueil",
+      "Back to homepage": "Retour à la page d'accueil de Docs",
       "Docs is already available, log in to use it now.": "Docs est déjà disponible, connectez-vous pour l’utiliser dès maintenant.",
       "Docs makes real-time collaboration simple. Invite collaborators - public officials or external partners - with one click to see their changes live, while maintaining precise access control for data security.": "Docs simplifie la collaboration en temps réel. Invitez des collaborateurs - agents publics ou partenaires externes - d'un clic pour voir leurs modifications en direct, tout en gardant un contrôle précis des accès pour la sécurité des données.",
       "Docs offers an intuitive writing experience. Its minimalist interface favors content over layout, while offering the essentials: media import, offline mode and keyboard shortcuts for greater efficiency.": "Docs propose une expérience d'écriture intuitive. Son interface minimaliste privilégie le contenu sur la mise en page, tout en offrant l'essentiel : import de médias, mode hors-ligne et raccourcis clavier pour plus d'efficacité.",
@@ -994,6 +995,7 @@
       "Doc visibility card": "Docs zichtbaarheid kaart",
       "Docs": "Docs",
       "Docs Logo": "Docs logo",
+      "Back to homepage": "Terug naar Docs homepage",
       "Docs is already available, log in to use it now.": "Docs is beschikbaar, log in om het te gebruiken.",
       "Docs makes real-time collaboration simple. Invite collaborators - public officials or external partners - with one click to see their changes live, while maintaining precise access control for data security.": "Docs maakt real-time samenwerking eenvoudig. Nodig medewerkers - ambtenaren of externe partners - uit met één klik om hun veranderingen live te zien, terwijl de toegangscontrole voor de gegevensbeveiliging wordt gehandhaafd.",
       "Docs offers an intuitive writing experience. Its minimalist interface favors content over layout, while offering the essentials: media import, offline mode and keyboard shortcuts for greater efficiency.": "Docs biedt een intuïtieve schrijfervaring. De minimalistische interface geeft voorrang aan de inhoud boven de lay-out, terwijl essentiële zaken worden aangeboden: importeren van media, offline-modus en sneltoetsen voor grotere efficiëntie.",
